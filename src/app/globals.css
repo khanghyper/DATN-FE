@@ -82,11 +82,6 @@
   .text-secondary {
     @apply text-[white]
   }
-
-  .bg-primary {
-    @apply bg-[#E30019]
-  }
-
   .bg-secondary {
     @apply bg-[#fff]
   }
