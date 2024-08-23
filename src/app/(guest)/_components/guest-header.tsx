@@ -1,7 +1,36 @@
+'use client';
 import { Button } from "@/components/ui/button";
-import { LayoutGrid, Search, ShoppingBag } from "lucide-react";
+import { BadgeCheck, BadgeDollarSign, Ban, LayoutGrid, Package, Search, ShoppingBag, Tag, Truck } from "lucide-react";
 
 export default function GuestHeader() {
+  const navIcons: { title: string; icon: any }[] = [
+    {
+      icon: <BadgeCheck size={24} color={"blue"}/>,
+      title: 'Cam kết'
+    },
+    {
+      icon: <Ban size={24} color={"blue"} />,
+      title: '100% hàng thật'
+    },
+    {
+      icon: <BadgeDollarSign size={24} color={"blue"} />,
+      title: 'Hoàn 200% nếu hàng giả'
+    }
+    ,
+    {
+      icon: <Package size={24} color={"blue"} />,
+      title: '30 ngày đổi trả'
+    },
+    {
+      icon: <Truck size={24} color={"blue"} />,
+      title: 'Giao nhanh 2h'
+    },
+    {
+      icon: <Tag size={24} color={"blue"} />,
+      title: 'Giá siêu rẻ'
+    }
+  ]
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-content border h-[130px]">
@@ -32,8 +61,15 @@ export default function GuestHeader() {
             </div>
           </div>
         </div>
-        <div className="bottom-nav w-full flex ">
-
+        <div className="bottom-nav w-full h-[24px] flex items-center gap-6 ">
+          {
+            navIcons.map(it => (
+              <div className="flex gap-1 " key={it.title}>
+                  {it.icon}
+                <span className="text-[14px] font-medium">{it.title}</span>
+              </div>
+            ))
+          }
         </div>
       </div>
 
