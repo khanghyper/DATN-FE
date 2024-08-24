@@ -14,16 +14,8 @@ const cateItems: { title: string, img: string }[] = [
     img: 'https://media3.scdn.vn/img4/2024/06_06/P6DV4nqEwYmWgOyDSrrS.png'
   },
   {
-    title: 'Back To School',
-    img: 'https://media3.scdn.vn/img4/2023/10_17/AL5ac6HqgG1Na5ZQ5o44.png'
-  },
-  {
     title: 'Tiện ích phòng ngủ',
     img: 'https://media3.scdn.vn/img4/2024/06_06/tvuSBab7RyEhozsG1rxg.png'
-  },
-  {
-    title: 'Vệ sinh nhà cửa',
-    img: 'https://media3.scdn.vn/img4/2023/10_17/0gyHrQM4Y5RMUNa0itcC.png'
   },
   {
     title: 'Bảo vệ sức khỏe',
