@@ -17,7 +17,7 @@ export default function HangXinSection() {
         </div>
         <div className="text-[13px] text-blue-500 cursor-pointer underline font-semibold">Xem tất cả</div>
       </div>
-      <div className="list-card-product py-3 grid grid-cols-5 gap-3">
+      <div className="list-card-product py-3 grid grid-cols-5 gap-4">
         {
           Array.from({ length: 5 }, (_, i) => i + 1).map(item => (
             <CardProduct key={item} />

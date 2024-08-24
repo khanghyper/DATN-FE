@@ -7,8 +7,8 @@ export default function CardProduct() {
         <img className="size-full object-cover" src="https://salt.tikicdn.com/cache/750x750/ts/product/59/6d/d2/3a4ee4a2ffbae124699e5a01ab5cf5db.jpg.webp" alt="" />
       </div>
       <div className="p-2 flex flex-col gap-0.5">
-        <span className="text-[16px] font-bold">Điện thoại SAMSUNG</span>
-        <span className="text-[20px] font-bold text-red-600">345.000đ</span>
+        <span className="text-[16px] font-medium">Điện thoại SAMSUNG</span>
+        <span className="text-[18px] font-semibold text-red-600">345.000đ</span>
         <div className="inline">
           <span className="text-[13px] bg-gray-100 rounded-sm px-2">Trả góp Muadee</span>
         </div>

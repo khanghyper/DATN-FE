@@ -32,7 +32,7 @@ const tags: { title: string, icon: any }[] = [
 export default function GuestHeader() {
   return (
     <div className="w-full flex justify-center border-b shadow-sm">
-      <div className="w-content h-[130px]">
+      <div className="w-content ">
         <div className="top-nav w-full flex gap-4 py-2 text-[14px] text-[#8E8181] font-semibold">
           <span>Tải ứng dụng</span>
           <span>Chăm sóc khách hàng</span>
@@ -60,7 +60,7 @@ export default function GuestHeader() {
             </div>
           </div>
         </div>
-        <div className="bottom-nav flex w-full h-[23px] items-center gap-4">
+        <div className="bottom-nav flex w-full h-[23px] items-center gap-4 py-4">
           {tags.map(item => (
             <div key={item.title} className="flex gap-2 items-center">
               <span className="text-[14px] font-medium">{item.title}</span>
