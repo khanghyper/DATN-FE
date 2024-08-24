@@ -72,8 +72,7 @@ const GuestFooter = () => {
             <h4 className='font-semibold'>Công ty Cổ phần Công nghê VNShop, thành viên của nhóm dự án tốt nghiệp</h4>
             <p>Số ĐKKD: 0312776486 - Ngày cấp: 13/05/2014, được sửa đổi lần thứ 20, ngày 26/04/2022.</p>
             <p>Cơ quan cấp: Sở Kế hoạch và Đầu tư TPHCM.</p>
-            <p>Địa chỉ: Tầng 5, Tòa nhà A, Vườn Ươm Doanh Nghiệp, Lô D.01, Đường Tân Thuận, Khu chế xuất Tân
-              Thuận, Phường Tân Thuận Đông, Quận 7, Thành phố Hồ Chí Minh, Việt Nam.</p>
+            <p>Địa chỉ: Tầng , Thành phố Hồ Chí Minh, Việt Nam.</p>
             <p>Email: lienhe@vnshop.vn</p>
             <div className="logo-footer flex w-[236px] h-[33px] gap-5">
               <img src="" className='border w-[108px] h-full' />
@@ -84,7 +83,7 @@ const GuestFooter = () => {
             <h4 className='font-semibold'>Đăng ký nhận bản tin ưu đãi khủng từ VNShop</h4>
             <div className="input-form-footer flex gap-1 w-full h-[32px] items-center">
               <input type="text" placeholder="Email của bạn là" className="w-[327px] h-[32px] px-5 border rounded-[5px] outline-none bg-gray-50" />
-              <Button color='blue'>Đăng ký</Button>
+              <Button className='bg-blue-500 h-[32px]'>Đăng ký</Button>
             </div>
           </div>
         </div>
