@@ -158,7 +158,7 @@ const page = () => {
             </div>
             <div className="opt-bottom w-full h-[24px] mt-2 flex justify-between items-center mt-1 text-[14px]">
               <div className="left-bottom w-600px h-full flex items-center gap-3">
-                <div className='flex gap-1'>
+                <div className='flex gap-1 items-center'>
                   <span className='border py-3 px-3 rounded-[10px] bg-gray-200'></span>
                   <span className='text-red-600 font-bold'>NOW</span>
                   <span>Giao hỏa tốc 2H</span>
