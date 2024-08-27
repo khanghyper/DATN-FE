@@ -55,12 +55,12 @@ const iconsCate: { title: string, img: string }[] = [
 
 const page = () => {
   return (
-    <div className='w-full py-4 h-auto flex flex-col items-center justify-center'>
+    <>
       <div className='top-cate flex w-content pb-3'>
         <h2 className='text-gray-400'>Trang chủ &gt;</h2>
         <span className='pl-[4px] text-black font-semibold'>Nhà cửa - Đời sống</span>
       </div>
-      <div className='bottom-cate w-content flex py-4 justify-center'>
+      <div className='bottom-cate w-content flex py-4 justify-between'>
         <div className="left-bottom-cate w-[208px] h-auto ">
           <div className="list-cate flex flex-col w-full ">
             <h2 className='font-bold'>Khám phá theo danh mục</h2>
@@ -156,7 +156,7 @@ const page = () => {
                 <h2 className='text-[14px]'>Tất cả</h2>
               </div>
             </div>
-            <div className="opt-bottom w-full h-[24px] mt-2 flex justify-between items-center mt-1 text-[14px]">
+            <div className="opt-bottom w-full h-[24px] flex justify-between items-center mt-1 text-[14px]">
               <div className="left-bottom w-600px h-full flex items-center gap-3">
                 <div className='flex gap-1 items-center'>
                   <span className='border py-3 px-3 rounded-[10px] bg-gray-200'></span>
@@ -189,7 +189,7 @@ const page = () => {
             </div>
           </div>
           <div className='card-product w-full'>
-            <div className="list-card-product py-3 grid grid-cols-5 gap-4">
+            <div className="list-card-product py-3 grid grid-cols-4 gap-4">
               {
                 Array.from({ length: 20 }, (_, i) => i + 1).map(item => (
                   <CardProduct key={item} />
@@ -199,7 +199,7 @@ const page = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

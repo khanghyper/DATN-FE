@@ -9,7 +9,7 @@ import HangXinSection from "@/app/(guest)/_components/hang-xin-section";
 export default function HomePage() {
 
   return (
-    <div className="w-full py-4 h-auto flex items-center flex-col bg-white">
+    <>
       <div className="w-content">
         <BannerHomeGuest />
         <CategoriesGuest />
@@ -19,6 +19,6 @@ export default function HomePage() {
         <Categories2 />
         <GoiYSection />
       </div>
-    </div>
+    </>
   )
 }

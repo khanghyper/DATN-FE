@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Nunito } from 'next/font/google'
+import { Nunito, Roboto } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
 
 
@@ -8,6 +8,7 @@ const nunito = Nunito({
   subsets: ['latin'],
   display: 'swap',
 })
+
 
 
 export const metadata: Metadata = {
