@@ -163,8 +163,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           </div>
         </div>
       </div>
-      <div className="w-full flex mt-6">
-        <div className="w-2/5 pr-4 ">
+      <div className="w-full mt-6">
+        <div className="mb-4">
           <div className="shadow border p-4 w-full">
             <div className="font-bold text-[16px]">Thông tin nhà cung cấp</div>
             <div className="flex mt-4 gap-4">
@@ -216,60 +216,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <PhoneCall size={20} />
               </Button>
             </div>
-            <div className="mt-4 border-t">
-              <div className="mt-4 text-[14px] font-bold">
-                Gợi ý thêm từ shop
-              </div>
-              <div className="mt-4 w-full bg-gradient-to-b from-white to-blue-200">
-                <div className="w-full border overflow-hidden">
-                  <div className="w-[600px] translate-x-2 flex gap-2">
-                    <div className="mb-3 w-[120px] shadow-sm bg-white rounded-sm">
-                      <div className="size-[120px]">
-                        <img className="size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                      </div>
-                      <div className="p-2">
-                        <p className="text-[14px] font-normal text-ellipsis">Áo sơ mi nam vải dài tay vải ...</p>
-                        <div className="w-full h-4"></div>
-                        <span className="text-[16px] text-red-500 font-bold">70.000đ</span>
-                      </div>
-                    </div>
-                    <div className="mb-3 w-[120px] shadow-sm bg-white rounded-sm">
-                      <div className="size-[120px]">
-                        <img className="size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                      </div>
-                      <div className="p-2">
-                        <p className="text-[14px] font-normal text-ellipsis">Áo sơ mi nam vải dài tay vải ...</p>
-                        <div className="w-full h-4"></div>
-                        <span className="text-[16px] text-red-500 font-bold">70.000đ</span>
-                      </div>
-                    </div>
-                    <div className="mb-3 w-[120px] shadow-sm bg-white rounded-sm">
-                      <div className="size-[120px]">
-                        <img className="size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                      </div>
-                      <div className="p-2">
-                        <p className="text-[14px] font-normal text-ellipsis">Áo sơ mi nam vải dài tay vải ...</p>
-                        <div className="w-full h-4"></div>
-                        <span className="text-[16px] text-red-500 font-bold">70.000đ</span>
-                      </div>
-                    </div>
-                    <div className="mb-3 w-[120px] shadow-sm bg-white rounded-sm">
-                      <div className="size-[120px]">
-                        <img className="size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                      </div>
-                      <div className="p-2">
-                        <p className="text-[14px] font-normal text-ellipsis">Áo sơ mi nam vải dài tay vải ...</p>
-                        <div className="w-full h-4"></div>
-                        <span className="text-[16px] text-red-500 font-bold">70.000đ</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-        <div className="w-3/5">
+        <div className="">
           <div className="w-full p-4 shadow border mb-4">
             <div className="text-[16px] font-bold mb-4">
               Mô tả sản phẩm
