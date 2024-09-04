@@ -224,7 +224,6 @@ const UserProfilePage = () => {
           </div>
         </div>
       </div>
-      <h1>Tuân đpẹ trai</h1>
     </div>
   );
 };
