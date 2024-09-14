@@ -44,7 +44,7 @@ export default function ShopHeader() {
             <div className="size-[30px] rounded-full border-[2px] flex items-center justify-center">
               <User strokeWidth={1.5} size={20} />
             </div>
-            <span className="text-[16px] font-medium">Tuangay110</span>
+            <span className="text-[16px] font-medium">TuanDepTry</span>
             <ChevronDown strokeWidth={1.5} size={20} />
           </div>
         </div>
