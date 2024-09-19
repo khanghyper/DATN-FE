@@ -1,8 +1,11 @@
 'use client'
 
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, BadgeDollarSign, LayoutGrid, LucideIcon, Package, Search, ShoppingBag, Tag, Ticket, Truck } from "lucide-react";
-
+import { BadgeCheck, BadgeDollarSign, LayoutGrid, Package, Search, ShoppingBag, Tag, Truck, Bell } from "lucide-react";
+import Link from 'next/link';
+import MiniCart from './MiniCart';
+import Notifications from './MiniNotifications';
 
 const tags: { title: string, icon: any }[] = [
   {
@@ -30,6 +33,9 @@ const tags: { title: string, icon: any }[] = [
 ]
 
 export default function GuestHeader() {
+  const [hienThiMiniCart, setHienThiMiniCart] = useState(false);
+  const [hienThiThongBao, setHienThiThongBao] = useState(false);
+
   return (
     <div className="w-full flex justify-center border-b shadow-sm">
       <div className="w-content ">
@@ -54,8 +60,29 @@ export default function GuestHeader() {
                 </div>
               </div>
             </div>
-            <div className="nav-dangnhap flex items-center justify-end w-[156px] h-full gap-2">
-              <ShoppingBag />
+            <div className="nav-dangnhap flex items-center justify-end w-[200px] h-full gap-4">
+              <div className="relative">
+                <Bell 
+                  className="cursor-pointer" 
+                  onClick={() => setHienThiThongBao(!hienThiThongBao)}
+                />
+                {hienThiThongBao && (
+                  <div className="absolute right-0 mt-2 z-50">
+                    <Notifications />
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <ShoppingBag 
+                  className="cursor-pointer" 
+                  onClick={() => setHienThiMiniCart(!hienThiMiniCart)}
+                />
+                {hienThiMiniCart && (
+                  <div className="absolute right-0 mt-2 z-50">
+                    <MiniCart />
+                  </div>
+                )}
+              </div>
               <Button className="bg-[#0E6AFF] h-8">Đăng nhập</Button>
             </div>
           </div>
@@ -67,6 +94,7 @@ export default function GuestHeader() {
               {item.icon}
             </div>
           ))}
+          <Link href="/blog" className="text-[14px] font-medium">VNSHOP News</Link>
         </div>
       </div>
     </div>
