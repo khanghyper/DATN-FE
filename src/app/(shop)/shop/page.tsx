@@ -1,3 +1,5 @@
+import EmptyOrder from "@/app/(shop)/_components/empty-order";
+import OrderItem from "@/app/(shop)/_components/order-item";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,6 +15,26 @@ import {
 const status = [
   'Tất cả', 'Chờ xác nhận', 'Chờ Lấy hàng', 'Đang giao', 'Đã giao', 'Đơn hủy', 'Trả hàng/hoàn tiền', 'Giao không thành công'
 ]
+
+const filters = [
+  {
+    id: '0',
+    name: 'Mã đơn hàng',
+    placehoder: 'Nhập mã đơn hàng'
+  }, {
+    id: '1',
+    name: 'Mã vận đơn',
+    placehoder: 'Nhập mã vận đơn'
+  }, {
+    id: '2',
+    name: 'Tên người mua',
+    placehoder: 'Nhập tên người mua'
+  }, {
+    id: '3',
+    name: 'Sản phẩm',
+    placehoder: 'Nhập tên sản phẩm/SKU'
+  }
+];
 
 export default function ShopPage() {
   return (
@@ -38,13 +60,15 @@ export default function ShopPage() {
       </div>
       <div className="flex items-center justify-between w-full p-4 px-3">
         <div className="flex">
-          <Select>
+          <Select defaultValue={filters[0].id}>
             <SelectTrigger className="w-[250px] rounded-none rounded-tl rounded-bl">
               <SelectValue placeholder="Mã Đơn Hàng" className="text-[13px]" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem className="text-[13px]" value="test">test</SelectItem>
+                {filters.map((item, index) => (
+                  <SelectItem key={index} className="text-[13px]" value={item.id}>{item.name}</SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -56,7 +80,7 @@ export default function ShopPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem className="text-[13px]" value="test">test</SelectItem>
+              <SelectItem className="text-[13px]" value={'test'}>test</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -66,7 +90,7 @@ export default function ShopPage() {
         </div>
       </div>
       <div className="px-4 py-2 text-[16px] font-semibold">2 Đơn hàng</div>
-      <div className="h-[50px] px-4 py-2">
+      <div className="px-4 py-2">
         <div className="w-full h-full border text-[14px] flex items-center rounded bg-[#F0F0F0] text-[#000000ba]">
           <div className="w-[364px] p-2">Sản phẩm</div>
           <div className="w-[200px] p-2">Tổng đơn hàng</div>
@@ -74,7 +98,7 @@ export default function ShopPage() {
           <div className="w-[200px] p-2">Đơn vị vận chuyển</div>
           <div className="">Thao tác</div>
         </div>
-        <div className="mt-4 border rounded-sm">
+        {/* <div className="mt-4 border rounded-sm">
           <div className="p-2 flex items-center justify-between bg-[#F0F0F0] text-black text-[14px]">
             <span>Khách hàng: Test2</span>
             <span>Mã đơn hàng: 01234544ds5</span>
@@ -162,7 +186,10 @@ export default function ShopPage() {
             </div>
             <div className="p-2 text-blue-500 cursor-pointer">Xem chi tiết</div>
           </div>
-        </div>
+        </div> */}
+        {/* <OrderItem />
+        <OrderItem /> */}
+        <EmptyOrder />
       </div>
     </>
   )
