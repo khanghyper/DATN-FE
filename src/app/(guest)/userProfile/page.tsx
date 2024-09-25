@@ -73,8 +73,9 @@ const UserProfilePage = () => {
               </div>
               <div className='flex items-center gap-2'>
                 <Pencil size={16} color='#888888' />
-                <span className='text-[#888888] cursor-pointer'>Sửa Hồ Sơ</span>
+                <span className='text-[#888888] cursor-pointer'>Sửa hồ sơ</span>
               </div>
+            
             </div>
           </div>
           <div className='w-full h-[202px] flex flex-col mt-2 gap-4 pl-5'>
