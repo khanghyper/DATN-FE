@@ -62,8 +62,8 @@ export default function GuestHeader() {
             </div>
             <div className="nav-dangnhap flex items-center justify-end w-[200px] h-full gap-4">
               <div className="relative">
-                <Bell 
-                  className="cursor-pointer" 
+                <Bell
+                  className="cursor-pointer"
                   onClick={() => setHienThiThongBao(!hienThiThongBao)}
                 />
                 {hienThiThongBao && (
@@ -73,12 +73,12 @@ export default function GuestHeader() {
                 )}
               </div>
               <div className="relative">
-                <ShoppingBag 
-                  className="cursor-pointer" 
+                <ShoppingBag
+                  className="cursor-pointer"
                   onClick={() => setHienThiMiniCart(!hienThiMiniCart)}
                 />
                 {hienThiMiniCart && (
-                  <div className="absolute right-0 mt-2 z-50">
+                  <div className="absolute right-[-150px] mt-2 z-50">
                     <MiniCart />
                   </div>
                 )}
