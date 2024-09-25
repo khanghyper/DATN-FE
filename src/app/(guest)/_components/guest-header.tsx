@@ -80,7 +80,7 @@ export default function GuestHeader() {
                   strokeWidth={1.5}
                 />
                 {hienThiMiniCart && (
-                  <div className="absolute right-0 mt-2 z-50">
+                  <div className="absolute right-[-150px] mt-2 z-50">
                     <MiniCart />
                   </div>
                 )}

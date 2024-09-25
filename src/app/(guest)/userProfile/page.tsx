@@ -63,15 +63,19 @@ const UserProfilePage = () => {
         </BreadcrumbList>
       </Breadcrumb>
       <div className='body-page w-full flex justify-between gap-1 mt-4'>
-        <div className='left-body w-[275px] h-[318px] border shadow rounded flex flex-col items-center justify-center pt-4 '>
+        <div className='left-body w-[275px] h-[340px] border shadow rounded flex flex-col items-center  pt-4 '>
           <div className='w-[240px] h-[80px] flex gap-5 '>
             <img src="" className='w-[80px] h-full rounded-[60px] bg-slate-500' />
             <div className='w-[195px] h-full flex flex-col justify-center'>
-              <span className='text-[18px] font-semibold'>Tuân Nguyễn</span>
+              <div className='w-full h-[20px] flex justify-start gap-1'>
+                <img src="./images/kimcuongRank.png" className='w-[20px] h-full' alt="Lỗi rank" />
+                <span className='text-[18px] font-semibold'>Tuân Nguyễn</span>
+              </div>
               <div className='flex items-center gap-2'>
                 <Pencil size={16} color='#888888' />
-                <span className='text-[#888888] cursor-pointer'>Sửa Hồ Sơ</span>
+                <span className='text-[#888888] cursor-pointer'>Sửa hồ sơ</span>
               </div>
+            
             </div>
           </div>
           <div className='w-full h-[202px] flex flex-col mt-2 gap-4 pl-5'>
@@ -83,6 +87,10 @@ const UserProfilePage = () => {
                 </div>
               ))
             }
+            <div className='flex gap-3 w-full items-end cursor-pointer'>
+              <img src="./images/quyenLoi.webp" className='w-[24px] h-[24px]' alt="Lỗi ảnh" />
+              <p className='text-[14px]'>Quyền lợi về Rank</p>
+            </div>
           </div>
         </div>
         <div className='right-body w-[920px] h-[500px] border flex'>

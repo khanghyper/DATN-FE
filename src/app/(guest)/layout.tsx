@@ -1,5 +1,6 @@
 import GuestHeader from "@/app/(guest)/_components/guest-header";
 import GuestFooter from "./_components/guest-footer";
+import GuestFooter2 from "./_components/guest-footer2";
 
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +11,8 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
           {children}
         </div>
       </div>
-      <GuestFooter />
+      {/* <GuestFooter /> */}
+      <GuestFooter2 />
     </div>
   )
 }
