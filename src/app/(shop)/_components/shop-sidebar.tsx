@@ -39,7 +39,7 @@ const sidebarItems: SidebarItem[] = [
 export default function ShopSidebar() {
   return (
     <div className="w-[292px] h-[calc(100vh-120px)] relative">
-      <div className="w-[282px] h-[calc(100vh-120px)] fixed top-[90px] bg-white rounded-sm py-4 px-2 flex flex-col">
+      <div className="w-[282px] h-[calc(100vh-120px)] fixed top-[65px] bg-white rounded-sm py-4 px-2 flex flex-col">
         <ScrollArea className="w-full h-full">
           {sidebarItems.map((item, index: number) => (
             <Accordion key={index} type="single" collapsible className="w-full pr-4 mb-2">
@@ -47,7 +47,7 @@ export default function ShopSidebar() {
                 <AccordionTrigger className="">
                   <div className="flex items-center gap-4 py-2 ">
                     {item.icon}
-                    <span className="text-[16px] font-semibold">{item.title}</span>
+                    <span className="text-[15px] font-semibold">{item.title}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pl-10">

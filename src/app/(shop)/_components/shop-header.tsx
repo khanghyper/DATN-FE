@@ -14,19 +14,22 @@ import { Bell, BookOpen, ChevronDown, ChevronUp, GripHorizontal, User } from "lu
 import { useState } from 'react';
 import AccountInfo from '@/app/(shop)/_components/account-info';
 import Notifications from '@/app/(shop)/_components/notifications';
+import Image from 'next/image';
 
 
 export default function ShopHeader() {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isStarted, setIsStarted] = useState(true);
   const [isShowNoti, setIsShowNoti] = useState(false);
   const [isShowAccountInfo, setIsShowAccountInfo] = useState(false);
+  const [isNotiVisible, setIsNotiVisible] = useState(false);
+  const [isAccountInfoVisible, setIsAccountInfoVisible] = useState(false);
 
   return (
     <header className="w-full h-[56px] bg-white sticky top-0 z-50">
       <div className="w-full h-full flex justify-between">
         <div className="flex items-center gap-4">
           <div className="logo w-40 h-[48px]">
-            <img className="size-full object-cover" src="./images/logo.png" alt="" />
+            <Image width={160} height={48} className="size-full object-cover" src="/images/logo.png" alt="" />
           </div>
           <Breadcrumb>
             <BreadcrumbList className="text-[16px] font-normal">
@@ -68,13 +71,19 @@ export default function ShopHeader() {
             <div className="relative">
               <div
                 className='px-3 hover:bg-gray-200'
-                onMouseEnter={() => setTimeout(() => setIsShowNoti(true))}
-                onMouseLeave={() => setTimeout(() => setIsShowNoti(false))}
+                onMouseEnter={() => {
+                  setIsNotiVisible(true);
+                  setIsShowNoti(true);
+                }}
+                onMouseLeave={async () => setIsShowNoti(false)}
               >
                 <Bell strokeWidth={1.5} className="h-[56px] w-6" />
-                <div className={`minicart ${isShowNoti ? 'animate-in' : 'animate-out'}`}>
-                  <Notifications />
-                </div>
+                {isNotiVisible && (
+                  <div className={`minicart ${isShowNoti ? 'animate-in' : 'animate-out'}`}>
+                    <Notifications />
+                  </div>
+                )}
+
                 <div className="absolute top-2 right-1 bg-blue-500 flex items-center justify-center text-white rounded-full text-[12px] size-4">0</div>
               </div>
             </div>
@@ -82,8 +91,11 @@ export default function ShopHeader() {
           <div className='h-full pl-4'>
             <div
               className="flex w-full h-full px-4 items-center gap-2 hover:bg-gray-200"
-              onMouseEnter={() => setTimeout(() => setIsShowAccountInfo(true), 100)}
-              onMouseLeave={() => setTimeout(() => setIsShowAccountInfo(false))}
+              onMouseEnter={() => {
+                setIsAccountInfoVisible(true);
+                setIsShowAccountInfo(true);
+              }}
+              onMouseLeave={() => setIsShowAccountInfo(false)}
             >
               <div className="size-[30px] rounded-full flex items-center justify-center">
                 <img className='size-full object-cover rounded-full' src="https://phunuvietnam.mediacdn.vn/media/news/33abffcedac43a654ac7f501856bf700/anh-profile-tiet-lo-g-ve-ban-1.jpg" alt="" />
@@ -94,9 +106,14 @@ export default function ShopHeader() {
               ) : (
                 <ChevronUp strokeWidth={1.5} size={20} />
               )}
-              <div className={`minicart ${isShowAccountInfo ? 'animate-in' : 'animate-out'}`}>
-                <AccountInfo />
-              </div>
+              {
+                isAccountInfoVisible && (
+                  <div className={`minicart ${isShowAccountInfo ? 'animate-in' : 'animate-out'}`}>
+                    <AccountInfo />
+                  </div>
+                )
+              }
+
             </div>
           </div>
 
