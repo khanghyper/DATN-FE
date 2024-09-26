@@ -1,6 +1,11 @@
+import { Bell, HelpCircle, MessageCircle } from 'lucide-react';
 
 export default function ShopHeaderActions() {
   return (
-    <div>shop-header-actions</div>
-  )
+    <div className="flex justify-end items-center p-4 border-b">
+      <MessageCircle className="mr-4 cursor-pointer" />
+      <Bell className="mr-4 cursor-pointer" />
+      <HelpCircle className="cursor-pointer" />
+    </div>
+  );
 }

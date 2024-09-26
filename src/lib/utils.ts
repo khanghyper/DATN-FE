@@ -33,3 +33,10 @@ export const handleErrorApi = ({ error, setError, duration }: {
     })
   }
 }
+
+export const formattedPrice = (price: number) => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(price)
+} 

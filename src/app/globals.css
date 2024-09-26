@@ -98,6 +98,8 @@
   .w-content {
     @apply w-[1200px]
   }
+
+
 }
 
 input[type="number"]::-webkit-inner-spin-button {
