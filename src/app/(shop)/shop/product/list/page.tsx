@@ -23,6 +23,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import ListProductItem from "@/app/(shop)/_components/list-product-item";
 import ListProductPagination from "@/app/(shop)/_components/list-product-pagination";
+import Link from "next/link";
+import PopupCategory from "@/app/(shop)/_components/popup-category";
 
 
 const status = [
@@ -50,14 +52,16 @@ const filters = [
 
 export default function ListProductPage() {
   return (
-    <div className="w-full">
+    <div className="w-full overflow-auto">
       <div className="flex p-4 items-center justify-between">
         <span className="text-[20px] font-semibold">Sản phẩm</span>
         <div className="flex items-center gap-2">
-          <Button className="flex items-center gap-2" variant={"outline"}>
-            <Plus strokeWidth={1.25} size={16} />
-            Thêm 1 sản phẩm mới
-          </Button>
+          <Link href={'/shop/product/new'}>
+            <Button className="flex items-center gap-2" variant={"outline"}>
+              <Plus strokeWidth={1.25} size={16} />
+              Thêm 1 sản phẩm mới
+            </Button>
+          </Link>
         </div>
       </div>
       <div className="flex p-2 px-3 gap-2">
@@ -79,40 +83,7 @@ export default function ListProductPage() {
           </div>
           <Input className="px-3 w-[300px] text-[14px] border-l-0 outline-none rounded-none rounded-tr rounded-br" placeholder="Tìm tên sản phẩm, SKU sản phẩm" />
         </div>
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className="w-[300px] h-full border rounded px-3 py-1 flex justify-between items-center cursor-pointer hover:border-gray-400">
-              <span className="text-[14px] text-gray-400">Tìm kiếm theo ngành hàng</span>
-              <Pen size={16} color="#ababab" strokeWidth={1.25} />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input id="name" value="Pedro Duarte" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Username
-                </Label>
-                <Input id="username" value="@peduarte" className="col-span-3" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Save changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <PopupCategory />
         <div className="flex gap-2">
           <button className="border-blue-500 text-blue-500 hover:border-blue-500 border text-[14px] p-2 rounded">Áp dụng</button>
           <Button variant={'default'}>Đặt lại</Button>

@@ -38,7 +38,7 @@ const filters = [
 
 export default function ShopPage() {
   return (
-    <>
+    <div className="overflow-auto">
       <div className="flex p-2 items-center justify-between">
         <span className="text-[20px] font-bold">Tất Cả</span>
         <div className="flex items-center gap-2">
@@ -191,6 +191,6 @@ export default function ShopPage() {
         <OrderItem /> */}
         <EmptyOrder />
       </div>
-    </>
+    </div>
   )
 }

@@ -6,33 +6,56 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Link from "next/link";
 
 type SidebarItem = {
   icon: any,
   title: string,
-  subItems: string[]
+  path: string,
+  subItems: {
+    title: string,
+    href: string
+  }[]
 }
 
 const sidebarItems: SidebarItem[] = [
   {
     icon: <CalendarCheck strokeWidth={1.5} size={20} />,
     title: 'Quản Lý Đơn Hàng',
-    subItems: ['Tất Cả', 'Giao Hàng Loạt', 'Đơn Hủy', 'Trả Hàng/Hoàn Tiền', 'Cài Đặt Vận Chuyển', 'Bàn Giao Đơn Hàng']
+    path: 'order',
+    // subItems: ['Tất Cả', 'Giao Hàng Loạt', 'Đơn Hủy', 'Trả Hàng/Hoàn Tiền', 'Cài Đặt Vận Chuyển', 'Bàn Giao Đơn Hàng']
+    subItems: [
+      {
+        title: 'Tất cả',
+        href: 'list'
+      }
+    ]
   },
   {
     icon: <ClipboardCheck strokeWidth={1.5} size={20} />,
     title: 'Quản Lý Sản Phẩm',
-    subItems: ['Tất Cả Sản Phẩm', 'Thêm Sản Phẩm']
+    path: 'product',
+    subItems: [{
+      title: 'Tất Cả Sản Phẩm',
+      href: 'list'
+    }, {
+      title: 'Thêm Sản Phẩm',
+      href: 'new'
+    }]
   },
   {
     icon: <Tag strokeWidth={1.5} size={20} />,
     title: 'Kênh Marketing',
-    subItems: ['Kênh Marketing', 'Đấu Giá Rẻ Vô Địch', 'Quản Cáo VNShop', 'Tăng Đơn Cùng KOL', 'Live & Video', 'Kênh Khuyến Mãi Của Shop', 'Flash Sale của shop', 'Mã Giảm Giá Của Shop', 'Chương Trình VNShop']
+    path: 'marketing',
+    // subItems: ['Kênh Marketing', 'Đấu Giá Rẻ Vô Địch', 'Quản Cáo VNShop', 'Tăng Đơn Cùng KOL', 'Live & Video', 'Kênh Khuyến Mãi Của Shop', 'Flash Sale của shop', 'Mã Giảm Giá Của Shop', 'Chương Trình VNShop']
+    subItems: []
   },
   {
     icon: <SquareUser strokeWidth={1.5} size={20} />,
     title: 'Quản Lý Khách Hàng',
-    subItems: ['Quản Lý Chat']
+    path: 'customer',
+    // subItems: ['Quản Lý Chat']
+    subItems: []
   }
 ];
 
@@ -51,8 +74,8 @@ export default function ShopSidebar() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pl-10">
-                  {item.subItems.map((i, index) => (
-                    <div key={index} className="py-1.5 ">{i}</div>
+                  {item.subItems.length && item.subItems.map((i, index) => (
+                    <Link href={`/shop/${item.path}/${i.href}`} key={index} className="py-1.5 block">{i.title}</Link>
                   ))}
                 </AccordionContent>
               </AccordionItem>
@@ -61,7 +84,6 @@ export default function ShopSidebar() {
 
 
         </ScrollArea>
-
       </div>
     </div>
   )
