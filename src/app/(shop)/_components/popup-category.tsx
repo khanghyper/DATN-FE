@@ -16,80 +16,57 @@ import { useEffect, useState } from "react";
 type Category = {
   id: number
   name: string
+  parentId?: number | null
   children: Category[]
-  parentId?: number
 }
 
-const tags = Array.from({ length: 50 }).map(
-  (_, i, a) => `v1.2.0-beta.${a.length - i}`
-)
 const categories: Category[] = [
   {
-    id: 1,
-    name: 'Thời trang nam',
+    "id": 1, "name": "Thời trang nam", "parentId": null,
     children: [
       {
-        id: 2,
-        name: 'Quần jean',
-        children: [],
-        parentId: 1
+        "id": 2, "name": "Quần jean", "parentId": 1, children: [
+          { "id": 4, "name": "Áo polo", "parentId": 2, children: [] },
+          { "id": 5, "name": "Áo thun", "parentId": 2, children: [] },
+        ]
       },
-      {
-        id: 2,
-        name: 'Áo',
-        children: [
-          {
-            id: 4,
-            name: 'Áo polo',
-            children: [],
-            parentId: 2
-          },
-          {
-            id: 5,
-            name: 'Áo thun',
-            children: [],
-            parentId: 2
-          }
-        ],
-        parentId: 1
-      },
-      {
-        id: 3,
-        name: 'Quần đùi',
-        children: [],
-        parentId: 1
-      }
+      { "id": 12, "name": "Áo", "parentId": 1, children: [] },
+      { "id": 3, "name": "Quần đùi", "parentId": 1, children: [] },
     ]
-  }, {
-    id: 7,
-    name: 'Giày dép nam',
-    children: [
-      {
-        id: 8,
-        name: 'Giày tây lười',
-        children: [],
-        parentId: 7
-      }
+  },
+  {
+    "id": 7, "name": "Giày dép nam", "parentId": null, children: [
+      { "id": 8, "name": "Giày tây lười", "parentId": 7, children: [] },
     ]
-  }
+  },
+  { "id": 11, "name": "Máy tính và Laptop", "parentId": null, children: [] },
 ]
 
-const getCategories = async () => {
-  return categories;
+const getCategories = async (parentId: number | null) => {
+  if (parentId) {
+    const a = categories.find(item => item.id === parentId);
+    if (a) return a.children;
+    else {
+      throw new Error();
+    }
+  }
+  else {
+    return categories
+  }
 }
 
 
 
 export default function PopupCategory() {
   const [categories1, setCategory1] = useState<Category[]>([]);
-  const [categories2, setCategory2] = useState([]);
-  const [categories3, setCategory3] = useState([]);
-  const [categories4, setCategory4] = useState([]);
-  const [categoriesSelected, setCategorySelected] = useState<number[]>([])
+  const [categories2, setCategory2] = useState<Category[]>([]);
+  const [categories3, setCategory3] = useState<Category[]>([]);
+  const [categories4, setCategory4] = useState<Category[]>([]);
+  const [categoriesSelected, setCategoriesSelected] = useState<{ id: number, name: string }[]>([]);
 
   useEffect(() => {
     const a = async () => {
-      const b = await getCategories();
+      const b = await getCategories(null);
       setCategory1([...b])
     }
     a()
@@ -116,6 +93,20 @@ export default function PopupCategory() {
             <ScrollArea className="border-r h-[300px] max-h-[300px]">
               <ul className="">
                 {categories1.map((item) => (
+                  <li onClick={async () => {
+                    setCategoriesSelected(prev => [{ id: item.id, name: item.name }]);
+                    const a = await getCategories(item.id);
+                    setCategory2([...a]);
+                  }} key={item.id} className="h-8 px-4 flex items-center justify-between hover:bg-gray-100 cursor-pointer">
+                    <p className="text-[14px]">{item.name}</p>
+                    {item.children.length ? (<ChevronRight size={20} strokeWidth={1.25} />) : ''}
+                  </li>
+                ))}
+              </ul>
+            </ScrollArea>
+            <ScrollArea className="border-r h-[300px] max-h-[300px]">
+              <ul className="">
+                {categories2.map((item) => (
                   <li key={item.id} className="h-8 px-4 flex items-center justify-between hover:bg-gray-100 cursor-pointer">
                     <p className="text-[14px]">{item.name}</p>
                     {item.children.length ? (<ChevronRight size={20} strokeWidth={1.25} />) : ''}
@@ -123,12 +114,39 @@ export default function PopupCategory() {
                 ))}
               </ul>
             </ScrollArea>
+            <ScrollArea className="border-r h-[300px] max-h-[300px]">
+              <ul className="">
+                {/* {categories3.map((item) => (
+                  <li key={item.id} className="h-8 px-4 flex items-center justify-between hover:bg-gray-100 cursor-pointer">
+                    <p className="text-[14px]">{item.name}</p>
+                    {!item.parentId ? (<ChevronRight size={20} strokeWidth={1.25} />) : ''}
+                  </li>
+                ))} */}
+              </ul>
+            </ScrollArea>
+            <ScrollArea className="border-r h-[300px] max-h-[300px]">
+              <ul className="">
+                {/* {categories4.map((item) => (
+                  <li key={item.id} className="h-8 px-4 flex items-center justify-between hover:bg-gray-100 cursor-pointer">
+                    <p className="text-[14px]">{item.name}</p>
+                    {!item.parentId ? (<ChevronRight size={20} strokeWidth={1.25} />) : ''}
+                  </li>
+                ))} */}
+              </ul>
+            </ScrollArea>
           </div>
         </div>
         <div className="relative">
           <div className="absolute w-[1200px] h-[81px] p-6 -left-[25px] top-0 border-t ">
             <div className="w-full h-full flex justify-between">
-              <div className="text-[14px] font-semibold">Đã chọn</div>
+              <div className="flex gap-4">
+                <span className="text-[14px] font-medium">Đã chọn:</span>
+                <span className="text-[14px] font-medium">
+                  {categoriesSelected.length ?
+                    categoriesSelected.map((item, index) => item.name)
+                    : 'Chưa chọn ngành hàng nào'}
+                </span>
+              </div>
               <div className="flex gap-4">
                 <Button>Cancel</Button>
                 <Button>Confirm</Button>
