@@ -57,7 +57,7 @@ const getCategories = async (parentId: number | null) => {
 
 
 
-export default function PopupCategory() {
+export default function ListProductPopupCategory() {
   const [categories1, setCategory1] = useState<Category[]>([]);
   const [categories2, setCategory2] = useState<Category[]>([]);
   const [categories3, setCategory3] = useState<Category[]>([]);

@@ -24,7 +24,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import ListProductItem from "@/app/(shop)/_components/list-product-item";
 import ListProductPagination from "@/app/(shop)/_components/list-product-pagination";
 import Link from "next/link";
-import PopupCategory from "@/app/(shop)/_components/popup-category";
+import ListProductPopupCategory from "@/app/(shop)/_components/list-product-popup-category";
 
 
 const status = [
@@ -83,7 +83,7 @@ export default function ListProductPage() {
           </div>
           <Input className="px-3 w-[300px] text-[14px] border-l-0 outline-none rounded-none rounded-tr rounded-br" placeholder="Tìm tên sản phẩm, SKU sản phẩm" />
         </div>
-        <PopupCategory />
+        <ListProductPopupCategory />
         <div className="flex gap-2">
           <button className="border-blue-500 text-blue-500 hover:border-blue-500 border text-[14px] p-2 rounded">Áp dụng</button>
           <Button variant={'default'}>Đặt lại</Button>
