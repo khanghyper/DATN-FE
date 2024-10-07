@@ -1,20 +1,29 @@
 'use client'
 
-import { ImagePlus, Pen } from "lucide-react";
+import { ChevronDown, ChevronUp, ImagePlus, Pen } from "lucide-react";
 import NewProductPopupCategory from "@/app/(shop)/_components/new-product-popup-category";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/redux/store";
-import { getCategoryList } from "@/redux/slices/shop-new-product.slice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { findCategoryList, findCategoryListById } from "@/redux/slices/shop-new-product.slice";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
+import NewProductAttribute from "@/app/(shop)/_components/new-product-attribute";
+import NewProductVariantSection from "@/app/(shop)/_components/new-product-variant-section";
+
+
 
 
 export default function NewProductForm() {
   const [isShowPopupCategory, setIsShowPopupCategory] = useState<boolean>(false);
-  const [isSelectedCategory, setIsSelectedCategory] = useState<boolean>(false);
+  const isConfirmCategories = useAppSelector(state => state.shopListProduct.isConfirmCategories);
+  const categoryAttributesSelected = useAppSelector(state => state.shopListProduct.categoryAttributesSelected)
   const dispatch = useAppDispatch();
 
+
   useEffect(() => {
-    const promise = dispatch(getCategoryList());
+    const promise = dispatch(findCategoryListById(null));
+    const b = dispatch(findCategoryList());
   }, [])
+
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,7 +101,7 @@ export default function NewProductForm() {
             </div>
           </div>
           <div className="w-full">
-            <NewProductPopupCategory setIsSelectedCategory={setIsSelectedCategory} isShowPopupCategory={isShowPopupCategory} setIsShowPopupCategory={setIsShowPopupCategory} />
+            <NewProductPopupCategory isShowPopupCategory={isShowPopupCategory} setIsShowPopupCategory={setIsShowPopupCategory} />
           </div>
         </div>
         <div className="w-full flex mb-6">
@@ -110,13 +119,19 @@ export default function NewProductForm() {
         </div>
       </div>
       <div className="px-6 py-6 bg-white shadow rounded">
-        <div className={`text-[20px] font-semibold mb-6 ${!isSelectedCategory && 'text-gray-400'}`}>Thông tin bán hàng</div>
-        {isSelectedCategory ? (
-          <div>co</div>
+        <div className={`text-[20px] font-semibold mb-6 ${!isConfirmCategories && 'text-gray-400'}`}>{isConfirmCategories ? 'Thông tin chi tiết' : 'Thông tin bán hàng'} </div>
+        {isConfirmCategories ? (
+          <div className="grid grid-cols-2 gap-x-6">
+            {categoryAttributesSelected.map((item, index) => (
+              <NewProductAttribute key={item.id} categoryAttribute={item} index={index} />
+            ))}
+          </div>
+
         ) : (
-          <div className={`-mt-2 text-[14px] ${!isSelectedCategory && 'text-gray-400'}`}>Có thể điều chỉnh sau khi chọn ngành hàng</div>
+          <div className={`-mt-2 text-[14px] ${!isConfirmCategories && 'text-gray-400'}`}>Có thể điều chỉnh sau khi chọn ngành hàng</div>
         )}
       </div>
+      <NewProductVariantSection />
     </div>
   )
 }
