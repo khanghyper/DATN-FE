@@ -8,6 +8,8 @@ import { findCategoryList, findCategoryListById } from "@/redux/slices/shop-new-
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import NewProductAttribute from "@/app/(shop)/_components/new-product-attribute";
 import NewProductVariantSection from "@/app/(shop)/_components/new-product-variant-section";
+import OtherInfoSection from "@/app/(shop)/_components/other-info-section";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -132,6 +134,27 @@ export default function NewProductForm() {
         )}
       </div>
       <NewProductVariantSection />
+      <div className="px-6 py-6 bg-white shadow rounded">
+        <div className={`text-[20px] font-semibold mb-6 ${!isConfirmCategories && 'text-gray-400'}`}>Vận chuyển</div>
+        {isConfirmCategories ? (
+          <div className="">
+            Vận chuyển
+          </div>
+
+        ) : (
+          <div className={`-mt-2 text-[14px] ${!isConfirmCategories && 'text-gray-400'}`}>Có thể điều chỉnh sau khi chọn ngành hàng</div>
+        )}
+      </div>
+      <OtherInfoSection />
+      <div className="px-6 py-4 mb-10 sticky bottom-0 right-[16px] bg-white w-[1205px] border shadow rounded">
+        <div className="w-full flex justify-end">
+          <div className="flex gap-6">
+            <Button variant={'outline'}>Hủy</Button>
+            <Button variant={'outline'}>Lưu & Ẩn</Button>
+            <Button variant={'ghost'} className="bg-[#286dcf] text-white hover:opacity-80 hover:bg-[#286dcf] hover:text-white">Lưu & Hiển thị</Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

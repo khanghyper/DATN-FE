@@ -16,7 +16,6 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
       </main>
-      footer Shop
     </div>
   )
 }

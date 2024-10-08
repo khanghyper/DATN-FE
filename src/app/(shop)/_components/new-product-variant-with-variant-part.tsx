@@ -3,23 +3,36 @@ import './table.css';
 import NewProductVariantItem from "@/app/(shop)/_components/new-product-variant-item";
 import NewProductVariantRow from "@/app/(shop)/_components/new-product-variant-row";
 import NewProductVariantTable from '@/app/(shop)/_components/new-product-variant-table';
-import { addVariant, changeVariantMode } from "@/redux/slices/shop-new-product.slice";
+import { addVariant, changePriceInStockSkuVariantProducts, changeVariantMode } from "@/redux/slices/shop-new-product.slice";
 import { useAppSelector } from "@/redux/store";
 import { ImagePlus, Plus, Trash2, X } from "lucide-react";
+import { FormEvent, useState } from 'react';
 import { useDispatch } from "react-redux";
 
 export default function NewProductVariantWithVariantPart() {
   const dispatch = useDispatch();
   const variantItems = useAppSelector(state => state.shopListProduct.varriant.variantItems);
   const variantProducts = useAppSelector(state => state.shopListProduct.varriant.variantProducts);
+  const [price, setPrice] = useState<string | undefined>('');
+  const [inStock, setInstock] = useState<string | undefined>(undefined);
+  const [sku, setSku] = useState('');
 
   const handleChangeVariantMode = () => {
     dispatch(changeVariantMode())
   }
 
-
   const handleAddVariantItem = () => {
     dispatch(addVariant())
+  }
+
+  const handleInputPrice = (e: FormEvent) => {
+    setPrice((e.target as HTMLInputElement).value)
+  }
+  const handleInputInStock = (e: FormEvent) => {
+    setInstock((e.target as HTMLInputElement).value)
+  }
+  const handleInputSku = (e: FormEvent) => {
+    setSku((e.target as HTMLInputElement).value)
   }
 
   return (
@@ -70,16 +83,20 @@ export default function NewProductVariantWithVariantPart() {
                   ₫
                   <div className="ml-2 border-r h-full"></div>
                 </div>
-                <input type="text" className="w-full h-full outline-none text-[14px]" placeholder="Giá" />
+                <input onInput={handleInputPrice} className="w-full h-full outline-none text-[14px]" value={price} placeholder="Giá" />
               </div>
               <div className="border border-r-0 w-56 h-full px-3 py-1 flex">
-                <input type="text" className="w-full h-full outline-none text-[14px]" placeholder="Kho hàng" />
+                <input onInput={handleInputInStock} className="w-full h-full outline-none text-[14px]" value={inStock} placeholder="Kho hàng" />
               </div>
               <div className="border w-56 h-full px-3 py-1 flex rounded-tr rounded-br">
-                <input type="text" className="w-full h-full outline-none text-[14px]" placeholder="SKU phân loại" />
+                <input onInput={handleInputSku} type="text" className="w-full h-full outline-none text-[14px]" value={sku} placeholder="SKU phân loại" />
               </div>
             </div>
-            <button className="w-full h-8 ml-6 border text-[14px]">
+            <button onClick={() => {
+              if (variantProducts.length) {
+                dispatch(changePriceInStockSkuVariantProducts({ price: +(price as string), sku, inStock: +(inStock as string) }))
+              }
+            }} className={`w-full h-8 ml-6 border text-[14px] bg-blue-500 text-white rounded hover:opacity-80 ${variantProducts.length === 0 && 'cursor-not-allowed opacity-80'}`}>
               Áp dụng cho tất cả sản phẩm phân loại
             </button>
           </div>

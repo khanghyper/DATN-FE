@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 
 export default function NewProductVariantRow({ parentIndex, index, variantValue }: { variantValue: { image: string, value: string }, parentIndex: number, index: number }) {
   const [isOpenInput, setIsOpenInput] = useState<boolean>(false);
-  const [name, setName] = useState<string>('')
 
   const dispatch = useDispatch();
 
@@ -15,7 +14,7 @@ export default function NewProductVariantRow({ parentIndex, index, variantValue 
   }
   const handleChangeInputNameVariantValue = (e: FormEvent) => {
     setIsOpenInput(true);
-    setName((e.target as HTMLInputElement).value);
+    dispatch(changeInputNameVariantValue({ parentIndex, index, name: (e.target as HTMLInputElement).value }))
   }
 
   return (
@@ -37,11 +36,10 @@ export default function NewProductVariantRow({ parentIndex, index, variantValue 
             placeholder="Nhập"
             onBlur={(e: FormEvent) => {
               setIsOpenInput(false);
-              dispatch(changeInputNameVariantValue({ parentIndex, index, name: (e.target as HTMLInputElement).value }))
             }}
             onFocus={() => setIsOpenInput(true)}
             onInput={handleChangeInputNameVariantValue}
-            value={name}
+            value={variantValue.value}
           />
         </div>
         <div className="mt-[7px] flex h-4 w-6">

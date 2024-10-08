@@ -44,6 +44,14 @@ export default function NewProductVariantItem({ variantItem, index }: { variantI
                   }
                 }}
                 onInput={handleChangeInputVariantName}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === 'Enter') {
+                    if (name) {
+                      setChangeMode(false);
+                      dispatch(changeInputNameVariant({ index, name: (e.target as HTMLInputElement).value }))
+                    }
+                  }
+                }}
                 value={name}
                 autoFocus
                 className="w-[260px] h-[30px] outline-none text-[14px]"
@@ -55,13 +63,16 @@ export default function NewProductVariantItem({ variantItem, index }: { variantI
       }
       {
         !changeMode && (
-          <div className="flex gap-2 items-center">
-            <span className="text-[16px] font-bold">{variantItem.name}</span>
-            <span className="text-[12px] text-gray-400">(Tùy chỉnh)</span>
-            <span onClick={() => setChangeMode(true)} className="cursor-pointer">
-              <Pen size={16} />
-            </span>
+          <div className="flex w-full pb-4 border-b">
+            <div className="flex h-[32px] gap-2 items-center">
+              <span className="text-[16px] font-bold">{variantItem.name}</span>
+              <span className="text-[12px] text-gray-400">(Tùy chỉnh)</span>
+              <span onClick={() => setChangeMode(true)} className="cursor-pointer">
+                <Pen size={16} />
+              </span>
+            </div>
           </div>
+
         )
       }
 

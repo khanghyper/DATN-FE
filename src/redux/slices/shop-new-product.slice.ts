@@ -1,4 +1,5 @@
 
+import { combineVariants } from '@/helpers'
 import { createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 export enum CategoryTypeValue {
@@ -25,15 +26,9 @@ export type CategoryAttribute = {
 
 export type VariantItem = {
   name: string,
-  price?: number
-  inStock?: number
-  sku?: string
   values: {
     image: string,
     value: string,
-    price?: number
-    inStock?: number
-    sku?: string
   }[]
 }
 
@@ -41,7 +36,8 @@ export type VariantProduct = {
   price: number,
   inStock: number,
   sku: string,
-  variant: {
+  image: string
+  variants: {
     name: string,
     value: string
   }[]
@@ -205,20 +201,32 @@ const shopListProductSlice = createSlice({
       const { index, name } = action.payload
       if (name) {
         state.varriant.variantItems[index].name = name;
-        state.varriant.variantProducts.push({
-          price: 0,
-          inStock: 0,
-          sku: '',
-          variant: [{
-            name,
-            value: ''
-          }]
-        })
+
       }
     },
     changeInputNameVariantValue: (state, action: PayloadAction<{ parentIndex: number, index: number, name: string }>) => {
       const { parentIndex, index, name } = action.payload;
       state.varriant.variantItems[parentIndex].values[index].value = name;
+    },
+    changeInputPriceVariantProduct: (state, action: PayloadAction<{ index: number, value: number }>) => {
+      const { index, value } = action.payload;
+      state.varriant.variantProducts[index].price = value;
+    },
+    changeInputInStockVariantProduct: (state, action: PayloadAction<{ index: number, value: number }>) => {
+      const { index, value } = action.payload;
+      state.varriant.variantProducts[index].inStock = value;
+    },
+    changeInputSkuVariantProduct: (state, action: PayloadAction<{ index: number, value: string }>) => {
+      const { index, value } = action.payload;
+      state.varriant.variantProducts[index].sku = value;
+    },
+    changePriceInStockSkuVariantProducts: (state, action: PayloadAction<{ price: number, inStock: number, sku: string }>) => {
+      const { price, inStock, sku } = action.payload;
+      state.varriant.variantProducts.forEach(item => {
+        item.price = price;
+        item.inStock = inStock;
+        item.sku = sku;
+      })
     },
     deleteVariant: (state, action: PayloadAction<number>) => {
       const index = action.payload;
@@ -242,8 +250,16 @@ const shopListProductSlice = createSlice({
       .addCase(findCategoryList.fulfilled, (state, action) => {
         state.rootCategories = action.payload;
       })
-      .addMatcher((action) => (action.type as string).endsWith('changeInputNameVariantValue'), (state, action) => {
-        console.log(123);
+      .addMatcher((action) => {
+        return ['changeInputNameVariantValue', 'deleteVariantValueInItem', 'addValueInVariantItem'].some(prefix => (action.type as string).endsWith(prefix))
+      }, (state, action) => {
+        state.varriant.variantProducts = combineVariants(state.varriant.variantItems);
+        console.log({ a: state.varriant.variantProducts });
+      })
+      .addMatcher((state) => true, (state, action) => {
+        if (!state.varriant.isChangeVariantMode) {
+          state.varriant.variantProducts = []
+        }
       })
       .addDefaultCase((state, action) => {
       })
@@ -259,6 +275,10 @@ export const {
   addValueInVariantItem,
   changeInputNameVariant,
   changeInputNameVariantValue,
+  changeInputInStockVariantProduct,
+  changeInputPriceVariantProduct,
+  changeInputSkuVariantProduct,
+  changePriceInStockSkuVariantProducts,
   deleteVariant,
   deleteVariantValueInItem
 } = shopListProductSlice.actions
