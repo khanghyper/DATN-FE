@@ -1,7 +1,11 @@
+import productApiRequest from "@/apiRequest/product";
 import CardProduct from "@/app/(guest)/_components/card-product";
+import { useEffect, useState } from "react";
 
 
-export default function HangXinSection() {
+export default async function HangXinSection() {
+  const data = await productApiRequest.findAll();
+
   return (
     <div className="w-full">
       <div className="w-full py-2 flex justify-between items-center">
@@ -18,11 +22,9 @@ export default function HangXinSection() {
         <div className="text-[13px] text-blue-500 cursor-pointer underline font-semibold">Xem tất cả</div>
       </div>
       <div className="list-card-product py-3 grid grid-cols-5 gap-4">
-        {
-          Array.from({ length: 5 }, (_, i) => i + 1).map(item => (
-            <CardProduct key={item} />
-          ))
-        }
+        {data.payload.data.data.map((item: any, index: number) => (
+          <CardProduct key={index} name={item.name} image={item.image} />
+        ))}
       </div>
     </div>
   )
