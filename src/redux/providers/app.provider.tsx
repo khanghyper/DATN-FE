@@ -3,7 +3,7 @@
 import { clientAccessToken } from "@/lib/http";
 import { useState } from "react";
 
-function PrivateProviders({
+export default function AppProvider({
   children,
   inittialAcessToken = ''
 }: Readonly<{
@@ -18,10 +18,8 @@ function PrivateProviders({
   })
 
   return (
-    <>
+    <div id="abx">
       {children}
-    </>
+    </div>
   )
 }
-
-export default PrivateProviders;

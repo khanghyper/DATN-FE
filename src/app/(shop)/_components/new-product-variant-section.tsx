@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function NewProductVariantSection() {
-  const isConfirmCategories = useAppSelector(state => state.shopListProduct.isConfirmCategories);
+  const isConfirmCategories = useAppSelector(state => state.shopListProduct.category.isConfirmCategories);
   // const isConfirmCategories = true;
   const isChangeVariantMode = useAppSelector(state => state.shopListProduct.varriant.isChangeVariantMode);
 

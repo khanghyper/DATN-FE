@@ -3,6 +3,8 @@ import GuestFooter from "./_components/guest-footer";
 import GuestFooter2 from "./_components/guest-footer2";
 
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
+
+
   return (
     <div className="bg-white w-full">
       <GuestHeader />

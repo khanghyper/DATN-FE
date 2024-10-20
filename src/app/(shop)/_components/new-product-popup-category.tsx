@@ -22,22 +22,20 @@ import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory }: { isShowPopupCategory: boolean, setIsShowPopupCategory: Dispatch<SetStateAction<boolean>> }) {
 
   const dispatch = useAppDispatch();
-  const rootCategories = useAppSelector(state => state.shopListProduct.rootCategories);
-  const categories = useAppSelector(state => state.shopListProduct.categories);
-  const categoriesSelected = useAppSelector(state => state.shopListProduct.selectedCategories);
-  const categoriesSelected1 = useAppSelector(state => state.shopListProduct.selectedCategories1);
+  const rootCategories = useAppSelector(state => state.shopListProduct.category.rootCategories);
+  const categories = useAppSelector(state => state.shopListProduct.category.categories);
+  const categoriesSelected = useAppSelector(state => state.shopListProduct.category.selectedCategories);
+  const categoriesSelected1 = useAppSelector(state => state.shopListProduct.category.selectedCategories1);
 
-  const isConfirmCategories = useAppSelector(state => state.shopListProduct.isConfirmCategories);
-
-  console.log({ isConfirmCategories });
+  const isConfirmCategories = useAppSelector(state => state.shopListProduct.category.isConfirmCategories);
 
 
   const isCategoryHasChildren = (id: number): boolean => {
-    return rootCategories.some(item => item.parentId === id);
+    return rootCategories.some(item => item.parent_id === id);
   }
 
-  const handleClickCategory = ({ id, index }: { id: number, index: number }) => {
-    dispatch(addToSelectedCategories({ id, index }));
+  const handleClickCategory = ({ i, j }: { i: number, j: number }) => {
+    dispatch(addToSelectedCategories({ i, j }));
   }
 
   const handleCancelPopup = () => {
@@ -53,7 +51,7 @@ function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory }
               categoriesSelected.length > 0 && isConfirmCategories
                 ? categoriesSelected.map((item, index) => (
                   <span className="text-black font-medium">
-                    <span>{item.name}</span>
+                    <span>{item.title}</span>
                     <span className="ml-1">{index !== categoriesSelected.length - 1 && ' > '}</span>
                   </span>
                 ))
@@ -67,20 +65,21 @@ function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory }
         <DialogHeader>
           <DialogTitle>Chỉnh sửa ngành hàng</DialogTitle>
         </DialogHeader>
-        <div className="w-full max-h-[600px] bg-gray-50 rounded p-4">
+        <div className="w-full h-[400px] bg-gray-50 rounded p-4">
           <div className="">
             <input type="text" className="h-8 border" />
           </div>
-          <div className="w-full grid grid-cols-4 bg-white mt-4 py-2.5">
+          <div className="grid grid-cols-4 w-full bg-white mt-4 py-2.5">
             {categories.map((item, index) => (
-              <ScrollArea key={index} className="border-r h-[300px] max-h-[300px]">
+              <ScrollArea key={index} className="flex-shrink-0 border-r h-[300px] max-h-[300px]">
                 <ul className="">
                   {item.data.map((it) => (
-                    <li onClick={() => handleClickCategory({ id: it.id, index })} key={it.id} className="h-8 px-4 flex items-center justify-between hover:bg-gray-100 cursor-pointer">
-                      <p className={`text-[14px] ${categoriesSelected.some(item => item.id === it.id) && 'text-blue-700 font-semibold'}`}>{it.name}</p>
+                    <li onClick={() => handleClickCategory({ i: index, j: it.id })} key={it.id} className="h-8 px-4 flex items-center justify-between hover:bg-gray-100 cursor-pointer">
+                      <p className={`text-[14px] ${categoriesSelected.some(item => item.id === it.id) && 'text-blue-700 font-semibold'}`}>{it.title}</p>
                       {isCategoryHasChildren(it.id) && (<ChevronRight size={20} strokeWidth={1.25} />)}
                     </li>
                   ))}
+
                 </ul>
               </ScrollArea>
             ))}
@@ -94,21 +93,23 @@ function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory }
                 <span className="text-[14px] font-medium">Đã chọn:</span>
                 <span className="text-[14px] font-medium">
                   {categoriesSelected.length ?
-                    categoriesSelected.map((item, index) => `${item.name} ${index !== categoriesSelected.length - 1 ? ' > ' : ''}`)
+                    categoriesSelected.map((item, index) => `${item.title} ${index !== categoriesSelected.length - 1 ? ' > ' : ''}`)
                     : 'Chưa chọn ngành hàng nào'}
                 </span>
               </div>
               <div className="flex gap-4">
                 <Button onClick={handleCancelPopup}>Cancel</Button>
-                <Button className={`${!isConfirmCategories ? 'bg-[#D3D3D3] opacity-60 cursor-not-allowed hover:bg-[#D3D3D3]' : ''}`} onClick={() => {
-                  if (isConfirmCategories) {
-                    const a = categoriesSelected[categoriesSelected.length - 1];
-                    if (!isCategoryHasChildren(a.id)) {
-                      setIsShowPopupCategory(false);
-                      dispatch(confirmCategory(a.id));
+                <Button
+                  className={`${!isConfirmCategories ? 'bg-[#D3D3D3] opacity-60 cursor-not-allowed hover:bg-[#D3D3D3]' : ''}`}
+                  onClick={() => {
+                    if (isConfirmCategories) {
+                      const a = categoriesSelected[categoriesSelected.length - 1];
+                      if (!isCategoryHasChildren(a.id)) {
+                        setIsShowPopupCategory(false);
+                        dispatch(confirmCategory(a.id));
+                      }
                     }
-                  }
-                }}>Confirm</Button>
+                  }}>Confirm</Button>
               </div>
             </div>
           </div>

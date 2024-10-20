@@ -1,17 +1,25 @@
 
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
+interface Profile {
+  accessToken: string,
+  info: any
+}
 
 const initialState = {
-  profile: {}
-} as { profile: any }
+  accessToken: '',
+  info: {}
+} as Profile
 
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    getProfile: (state, action: PayloadAction<any>) => {
-      state.profile = { ...action.payload };
+    addAccessToken: (state, action: PayloadAction<string>) => {
+      state.accessToken = action.payload;
+    },
+    addInfo: (state, action: PayloadAction<any>) => {
+      state.info = action.payload;
     }
   },
   extraReducers(builder) {
@@ -22,7 +30,8 @@ const profileSlice = createSlice({
 })
 
 export const {
-  getProfile
+  addAccessToken,
+  addInfo
 } = profileSlice.actions
 
 export default profileSlice.reducer;

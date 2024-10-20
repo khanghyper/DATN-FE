@@ -1,6 +1,14 @@
 
+import categoryApiRequest from '@/apiRequest/category'
 import { combineVariants } from '@/helpers'
-import { createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import http from '@/lib/http';
+import { AsyncThunk, createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+
+type GenericAsyncThunk = AsyncThunk<unknown, unknown, any>;
+
+type PendingAction = ReturnType<GenericAsyncThunk['pending']>
+type RejectedAction = ReturnType<GenericAsyncThunk['rejected']>
+type FulfilledAction = ReturnType<GenericAsyncThunk['fulfilled']>
 
 export enum CategoryTypeValue {
   SINGLE = 'SINGLE',
@@ -9,8 +17,10 @@ export enum CategoryTypeValue {
 
 export type Category = {
   id: number
-  name: string
-  parentId?: number | null
+  title: string
+  parent_id: number | null
+  slug: string
+  image: null | string,
 }
 
 export type CategoryAttribute = {
@@ -44,71 +54,78 @@ export type VariantProduct = {
 }
 
 interface InitialState {
-  rootCategories: Category[]
-  categories: { data: Category[] }[],
-  selectedCategories: Category[]
-  selectedCategories1: Category[]
-  isConfirmCategories: boolean
-  rootCategoryAttributes: CategoryAttribute[],
-  categoryAttributesSelected: CategoryAttribute[],
-  categoryAttributesIndex: null | number
+  name: string
+  infomation: { label: string, value: string }[]
+  category: {
+    rootCategories: Category[]
+    categories: { data: Category[] }[],
+    selectedCategories: Category[]
+    selectedCategories1: Category[]
+    isConfirmCategories: boolean
+    rootCategoryAttributes: CategoryAttribute[],
+    categoryAttributesSelected: CategoryAttribute[],
+    categoryAttributesIndex: null | number
+  }
   varriant: {
     isChangeVariantMode: boolean,
     variantItems: VariantItem[]
     variantProducts: VariantProduct[]
   }
+  currentRequestId: undefined | string
+  images: string[]
+  sku: string
+  price: number | null
+  stock: number | null
+  weight: number | null
+  height: number | null
+  width: number | null
+  length: number | null
 }
 
-const a: Category[] = [
-  { "id": 1, "name": "Thời trang nữ", "parentId": null },
-  { "id": 2, "name": "Quần jean", "parentId": 1 },
-  { "id": 3, "name": "Quần đùi", "parentId": 1 },
-  { "id": 12, "name": "Áo", "parentId": 1 },
-  { "id": 4, "name": "Áo polo", "parentId": 12 },
-  { "id": 5, "name": "Áo thun", "parentId": 12 },
-  { "id": 7, "name": "Giày dép nam", "parentId": null },
-  { "id": 8, "name": "Giày tây lười", "parentId": 7 },
-  { "id": 11, "name": "Máy tính và Laptop", "parentId": null }
-]
+
 
 const b: CategoryAttribute[] = [
   { id: 0, key: 'Thương hiệu', values: [{ value: 'no-brand', label: 'No Brand' }, { value: 'adam-store', label: 'Adam Store' }], categoryId: 8, categoryTypeValue: CategoryTypeValue.MULTIPLE },
   { id: 1, key: 'Xuất xứ', values: [{ value: 'japan', label: 'Nhật Bản' }, { value: 'vietnam', label: 'Việt Nam' }, { value: 'china', label: 'Trung Quốc' }], categoryId: 8, categoryTypeValue: CategoryTypeValue.SINGLE }
 ]
 
-export const fetchCategoriesByParentId = async (parentId: null | number): Promise<Category[]> => {
-  return a.filter(item => item.parentId === parentId);
-}
 
-export const fetchCategories = async () => {
-  return a;
-}
-
-export const findCategoryListById = createAsyncThunk(
-  'shopListProduct/findCategoryListById',
-  async (parentId: null | number, thunkAPI) => {
-    const response = await fetchCategoriesByParentId(parentId);
-    return response
-  }
-)
-export const findCategoryList = createAsyncThunk(
-  'shopListProduct/findCategoryList',
+export const getListCategoryNested = createAsyncThunk(
+  'shopListProduct/getListCategoryNested',
   async (_, thunkAPI) => {
-    const response = await fetchCategories();
+    const response = await http.get<{
+      message: string,
+      data: Category[]
+    }
+    >(`api/categories`, {
+      signal: thunkAPI.signal,
+      cache: 'no-cache'
+    })
     return response
   }
 )
+// export const findCategoryList = createAsyncThunk(
+//   'shopListProduct/findCategoryList',
+//   async (_, thunkAPI) => {
+//     const response = await categoryApiRequest.findAll();
+//     return response
+//   }
+// )
 
 
 const initialState: InitialState = {
-  rootCategories: [],
-  categories: [],
-  selectedCategories: [],
-  selectedCategories1: [],
-  isConfirmCategories: false,
-  rootCategoryAttributes: [],
-  categoryAttributesSelected: [],
-  categoryAttributesIndex: null,
+  name: '',
+  infomation: [],
+  category: {
+    rootCategories: [],
+    categories: [],
+    selectedCategories: [],
+    selectedCategories1: [],
+    isConfirmCategories: false,
+    rootCategoryAttributes: [],
+    categoryAttributesSelected: [],
+    categoryAttributesIndex: null,
+  },
   varriant: {
     isChangeVariantMode: false,
     variantItems: [
@@ -127,42 +144,94 @@ const initialState: InitialState = {
       // },
     ],
     variantProducts: []
-  }
+  },
+  currentRequestId: undefined,
+  images: [],
+  price: 1000000,
+  stock: 100,
+  weight: 1,
+  height: 1,
+  width: 1,
+  length: 1,
+  sku: 'SKU ABX'
 }
 
-const shopListProductSlice = createSlice({
-  name: 'shopListProduct',
+const shopNewProductSlice = createSlice({
+  name: 'shopNewProduct',
   initialState,
   reducers: {
-    addToSelectedCategories: (state, action: PayloadAction<{ id: number, index: number }>) => {
-      const { id: categoryId, index } = action.payload;
-      const category = state.rootCategories.find(item => item.id === categoryId);
+    /* -------------------Name -----------------**/
+    changeProductName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
+    /* -------------------Images----------------**/
+    addImage: (state, action: PayloadAction<string[]>) => {
+      let images = action.payload;
+      state.images.push(...images);
+    },
+    /* ------------------Infomation-------------**/
+    addProductDetail: (state, action: PayloadAction<string>) => {
+      state.infomation.push({ label: action.payload, value: '' })
+    },
+    deleteProductDetail: (state, action: PayloadAction<number>) => {
+      let index = action.payload;
+      state.infomation.splice(index, 1);
+    },
+    changeProductDetailValue: (state, action: PayloadAction<{ index: number, value: string }>) => {
+      let { index, value } = action.payload;
+      state.infomation[index].value = value;
+    },
+    /* -------------------price, stock -----------------**/
+    changeProductPrice: (state, action: PayloadAction<number>) => {
+      state.price = action.payload;
+    },
+    changeProductStock: (state, action: PayloadAction<number>) => {
+      state.stock = action.payload;
+    },
+    /* -------------------witdh, height, length, weight -----------------**/
+    changeProductWidth: (state, action: PayloadAction<number>) => {
+      state.width = action.payload;
+    },
+    changeProductHeight: (state, action: PayloadAction<number>) => {
+      state.height = action.payload;
+    },
+    changeProductLength: (state, action: PayloadAction<number>) => {
+      state.length = action.payload;
+    },
+    changeProductWeight: (state, action: PayloadAction<number>) => {
+      state.weight = action.payload;
+    },
+    /* -------------------witdh, height, length, weight -----------------**/
+    changeProductSku: (state, action: PayloadAction<string>) => {
+      state.sku = action.payload;
+    },
+    /* -------------------category -----------------**/
+    addToSelectedCategories: (state, action: PayloadAction<{ i: number, j: number }>) => {
+      const { i, j } = action.payload;
+      const category = state.category.rootCategories.find(it => it.id === j);
+      const categoriesWithParentId = state.category.rootCategories.filter(it => it.parent_id === j);
+      if (categoriesWithParentId.length === 0) {
+        state.category.isConfirmCategories = true;
+      } else {
+        state.category.isConfirmCategories = false;
+      }
+      state.category.categories.splice(i + 1, 10);
+      state.category.categories.push({ data: categoriesWithParentId });
       if (category) {
-        // danh sach cac danh muc con theo id danh muc
-        const categoryChildList = (state.rootCategories as Category[]).filter(item => item.parentId === categoryId);
-        // kiem tra danh muc co danh muc con hay ko
-        state.categories.splice(index + 1, 10);
-        state.categories[index + 1] = { data: [...categoryChildList] };
-        state.selectedCategories.splice(index, 10);
-        state.selectedCategories[index] = category;
-        state.selectedCategories1.splice(index, 10);
-        state.selectedCategories1[index] = category;
-        if (categoryChildList.length > 0) {
-          state.selectedCategories1.splice(index, 10);
-          state.isConfirmCategories = false;
-        } else {
-          state.isConfirmCategories = true;
-          state.selectedCategories1.forEach(it => console.log(it.name))
-        }
+        state.category.selectedCategories.splice(i, 10);
+        state.category.selectedCategories.push(category);
       }
     },
     confirmCategory: (state, action: PayloadAction<number>) => {
       const categoryAttributes = b.filter(item => item.categoryId === action.payload);
-      state.categoryAttributesSelected = [...categoryAttributes];
+      state.category.categoryAttributesSelected = [...categoryAttributes];
     },
+    /* -------------------Attributes -----------------**/
     showAttributesByIndex: (state, action: PayloadAction<number>) => {
-      state.categoryAttributesIndex = action.payload;
+      state.category.categoryAttributesIndex = action.payload;
     },
+
+    /* -------------------Variants -----------------**/
     changeVariantMode: (state) => {
       if (!state.varriant.isChangeVariantMode) {
         state.varriant.isChangeVariantMode = true;
@@ -208,6 +277,10 @@ const shopListProductSlice = createSlice({
       const { parentIndex, index, name } = action.payload;
       state.varriant.variantItems[parentIndex].values[index].value = name;
     },
+    addImageVariantValue: (state, action: PayloadAction<{ parentIndex: number, index: number, image: string }>) => {
+      let { parentIndex, index, image } = action.payload;
+      state.varriant.variantItems[parentIndex].values[index].image = image;
+    },
     changeInputPriceVariantProduct: (state, action: PayloadAction<{ index: number, value: number }>) => {
       const { index, value } = action.payload;
       state.varriant.variantProducts[index].price = value;
@@ -244,14 +317,19 @@ const shopListProductSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(findCategoryListById.fulfilled, (state, action) => {
-        state.categories = [{ data: [...action.payload] }];
+      .addCase(getListCategoryNested.fulfilled, (state, action) => {
+        const categories = action.payload.payload.data
+        state.category.rootCategories = [...categories];
+        state.category.categories = [{ data: categories.filter(i => !i.parent_id) }];
       })
-      .addCase(findCategoryList.fulfilled, (state, action) => {
-        state.rootCategories = action.payload;
+      .addCase(getListCategoryNested.pending, (state, action) => {
+
       })
+      // .addCase(findCategoryListByParentId.fulfilled, (state, action) => {
+      //   state.rootCategories = action.payload;
+      // })
       .addMatcher((action) => {
-        return ['changeInputNameVariantValue', 'deleteVariantValueInItem', 'addValueInVariantItem'].some(prefix => (action.type as string).endsWith(prefix))
+        return ['changeInputNameVariantValue', 'deleteVariantValueInItem', 'addValueInVariantItem', 'deleteVariant'].some(prefix => (action.type as string).endsWith(prefix))
       }, (state, action) => {
         state.varriant.variantProducts = combineVariants(state.varriant.variantItems);
         console.log({ a: state.varriant.variantProducts });
@@ -261,18 +339,29 @@ const shopListProductSlice = createSlice({
           state.varriant.variantProducts = []
         }
       })
+
       .addDefaultCase((state, action) => {
+        console.log({ name: state.name });
       })
   },
 })
 
 export const {
+  addProductDetail,
+  addImage,
+  changeProductPrice,
+  changeProductSku,
+  changeProductStock,
+  deleteProductDetail,
+  changeProductDetailValue,
+  changeProductName,
   addToSelectedCategories,
   confirmCategory,
   showAttributesByIndex,
   changeVariantMode,
   addVariant,
   addValueInVariantItem,
+  addImageVariantValue,
   changeInputNameVariant,
   changeInputNameVariantValue,
   changeInputInStockVariantProduct,
@@ -281,6 +370,6 @@ export const {
   changePriceInStockSkuVariantProducts,
   deleteVariant,
   deleteVariantValueInItem
-} = shopListProductSlice.actions
+} = shopNewProductSlice.actions
 
-export default shopListProductSlice.reducer;
+export default shopNewProductSlice.reducer;

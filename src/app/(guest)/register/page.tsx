@@ -1,8 +1,7 @@
-import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const SellerRegisterPage = () => {
+const RegisterPage = () => {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left side - Introduction */}
@@ -77,4 +76,4 @@ const SellerRegisterPage = () => {
   );
 };
 
-export default SellerRegisterPage;
+export default RegisterPage;

@@ -21,7 +21,7 @@
 }
 
 .animate-out {
-  animation: fadeOut 0.1s forwards ease-in;
+  animation: fadeOut 0.3s forwards ease-in;
 }
 
 @keyframes fadeIn {
