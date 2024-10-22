@@ -1,6 +1,9 @@
+'use client'
 import ShopHeader from "@/app/(shop)/_components/shop-header";
+import { useAppInfoSelector } from "@/redux/stores/profile.store";
 
 export default function WelcomeShopPage() {
+  const info = useAppInfoSelector(state => state.profile.info);
   return (
     <div className="">
       <ShopHeader />
@@ -21,7 +24,7 @@ export default function WelcomeShopPage() {
               </div>
               <div className="flex items-center gap-6 mb-6 -ml-10">
                 <div className="text-[14px] w-[100px] text-right">Email</div>
-                <input type="text" readOnly defaultValue={'khang@gmail.com'} disabled className="w-[360px] border rounded p-2 py-1 text-[14px] cursor-not-allowed" />
+                <input type="text" readOnly defaultValue={info.email} disabled className="w-[360px] border rounded p-2 py-1 text-[14px] cursor-not-allowed" />
               </div>
               <div className="flex items-center gap-6 mb-6 -ml-10">
                 <div className="text-[14px] w-[100px] text-right">Số điện thoại</div>

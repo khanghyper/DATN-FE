@@ -1,5 +1,6 @@
 'use client'
 
+import { clientAccessToken } from "@/lib/http"
 import { addAccessToken, addInfo } from "@/redux/slices/profile.slice"
 import { ProfileStore, profileStore } from "@/redux/stores/profile.store"
 import { useRef } from "react"
@@ -22,6 +23,9 @@ export default function ProfileProvider({
     if (accessToken) {
       storeRef.current.dispatch(addInfo(info));
     }
+    // if (typeof window !== 'undefined') {
+    //   clientAccessToken.value = accessToken;
+    // }
   }
   return (
     <Provider store={storeRef.current}>{children}</Provider>

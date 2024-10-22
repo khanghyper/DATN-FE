@@ -9,18 +9,25 @@ const privatePaths = ['/admin', '/admin/products/all', '/admin/products/create',
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get('accessToken')?.value;
-
+  const info = request.cookies.get('info')?.value;
 
   if (privatePaths.some(path => pathname.startsWith(path)) && !accessToken) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
   if (authPaths.some(path => pathname.startsWith(path)) && accessToken) {
-
     return NextResponse.redirect(new URL('/', request.url))
   }
 
   if (pathname.startsWith('/shop') && !accessToken) {
     return NextResponse.redirect(new URL('/register', request.url))
+  }
+
+  if (pathname.startsWith('/shop') && accessToken) {
+    const infoParse = JSON.parse(info ? info : '');
+    const test = { ...infoParse, shop_id: null };
+    if (!test.shop_id) {
+      return NextResponse.redirect(new URL('/welcome', request.url))
+    }
   }
 
 

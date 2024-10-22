@@ -12,19 +12,22 @@ export async function POST(request: Request) {
         "Authorization": `Bearer ${accessToken}`
       }
     })
-    const resMe = await getMe.json();
+    if (getMe.ok) {
+      const resMe = await getMe.json();
 
-    cookieStore.set('accessToken', accessToken, { path: '/', httpOnly: true });
-    cookieStore.set('info', JSON.stringify(resMe.data), { path: '/', httpOnly: true });
+      cookieStore.set('accessToken', accessToken, { path: '/', httpOnly: true });
+      cookieStore.set('info', JSON.stringify(resMe.data), { path: '/', httpOnly: true });
 
-    return Response.json(resMe.data, {
-      status: 200,
-    });
-
-
+      return Response.json({}, {
+        status: 200,
+      });
+    } else {
+      const error = await getMe.json();
+      throw error.message ? 'Đăng nhập thất bại!' : 'Internal Server'
+    }
   } catch (error) {
-    return Response.json({}, {
-      status: 401,
+    return Response.json({ message: error }, {
+      status: 400,
     });
   }
 } 

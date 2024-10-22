@@ -7,7 +7,6 @@ import HangXinSection from "@/app/(guest)/_components/hang-xin-section";
 
 
 export default function HomePage() {
-
   return (
     <>
       <div className="w-content">

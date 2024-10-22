@@ -1,20 +1,15 @@
-'use client'
 import ShopHeader from "@/app/(shop)/_components/shop-header";
 import ShopSidebar from "@/app/(shop)/_components/shop-sidebar";
-import { useAppSelector } from "@/redux/stores/profile.store";
 import { useRouter } from "next/navigation";
 
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
-  const info = useAppSelector(state => state.profile.info);
-  const test = { ...info, shop_id: null }
-  const router = useRouter();
 
-  if (typeof window !== 'undefined') {
-    if (!test.shop_id) {
-      router.push('/welcome')
-    }
-  }
+  // if (typeof window !== 'undefined') {
+  //   if (!test.shop_id) {
+  //     router.push('/welcome');
+  //   }
+  // }
 
   return (
     <div className="relative">

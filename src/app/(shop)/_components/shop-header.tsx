@@ -15,7 +15,7 @@ import { useState } from 'react';
 import AccountInfo from '@/app/(shop)/_components/account-info';
 import Notifications from '@/app/(shop)/_components/notifications';
 import Image from 'next/image';
-import { useAppSelector } from '@/redux/stores/profile.store';
+import { useAppInfoSelector } from '@/redux/stores/profile.store';
 
 
 export default function ShopHeader() {
@@ -24,7 +24,7 @@ export default function ShopHeader() {
   const [isShowAccountInfo, setIsShowAccountInfo] = useState(false);
   const [isNotiVisible, setIsNotiVisible] = useState(false);
   const [isAccountInfoVisible, setIsAccountInfoVisible] = useState(false);
-  const info = useAppSelector(state => state.profile.info);
+  const info = useAppInfoSelector(state => state.profile.info);
   const test = { ...info, shop_id: null };
 
   return (
@@ -34,7 +34,7 @@ export default function ShopHeader() {
           <div className="logo w-40 h-[48px]">
             <Image width={160} height={48} className="size-full object-cover" src="/images/logo.png" alt="" />
           </div>
-          {test.shop_id && (
+          {info.shop_id && (
             <Breadcrumb>
               <BreadcrumbList className="text-[16px] font-normal">
                 <BreadcrumbItem>
@@ -47,7 +47,7 @@ export default function ShopHeader() {
               </BreadcrumbList>
             </Breadcrumb>
           )}
-          {!test.shop_id && (
+          {!info.shop_id && (
             <div>Đăng ký trở thành Người bán VNShop</div>
           )}
 

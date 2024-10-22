@@ -18,5 +18,5 @@ export type ProfileStore = ReturnType<typeof profileStore>
 export type RootState = ReturnType<ProfileStore['getState']>
 export type AppDispatch = ProfileStore['dispatch']
 
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector = useSelector.withTypes<RootState>()
+export const useAppInfoDispatch = () => useDispatch<AppDispatch>();
+export const useAppInfoSelector = useSelector.withTypes<RootState>()

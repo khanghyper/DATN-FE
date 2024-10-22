@@ -1,8 +1,10 @@
 'use client'
 
 import NewProductPopupCategory from "@/app/(shop)/_components/new-product-popup-category";
+import { clientAccessToken } from "@/lib/http";
 import { addImage, changeProductName } from "@/redux/slices/shop-new-product.slice";
 import { useAppSelector } from "@/redux/store";
+import { useAppInfoSelector } from "@/redux/stores/profile.store";
 import { ImagePlus } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
@@ -21,6 +23,9 @@ export default function NewProductFirstSection({ register, errors }:
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
 
+  const accessToken = clientAccessToken.value;
+
+  console.log({ accessToken });
 
   const handleImageClick = () => {
     if (images.length < 9) {
@@ -42,7 +47,7 @@ export default function NewProductFirstSection({ register, errors }:
           method: "POST",
           body: formData,
           headers: {
-            "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Zuc2hvcC50b3AvYXBpL3VzZXJzL2xvZ2luIiwiaWF0IjoxNzI5MDU3MzM1LCJleHAiOjE3MjkxNDM3MzUsIm5iZiI6MTcyOTA1NzMzNSwianRpIjoielBQTVM0NzBpejNLM0ZDZyIsInN1YiI6IjQzIiwicHJ2IjoiYzc3ZWFiYzZkMjlkYmNlMGI1NWU5OGJkZWMzOTFiNTQ5YTVlZjFmMCJ9.xE0SpborxcqBFyE1nXi3LPgArejvVsr-9DqswhWoRT4"
+            "Authorization": `Bearer ${accessToken}`
           }
         });
         const res: { status: boolean, message: string, images: string[] } = await upload.json();

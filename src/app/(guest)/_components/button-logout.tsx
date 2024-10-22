@@ -1,13 +1,13 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { addAccessToken, addInfo } from '@/redux/slices/profile.slice';
-import { useAppDispatch } from '@/redux/stores/profile.store';
+import { useAppInfoDispatch } from '@/redux/stores/profile.store';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function ButtonLogout() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  const dispatch = useAppInfoDispatch();
 
   const handleLogout = async () => {
     try {

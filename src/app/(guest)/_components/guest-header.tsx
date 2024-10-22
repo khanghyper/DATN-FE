@@ -8,7 +8,7 @@ import Notifications from './MiniNotifications';
 import { clientAccessToken } from '@/lib/http';
 import { cookies } from 'next/headers';
 import ButtonLogout from '@/app/(guest)/_components/button-logout';
-import { useAppSelector } from '@/redux/stores/profile.store';
+import { useAppInfoSelector } from '@/redux/stores/profile.store';
 
 const tags: { title: string, icon: any }[] = [
   {
@@ -56,14 +56,13 @@ export default function GuestHeader() {
   const [isShowUserDropdownMenu, setIsShowUserDropdownMenu] = useState<boolean>(false);
 
 
-  const accessToken = useAppSelector(state => state.profile.accessToken);
-  const info = useAppSelector(state => state.profile.info);
+  const accessToken = useAppInfoSelector(state => state.profile.accessToken);
+  const info = useAppInfoSelector(state => state.profile.info);
 
-  console.log(info);
 
   return (
-    <div className="w-full flex justify-center border-b sticky top-0 bg-white">
-      <div className="w-content">
+    <div className="w-full flex justify-center border-b sticky top-0 bg-white z-50">
+      <div className="w-content bg-white">
         <div className="top-nav w-full flex gap-4 py-2 text-[14px] text-[#8E8181] font-semibold">
           <Link href={'/shop'}>Kênh người bán</Link>
           <span>Chăm sóc khách hàng</span>
@@ -71,7 +70,9 @@ export default function GuestHeader() {
         </div>
         <div className="mid-nav w-full h-[70px] flex items-center ">
           <div className="logo w-40 h-[48px]">
-            <img className="size-full object-cover" src="./images/logo.png" alt="" />
+            <Link href={'/'}>
+              <img className="size-full object-cover" src="./images/logo.png" alt="" />
+            </Link>
           </div>
           <div className="w-[calc(100%-10rem)] h-full flex items-center gap-5 justify-between pl-8">
             <div className="flex items-center gap-5">
