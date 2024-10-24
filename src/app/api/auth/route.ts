@@ -9,23 +9,25 @@ export async function POST(request: Request) {
     const accessToken = res.accessToken;
     const getMe = await fetch('https://vnshop.top/api/user/me', {
       headers: {
-        "Authorization": `Bearer ${accessToken}`
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-type": "application/json"
       }
     })
+    console.log(getMe);
+    const payload = await getMe.json();
+
     if (getMe.ok) {
-      const resMe = await getMe.json();
-
       cookieStore.set('accessToken', accessToken, { path: '/', httpOnly: true });
-      cookieStore.set('info', JSON.stringify(resMe.data), { path: '/', httpOnly: true });
+      cookieStore.set('info', JSON.stringify(payload.data), { path: '/', httpOnly: true });
 
-      return Response.json(resMe.data, {
+      return Response.json(payload.data, {
         status: 200,
       });
     } else {
-      const error = await getMe.json();
-      throw error.message ? 'Đăng nhập thất bại!' : 'Internal Server'
+      throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin của VNShop!'
     }
   } catch (error) {
+    // console.log(error);
     return Response.json({ message: error }, {
       status: 400,
     });
