@@ -54,15 +54,19 @@ class AccessToken {
 
 export const clientAccessToken = new AccessToken();
 
-const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+const request = async <Response>(
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
   options?: CustomOptions | undefined) => {
+
   const body = options?.body ? JSON.stringify(options.body) : undefined;
   const baseHeaders = {
     'Content-Type': 'application/json',
     'Authorization': clientAccessToken?.value ? `Bearer ${clientAccessToken.value}` : ''
   };
   const baseUrl = options?.baseUrl === undefined ? envConfig.NEXT_PUBLIC_API_ENDPOINT_1 : options.baseUrl;
+  // const baseUrl = options?.baseUrl === undefined ? 'http://localhost:4201' : options.baseUrl;
+
 
   const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`
 
@@ -135,33 +139,5 @@ const http = {
   },
 }
 
-// const http = {
-//   get<Response>(
-//     url: string,
-//     options?: Omit<CustomOptions, 'body'> | undefined
-//   ) {
-//     return request<Response>('GET', url, options)
-//   },
-//   post<Response>(
-//     url: string,
-//     body: any,
-//     options?: Omit<CustomOptions, 'body'> | undefined
-//   ) {
-//     return request<Response>('POST', url, { ...options, body })
-//   },
-//   put<Response>(
-//     url: string,
-//     body: any,
-//     options?: Omit<CustomOptions, 'body'> | undefined
-//   ) {
-//     return request<Response>('PUT', url, { ...options, body })
-//   },
-//   delete<Response>(
-//     url: string,
-//     options?: Omit<CustomOptions, 'body'> | undefined
-//   ) {
-//     return request<Response>('DELETE', url, { ...options })
-//   }
-// }
 
 export default http;

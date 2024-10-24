@@ -1,8 +1,16 @@
 import ShopHeader from "@/app/(shop)/_components/shop-header";
 import ShopSidebar from "@/app/(shop)/_components/shop-sidebar";
+import { useRouter } from "next/navigation";
 
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
+
+  // if (typeof window !== 'undefined') {
+  //   if (!test.shop_id) {
+  //     router.push('/welcome');
+  //   }
+  // }
+
   return (
     <div className="relative">
       <ShopHeader />
@@ -16,7 +24,6 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
       </main>
-      footer Shop
     </div>
   )
 }

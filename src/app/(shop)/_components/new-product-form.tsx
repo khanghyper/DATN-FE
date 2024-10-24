@@ -1,111 +1,59 @@
 'use client'
 
-import { Input } from "@/components/ui/input";
-import { ImagePlus, Pen } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import PopupCategory from "@/app/(shop)/_components/popup-category";
+import { FormEvent, useEffect, useState } from "react";
+import { useAppDispatch } from "@/redux/store";
+import NewProductVariantSection from "@/app/(shop)/_components/new-product-variant-section";
+import { getListCategoryNested } from "@/redux/slices/shop-new-product.slice";
+import NewProductFirstSection from "@/app/(shop)/_components/new-product-first-section";
+import NewProductDetailSection from "@/app/(shop)/_components/new-product-detail-section";
+import NewProductOtherInfoSection from "@/app/(shop)/_components/new-product-other-info-section";
+import NewProductShippingSection from "@/app/(shop)/_components/new-product-shipping-section";
+import NewProductFooterSection from "@/app/(shop)/_components/new-product-footer-section";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
 
+
+const jobSchema = z.object({
+  name:
+    z.string().min(5).max(120)
+});
+
+type JobFormData = z.infer<typeof jobSchema>;
 
 export default function NewProductForm() {
+  const dispatch = useAppDispatch();
+  const { register, getValues, handleSubmit, setValue, formState: { errors }, watch } = useForm<JobFormData>({
+    resolver: zodResolver(jobSchema),
+    defaultValues: {
+      name: ''
+    },
+    mode: 'onChange',  // Thực hiện validate khi mất focus
+    reValidateMode: 'onChange',
+  });
+
+  const onSubmit = (data: JobFormData) => {
+    console.log('Job form data:', data);
+  };
+
+
+  useEffect(() => {
+    const promise = dispatch(getListCategoryNested());
+    return () => {
+      promise.abort()
+    }
+  }, [dispatch])
+
   return (
-    <div className="px-6 py-6 bg-white shadow rounded">
-      <div className="text-[20px] font-semibold mb-6">Thông tin bán hàng</div>
-      <div className="w-full flex mb-2">
-        <div>
-          <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
-            <span className="text-[12px] text-blue-700">*</span>
-            <div className="text-[14px] h-full font-medium flex items-center">Hình ảnh sản phẩm</div>
-          </div>
-        </div>
-        <div className="">
-          <div className="flex gap-2 h-10">
-            <input type="radio" defaultChecked={true} />
-            <div className="text-[14px] font-medium f-full flex items-center">Ảnh tỷ lệ 1:1</div>
-          </div>
-          <div>
-            <div className="border-dashed border-gray-400 border size-20 cursor-pointer hover:bg-blue-100 rounded">
-              <div className="size-full flex justify-center items-center">
-                <div className="px-1/2 flex flex-col justify-center items-center">
-                  <input type="file" className="hidden" />
-                  <ImagePlus color="#3389e6" strokeWidth={1} />
-                  <div className="text-[12px] text-blue-600 text-center">Thêm hình ảnh (0/9)</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col gap-6">
+        <NewProductFirstSection register={register} errors={errors} />
+        <NewProductDetailSection />
+        <NewProductVariantSection />
+        <NewProductShippingSection />
+        <NewProductOtherInfoSection />
+        <NewProductFooterSection />
       </div>
-      <div className="w-full flex mb-6">
-        <div>
-          <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
-            <span className="text-[12px] text-blue-700">*</span>
-            <div className="text-[14px] h-full font-medium flex items-center">Ảnh bìa</div>
-          </div>
-        </div>
-        <div className="">
-          <div>
-            <div className="border-dashed border-gray-400 border size-20 cursor-pointer hover:bg-blue-100 rounded">
-              <div className="size-full flex justify-center items-center">
-                <div className="px-1/2 flex flex-col justify-center items-center">
-                  <input type="file" className="hidden" />
-                  <ImagePlus color="#3389e6" strokeWidth={1} />
-                  <div className="text-[12px] text-blue-600 text-center">(0/1)</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="w-full flex mb-6">
-        <div>
-          <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
-            <span className="text-[12px] text-blue-700">*</span>
-            <div className="text-[14px] h-full font-medium flex items-center">Tên sản phẩm</div>
-          </div>
-        </div>
-        <div className="w-full">
-          <div className="h-10 w-full px-3 border rounded-sm flex">
-            <input className="h-full w-full outline-none text-[14px]" placeholder="Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật" />
-            <div className="pl-2 h-full flex items-center">
-              <div className="h-6 border-l pl-2 text-[14px] text-gray-400">0/120</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="w-full flex mb-6">
-        <div>
-          <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
-            <span className="text-[12px] text-blue-700">*</span>
-            <div className="text-[14px] h-full font-medium flex items-center">Ngành hàng</div>
-          </div>
-        </div>
-        <div className="w-full">
-          <PopupCategory />
-        </div>
-      </div>
-      <div className="w-full flex mb-6">
-        <div>
-          <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
-            <span className="text-[12px] text-blue-700">*</span>
-            <div className="text-[14px] h-full font-medium flex items-center">Mô tả sản phẩm</div>
-          </div>
-        </div>
-        <div className="w-full">
-          <div className="w-full px-2 py-[5px] border rounded-sm flex">
-            <textarea className="h-40 w-full outline-none text-[14px]" />
-          </div>
-        </div>
-      </div>
-    </div>
+    </form>
   )
 }

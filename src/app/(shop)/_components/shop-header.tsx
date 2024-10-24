@@ -15,6 +15,7 @@ import { useState } from 'react';
 import AccountInfo from '@/app/(shop)/_components/account-info';
 import Notifications from '@/app/(shop)/_components/notifications';
 import Image from 'next/image';
+import { useAppInfoSelector } from '@/redux/stores/profile.store';
 
 
 export default function ShopHeader() {
@@ -23,6 +24,8 @@ export default function ShopHeader() {
   const [isShowAccountInfo, setIsShowAccountInfo] = useState(false);
   const [isNotiVisible, setIsNotiVisible] = useState(false);
   const [isAccountInfoVisible, setIsAccountInfoVisible] = useState(false);
+  const info = useAppInfoSelector(state => state.profile.info);
+  const test = { ...info, shop_id: null };
 
   return (
     <header className="w-full h-[56px] bg-white sticky top-0 z-50 shadow border-b">
@@ -31,17 +34,23 @@ export default function ShopHeader() {
           <div className="logo w-40 h-[48px]">
             <Image width={160} height={48} className="size-full object-cover" src="/images/logo.png" alt="" />
           </div>
-          <Breadcrumb>
-            <BreadcrumbList className="text-[16px] font-normal">
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/shop">Trang chủ</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Sản phẩm</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          {info.shop_id && (
+            <Breadcrumb>
+              <BreadcrumbList className="text-[16px] font-normal">
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/shop">Trang chủ</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Sản phẩm</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          )}
+          {!info.shop_id && (
+            <div>Đăng ký trở thành Người bán VNShop</div>
+          )}
+
         </div>
         <div className="flex items-center">
           <div className="flex h-full px-4 border-r-[2px] items-center">
@@ -100,7 +109,7 @@ export default function ShopHeader() {
               <div className="size-[30px] rounded-full flex items-center justify-center">
                 <img className='size-full object-cover rounded-full' src="https://phunuvietnam.mediacdn.vn/media/news/33abffcedac43a654ac7f501856bf700/anh-profile-tiet-lo-g-ve-ban-1.jpg" alt="" />
               </div>
-              <span className="text-[14px] font-medium">TuanGay69</span>
+              <span className="text-[14px] font-medium">{test.fullname}</span>
               {isShowAccountInfo ? (
                 <ChevronDown strokeWidth={1.5} size={20} />
               ) : (
