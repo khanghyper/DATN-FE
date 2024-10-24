@@ -38,6 +38,7 @@ export default function NewProductFirstSection({ register, errors }:
     if (files) {
       try {
         setLoading(true);
+        console.log({ accessToken });
         let length = images.length;
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {

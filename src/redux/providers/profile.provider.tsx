@@ -20,6 +20,7 @@ export default function ProfileProvider({
     // Create the store instance the first time this renders
     storeRef.current = profileStore()
     storeRef.current.dispatch(addAccessToken(accessToken));
+    clientAccessToken.value = accessToken;
     if (accessToken) {
       storeRef.current.dispatch(addInfo(info));
     }
