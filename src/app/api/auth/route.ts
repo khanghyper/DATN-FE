@@ -13,7 +13,6 @@ export async function POST(request: Request) {
         "Content-type": "application/json"
       }
     })
-    console.log(getMe);
     const payload = await getMe.json();
 
     if (getMe.ok) {

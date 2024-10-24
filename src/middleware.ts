@@ -10,6 +10,8 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get('accessToken')?.value;
   const info = request.cookies.get('info')?.value;
+  const infoParse = JSON.parse(info ? info : '');
+
 
   if (pathname === '/shop') {
     console.log({ accessToken, info });
@@ -28,11 +30,13 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/welcome') && !accessToken) {
     return NextResponse.redirect(new URL('/auth/register', request.url))
   }
+  if (pathname.startsWith('/welcome') && accessToken && infoParse.shop_id) {
+    return NextResponse.redirect(new URL('/shop', request.url))
+  }
 
   if (pathname.startsWith('/shop') && accessToken) {
-    const infoParse = JSON.parse(info ? info : '');
     const test = { ...infoParse, shop_id: null };
-    if (!test.shop_id) {
+    if (!infoParse.shop_id) {
       return NextResponse.redirect(new URL('/welcome', request.url))
     }
   }

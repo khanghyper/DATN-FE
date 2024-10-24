@@ -23,8 +23,11 @@ import {
 } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { useAppInfoSelector } from "@/redux/stores/profile.store";
+import { toast } from "@/components/ui/use-toast";
 
 export default function CreateShopForm({ info }: { info: any }) {
+  const accessToken = useAppInfoSelector(state => state.profile.accessToken);
   const [provinces, setProvinces] = useState<any[]>([]);
   const [districts, setDistricts] = useState<any[]>([]);
   const [wards, setWards] = useState<any[]>([]);
@@ -37,7 +40,7 @@ export default function CreateShopForm({ info }: { info: any }) {
   const [phone, setPhone] = useState<string>('');
   const [cccd, setCccd] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
 
   const getProvinces = async () => {
@@ -85,15 +88,61 @@ export default function CreateShopForm({ info }: { info: any }) {
     setIsConfirmAddress(false);
   }
 
+
   useEffect(() => {
     getProvinces()
   }, [])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const data = { name, phone, cccd, description };
+    const data = {
+      shop_name: name,
+      phone, cccd, description,
+      province: address[0].name,
+      province_id: address[0].province_id,
+      district: address[1].name,
+      district_id: address[1].district_id,
+      ward: address[2].name,
+      ward_id: address[2].ward_id,
+      location: address[3].name,
+    };
+    console.log({ accessToken });
+    try {
+      const resToServer = await fetch('https://vnshop.top/api/shops', {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(data)
+      });
+      const payload = await resToServer.json();
+      if (resToServer.ok) {
+        const resToNextServer = await fetch('http://localhost:3000/api/auth', {
+          method: 'POST',
+          body: JSON.stringify({ accessToken })
+        })
+        if (!resToNextServer.ok) {
+          throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin VNShop!'
+        }
+        toast({
+          variant: "success",
+          title: "success",
+          description: "Tạo shop thành công"
+        })
+        window.location.href = '/shop';
+        // console.log(payload);
+      } else {
+        throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin VNShop!'
+      }
+
+    } catch (error) {
+      setErrorMessage(error as string);
+    }
+
   }
 
+  console.log({ address });
 
 
   return (
@@ -184,8 +233,11 @@ export default function CreateShopForm({ info }: { info: any }) {
                       </Select>
                     </div>
                     <div>
-                      <label htmlFor="" className="text-[14px]">Địa chỉ chi tiết</label>
-                      <input value={addressDetail} onChange={(e) => setAddressDetail(e.target.value)} className="w-full border mt-2 p-2 text-[14px]" name="" id=""></input>
+                      <label htmlFor="addressDetail" className="text-[14px]">Địa chỉ chi tiết</label>
+                      <input ref={inputRef} onBlur={() => {
+                        setIsConfirmAddress(true);
+                        address[3] = { location: inputRef.current?.value, name: inputRef.current?.value }
+                      }} className="w-full border mt-2 p-2 text-[14px]" name="" id="addressDetail"></input>
                     </div>
                   </div>
                   <DialogFooter>
@@ -226,6 +278,9 @@ export default function CreateShopForm({ info }: { info: any }) {
         <div className="relative p-6">
           <Button className="absolute bottom-10 right-10" type="submit">Đăng ký</Button>
         </div>
+        {errorMessage && (
+          <div className="text-sm text-red-500">{errorMessage}</div>
+        )}
       </form>
     </>
   )
