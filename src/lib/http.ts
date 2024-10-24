@@ -54,9 +54,11 @@ class AccessToken {
 
 export const clientAccessToken = new AccessToken();
 
-const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+const request = async <Response>(
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
   options?: CustomOptions | undefined) => {
+
   const body = options?.body ? JSON.stringify(options.body) : undefined;
   const baseHeaders = {
     'Content-Type': 'application/json',

@@ -2,7 +2,7 @@ import envConfig from '@/config';
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const authPaths = ['/login', '/register'];
+const authPaths = ['/auth/login', '/auth/register', '/auth/verify'];
 const privatePaths = ['/admin', '/admin/products/all', '/admin/products/create', '/admin/categories/create']
 
 // This function can be marked `async` if using `await` inside
@@ -11,15 +11,22 @@ export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
   const info = request.cookies.get('info')?.value;
 
+  if (pathname === '/shop') {
+    console.log({ accessToken, info });
+  }
+
   if (privatePaths.some(path => pathname.startsWith(path)) && !accessToken) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.redirect(new URL('auth/login', request.url))
   }
   if (authPaths.some(path => pathname.startsWith(path)) && accessToken) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
   if (pathname.startsWith('/shop') && !accessToken) {
-    return NextResponse.redirect(new URL('/register', request.url))
+    return NextResponse.redirect(new URL('/auth/register', request.url))
+  }
+  if (pathname.startsWith('/welcome') && !accessToken) {
+    return NextResponse.redirect(new URL('/auth/register', request.url))
   }
 
   if (pathname.startsWith('/shop') && accessToken) {

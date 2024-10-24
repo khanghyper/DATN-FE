@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       cookieStore.set('accessToken', accessToken, { path: '/', httpOnly: true });
       cookieStore.set('info', JSON.stringify(resMe.data), { path: '/', httpOnly: true });
 
-      return Response.json({}, {
+      return Response.json(resMe.data, {
         status: 200,
       });
     } else {
