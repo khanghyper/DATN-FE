@@ -46,9 +46,10 @@ class AccessToken {
   set value(token: string) {
     // Nếu gọi methode này ở server thì bị lỗi
     if (typeof window === 'undefined') {
-      throw new Error('Cannot set token on server side!');
+      // throw new Error('Cannot set token on server side!');
+    } else {
+      this.token = token;
     }
-    this.token = token;
   }
 }
 

@@ -32,14 +32,14 @@ export async function middleware(request: NextRequest) {
 
   if (info) {
     const infoParse = JSON.parse(info ? info : '');
+    const test = { ...infoParse, shop_id: null };
 
-    if (pathname.startsWith('/welcome') && accessToken && infoParse.shop_id) {
+    if (pathname.startsWith('/welcome') && accessToken && test.shop_id) {
       return NextResponse.redirect(new URL('/shop', request.url))
     }
 
     if (pathname.startsWith('/shop') && accessToken) {
-      const test = { ...infoParse, shop_id: null };
-      if (!infoParse.shop_id) {
+      if (!test.shop_id) {
         return NextResponse.redirect(new URL('/welcome', request.url))
       }
     }
