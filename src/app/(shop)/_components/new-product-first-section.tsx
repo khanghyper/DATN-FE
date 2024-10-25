@@ -1,5 +1,6 @@
 'use client'
 
+import { CreateProductFormData } from "@/app/(shop)/_components/new-product-form";
 import NewProductPopupCategory from "@/app/(shop)/_components/new-product-popup-category";
 import { clientAccessToken } from "@/lib/http";
 import { addImage, changeProductName } from "@/redux/slices/shop-new-product.slice";
@@ -7,14 +8,19 @@ import { useAppSelector } from "@/redux/store";
 import { useAppInfoSelector } from "@/redux/stores/profile.store";
 import { ImagePlus } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetError, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
-export default function NewProductFirstSection({ register, errors }:
+export default function NewProductFirstSection({ register, errors, getValues, watch, setValue, setError }:
   {
-    register: UseFormRegister<{ name: string }>,
-    errors: FieldErrors<{ name: string }>
-  }) {
+    register: UseFormRegister<CreateProductFormData>,
+    errors: FieldErrors<CreateProductFormData>
+    getValues: UseFormGetValues<CreateProductFormData>,
+    watch: UseFormWatch<CreateProductFormData>
+    setValue: UseFormSetValue<CreateProductFormData>
+    setError: UseFormSetError<CreateProductFormData>
+  }
+) {
   const [isShowPopupCategory, setIsShowPopupCategory] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const images = useAppSelector(state => state.shopListProduct.images);
@@ -53,7 +59,8 @@ export default function NewProductFirstSection({ register, errors }:
         });
         const res: { status: boolean, message: string, images: string[] } = await upload.json();
         dispatch(addImage(res.images));
-        console.log(res);
+        setValue('images', [...getValues('images'), ...res.images]);
+        setError('images', { message: undefined })
       } catch (error) {
         setLoading(false);
       } finally {
@@ -164,6 +171,7 @@ export default function NewProductFirstSection({ register, errors }:
           )}
         </div>
       </div>
+      {errors.images && <p className="text-sm text-red-500 ml-[102px] mt-1">{errors.images.message}</p>}
       <div className="w-full flex mb-6">
         <div>
           <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
@@ -172,17 +180,19 @@ export default function NewProductFirstSection({ register, errors }:
           </div>
         </div>
         <div className="w-full">
-          <div className={`h-10 w-full px-3 border rounded-sm flex ${errors.name ? `border-red-500` : ''}`}>
+          <div className={`h-10 w-full px-3 border rounded-sm flex `}>
             <input
               {...register('name')}
-              className="h-full w-full outline-none text-[14px]" placeholder="Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật" />
+              className="h-full w-full outline-none text-[14px]"
+              placeholder="Tên sản phẩm + Thương hiệu + Model + Thông số kỹ thuật"
+            />
             <div className="pl-2 h-full flex items-center">
-              <div className="h-6 border-l pl-2 text-[14px] text-gray-400">{productName.length}/120</div>
+              <div className="h-6 border-l pl-2 text-[14px] text-gray-400">{0}/120</div>
             </div>
           </div>
-          {errors.name && <p style={{ color: 'red', fontSize: '14px' }}>{errors.name.message}</p>}
         </div>
       </div>
+      {errors.name && <p className="text-sm text-red-500 ml-[102px] mt-1">{errors.name.message?.toString()}</p>}
       <div className="w-full flex mb-6">
         <div>
           <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
@@ -193,9 +203,15 @@ export default function NewProductFirstSection({ register, errors }:
           </div>
         </div>
         <div className="w-full">
-          <NewProductPopupCategory isShowPopupCategory={isShowPopupCategory} setIsShowPopupCategory={setIsShowPopupCategory} />
+          <NewProductPopupCategory
+            setError={setError}
+            setValue={setValue}
+            isShowPopupCategory={isShowPopupCategory}
+            setIsShowPopupCategory={setIsShowPopupCategory}
+          />
         </div>
       </div>
+      {errors.category && <p className="text-sm text-red-500 ml-[102px] mt-1">{errors.category.message?.toString()}</p>}
       <div className="w-full flex mb-6">
         <div>
           <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">
@@ -207,10 +223,11 @@ export default function NewProductFirstSection({ register, errors }:
           {/* <div className="w-full px-2 py-[5px] border rounded-sm flex">
             <textarea className="h-40 w-full border rounded-sm outline-none text-[14px]" />
           </div> */}
-          <textarea className="h-40 px-2 py-[5px] w-full border rounded-sm text-[14px] focus:border-black" />
+          <textarea {...register('description')} className="h-40 px-2 py-[5px] w-full border rounded-sm text-[14px] focus:border-black" />
 
         </div>
       </div>
+      {errors.description && <p className="text-sm text-red-500 ml-[102px] mt-1">{errors.description.message?.toString()}</p>}
     </div>
   )
 }

@@ -21,7 +21,8 @@ export default function NewProductVariantWithVariantPart() {
     dispatch(changeVariantMode())
   }
 
-  const handleAddVariantItem = () => {
+  const handleAddVariantItem = (e: any) => {
+    e.preventDefault();
     dispatch(addVariant())
   }
 
@@ -53,9 +54,9 @@ export default function NewProductVariantWithVariantPart() {
           {
             variantItems.length < 2 && (
               <div className="bg-[#f6f6f6] p-4 rounded relative">
-                <button onClick={handleAddVariantItem} className="border-2 bg-white rounded border-dashed p-2 px-4 text-[14px] text-blue-600 hover:bg-blue-50 hover:border-blue-400">
+                <div onClick={handleAddVariantItem} className="border-2 inline-block cursor-pointer bg-white rounded border-dashed p-2 px-4 text-[14px] text-blue-600 hover:bg-blue-50 hover:border-blue-400">
                   Thêm nhóm phân loại 2
-                </button>
+                </div>
               </div>
             )
           }
