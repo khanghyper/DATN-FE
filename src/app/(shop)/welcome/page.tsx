@@ -1,5 +1,6 @@
 'use client'
 import CreateShopForm from "@/app/(shop)/_components/create-shop-form";
+import CreateShopFormTest from "@/app/(shop)/_components/create-shop-form-test";
 import ShopHeader from "@/app/(shop)/_components/shop-header";
 import { useAppInfoSelector } from "@/redux/stores/profile.store";
 
@@ -13,7 +14,7 @@ export default function WelcomeShopPage() {
           <div className="w-full border-b p-4">
             Thông tin Shop
           </div>
-          <CreateShopForm info={info} />
+          <CreateShopFormTest info={info} />
         </div>
       </div>
     </div>
