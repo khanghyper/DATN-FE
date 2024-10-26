@@ -11,8 +11,8 @@ export default function GuestLayout({ children }: { children: React.ReactNode })
           {children}
         </div>
       </div>
-      {/* <GuestFooter /> */}
-      <GuestFooter2 />
+      <GuestFooter />
+      {/* <GuestFooter2 /> */}
     </div>
   )
 }

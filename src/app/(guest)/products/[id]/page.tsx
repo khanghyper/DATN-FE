@@ -1,11 +1,100 @@
+'use client'
 import AttributesTable from "@/app/(guest)/_components/attributes-table";
 import Comment from "@/app/(guest)/_components/comment";
 import { GuestBreadCrumb } from "@/app/(guest)/_components/guest-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Heart, PhoneCall, ShoppingBasket, SquareCheckBig, Star, Store } from "lucide-react";
+import { useEffect, useState } from "react";
+import { number } from "zod";
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage({ params }: { params: { id: number } }) {
+  let id: number = params.id;
+  const [idShop, setIdShop] = useState<number>();
+  const [products, setProducts] = useState<any>([]);
+  const [images, setImages] = useState<any>([]);
+  const [attributes, setAtributes] = useState<any>([]);
+  const [attributesValue, setAtributesValue] = useState<any>([]);
+  const [variants, setVariants] = useState<any>([]);
+  const [variantsSku, setVariantsSku] = useState<string>(``);
+  const [choiceOpt, setChoiceOpt] = useState<{ [key: number]: string }>({});
+  const [showPrice, setShowPrice] = useState<string>('');
+
+  useEffect(() => {
+    const getDetail = (async () => {
+      const apiProduct = await fetch(`https://vnshop.top/api/products/${id}`).then(res => res.json());
+      // console.log(apiProduct.data);
+      setImages([...apiProduct.data.images])
+      setProducts(apiProduct.data)
+      setIdShop(apiProduct.data.shop_id);
+    })()
+  }, [idShop])
+
+  useEffect(() => {
+    const getIdShop = (async () => {
+      try {
+        const apiVariant = await fetch(`https://vnshop.top/api/variantattribute/${idShop}/${id}`);
+        const payload = await apiVariant.json();
+        if (apiVariant.ok) {
+          setAtributes([...payload.data.attribute]);
+          setAtributesValue([...payload.data.value]);
+          // setVariants([...payload.data.data])
+        } else {
+          console.log('Lỗi kìa', payload);
+        }
+      } catch (error) {
+        console.log('Lỗi rồi kìa', error);
+      }
+
+    })()
+  }, [idShop])
+
+  // console.log(variants);
+
+
+  const onclickChoice = (skuValue: string, valueText: string, idAttributeId: number) => {
+    setChoiceOpt((prevChoiceOpt) => {
+      const optArray = Object.entries({
+        ...prevChoiceOpt,
+        [idAttributeId]: valueText,
+      });
+      let variantSku: string = skuValue;
+      // Nối tất cả các value trong optArray thành một chuỗi, phân cách bằng dấu "-"
+      const valueString = optArray.map(([key, value]) => value).join('-');
+      // Kết hợp với giá trị sku
+      const finalSkuString = `${variantSku}-${valueString}`;
+      setVariantsSku(finalSkuString);
+
+      let findVariant = variants.find((item: any) => item.sku == finalSkuString)
+      console.log(findVariant?.price);
+      setShowPrice(findVariant?.price + '')
+      return prevChoiceOpt; // Trả lại trạng thái cũ
+    });
+    // console.log(`${skuValue}-${valueText}-${valueText}`);
+  }
+
+
+
+  useEffect(() => {
+    const getVariant = (async () => {
+      try {
+        const apiVariant = await fetch(`https://vnshop.top/api/product/get_variant/${id}`);
+        const payload = await apiVariant.json();
+        if (apiVariant.ok) {
+          setVariants([...payload.data])
+        } else {
+          console.log('Lỗi kìa', payload);
+        }
+      } catch (error) {
+        console.log('Lỗi rồi kìa', error);
+      }
+
+    })()
+  }, [idShop])
+
+
+  // console.log(variants);
+
 
   return (
     <div className="w-full">
@@ -14,24 +103,18 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <div className="w-2/5 p-4">
           <div className="w-full">
             <div className="w-full h-[450px]">
-              <img className="border size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
+              <img className="border size-full object-cover" src={`${products.image ?? 'https://salt.tikicdn.com/cache/750x750/ts/product/59/6d/d2/3a4ee4a2ffbae124699e5a01ab5cf5db.jpg.webp'}`} alt="" />
             </div>
             <div className=" my-[5px] -mx-[5px] flex">
-              <div className="p-[5px] size-[92px]">
-                <div className="size-full">
-                  <img className="border size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                </div>
-              </div>
-              <div className="p-[5px] size-[92px]">
-                <div className="size-full">
-                  <img className="border size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                </div>
-              </div>
-              <div className="p-[5px] size-[92px]">
-                <div className="size-full">
-                  <img className="border size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                </div>
-              </div>
+              {
+                images.map((item: any, index: number) => (
+                  <div className="p-[5px] size-[92px]" key={index}>
+                    <div className="size-full">
+                      <img className="border size-full object-cover" src={`${item.url ?? 'https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc'}`} alt="" />
+                    </div>
+                  </div>
+                ))
+              }
             </div>
           </div>
         </div>
@@ -39,14 +122,20 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <div className="w-full">
             <div className="w-full h-[180px] relative">
               <div className="w-full mb-2">
-                <span className="text-[20px] font-bold">Áo sơ mi nam vải dài tay vải mát không nhăn - ED190503</span>
+                <span className="text-[20px] font-bold">{products.name}</span>
               </div>
               <div className="w-full">
-                <span className="text-[14px] font-normal">Thương hiệu: OEM</span>
+                <span className="text-[14px] font-normal">Thương hiệu: {products.brand ?? 'Chưa có thương hiệu'}</span>
               </div>
               <div className="w-full">
-                <span className="text-[24px] font-bold text-red-500">100.009đ</span>
+                <span className="text-[24px] font-bold text-red-500">
+                  {
+                    showPrice.length > 0 ? showPrice : products.show_price
+                  }
+
+                </span>
               </div>
+
               <div className="w-full">
                 <span className="text-[14px] font-normal">
                   <del className="text-gray-400">190.000đ</del>
@@ -71,44 +160,34 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               </div>
             </div>
             <div className="w-full mt-4 py-[5px] border-t">
-              <div className="w-full flex">
-                <div className="w-[160px] text-gray-500 text-[14px] leading-8">
-                  Chọn màu sắc:
-                </div>
-                <div className="w-[calc(100%-160px)] flex">
-                  <div className="p-[5px] size-[72px]">
-                    <img className="size-full object-cover border" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                  </div>
-                  <div className="p-[5px] size-[72px]">
-                    <img className="size-full object-cover border" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                  </div>
-                  <div className="p-[5px] size-[72px]">
-                    <img className="size-full object-cover border" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                  </div>
-                  <div className="p-[5px] size-[72px]">
-                    <img className="size-full object-cover border" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                  </div>
-                </div>
-              </div>
-              <div className="w-full flex mt-2">
-                <div className="w-[160px] text-gray-500 text-[14px] leading-8">
-                  Chọn kích thước:
-                </div>
-                <div className="w-[calc(100%-160px)] flex">
-                  <div className="p-[5px]">
-                    <Button className="bg-gray-100 w-12 h-8 hover:bg-gray-100 text-gray-500">M</Button>
-                  </div>
-                  <div className="p-[5px]">
-                    <Button className="bg-gray-100 w-12 h-8 hover:bg-gray-100 text-gray-500">L</Button>
-                  </div>
-                  <div className="p-[5px]">
-                    <Button className="bg-gray-100 w-12 h-8 hover:bg-gray-100 text-gray-500">XL</Button>
-                  </div>
-                  <div className="p-[5px]">
-                    <Button className="bg-gray-100 w-12 h-8 hover:bg-gray-100 text-gray-500">2XL</Button>
-                  </div>
-                </div>
-              </div>
+              {
+                attributes.map((item: any, index: number) => {
+                  var filterVariant = attributesValue.filter((item2: any) => item2.attribute_id == item.id)
+                  return (
+                    <div className="w-full flex flex-col" key={index}>
+                      <div className="w-[160px] text-gray-500 text-[14px] leading-8">
+                        {item[0].name}
+                      </div>
+                      <div className="w-[calc(100%-160px)] flex gap-2">
+                        {filterVariant.map((item2: any, idx: number) => {
+                          if (item2[0].attribute_id == item[0].id) {
+                            return (
+                              <div className="px-[10px] py-[5px] bg-white text-blue-500 border flex justify-center items-center rounded hover:text-white hover:bg-blue-500" key={idx}>
+                                <span onClick={() => {
+                                  onclickChoice(variantsSku?.length > 0 ? variantsSku : products.sku, item2[0].value, item[0].id)
+                                }}>
+                                  {item2[0].value}
+                                </span>
+                              </div>
+                            )
+                          }
+                        }
+                        )}
+                      </div>
+                    </div>
+                  )
+                })
+              }
               <div className="w-full flex mt-2">
                 <div className="w-[160px] text-gray-500 text-[14px] leading-8">
                   Chọn số lượng:

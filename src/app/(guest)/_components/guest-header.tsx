@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { BadgeCheck, BadgeDollarSign, LayoutGrid, Package, Search, ShoppingBag, Tag, Truck, Bell } from "lucide-react";
+import { BadgeCheck, BadgeDollarSign, LayoutGrid, Package, Search, ShoppingBag, Tag, Truck, Bell, ChevronRight } from "lucide-react";
 import Link from 'next/link';
 import MiniCart from './MiniCart';
 import Notifications from './MiniNotifications';
+import { number } from 'zod';
 
 const tags: { title: string, icon: any }[] = [
   {
@@ -32,9 +33,55 @@ const tags: { title: string, icon: any }[] = [
   }
 ]
 
+// const categories: { id: number, title: string }[] = [
+//   { id: 1, title: 'Thời trang nữ' },
+//   { id: 2, title: 'Thời trang nam' },
+//   { id: 3, title: 'Thời trang trẻ em' },
+//   { id: 4, title: 'Sức khỏe - Làm đẹp' },
+//   { id: 5, title: 'Giày dép - Túi xách' }
+// ]
+
+
+
 export default function GuestHeader() {
   const [hienThiMiniCart, setHienThiMiniCart] = useState(false);
   const [hienThiThongBao, setHienThiThongBao] = useState(false);
+  const [hienThiCate, setHienThiCate] = useState(false);
+  const [cateHover, setCateHover] = useState(false);
+  const [categories, setCategories] = useState<any>([]);
+  const [findCate, setFindCate] = useState<any>([]);
+  const [findCate2, setFindCate2] = useState<any>([]);
+  const [checkParentId, setCheckParentId] = useState<any>([]);
+
+  useEffect(() => {
+    const getApi = async () => {
+      const apiCategories = await fetch('https://vnshop.top/api/categories').then(res => res.json());
+      setCategories([...apiCategories.data]);
+    }
+    getApi();
+  }, [])
+
+  // console.log(categories);
+
+
+  useEffect(() => {
+    const filterParentId = categories.filter((item: any) => item.parent_id == 0);
+    setCheckParentId([...filterParentId]);
+  }, [categories]);
+
+  const getFindCate = (parentId: number, capDo: number) => {
+    if (capDo == 1) {
+      const subCategories = categories.filter((item: any) => item.parent_id === parentId);
+      setFindCate([...subCategories]);
+      setFindCate2([]);
+    }
+    if (capDo == 2) {
+      const subCategories = categories.filter((item: any) => item.parent_id === parentId);
+      setFindCate2([...subCategories]);
+    }
+  };
+
+
 
   return (
     <div className="w-full flex justify-center border-b shadow-sm">
@@ -45,13 +92,50 @@ export default function GuestHeader() {
           <span>Nhà cung cấp</span>
         </div>
         <div className="mid-nav w-full h-[70px] flex items-center ">
-          <div className="logo w-40 h-[48px]">
-            <img className="size-full object-cover" src="./images/logo.png" alt="" />
+          <div className="logo w-40 h-[48px] ">
+            <Link href={'/'}>
+              <img className="size-full object-cover relative" src="./images/logo.png" alt="" />
+            </Link>
           </div>
-          <div className="w-[calc(100%-10rem)] h-full flex items-center gap-5 justify-between pl-8">
-            <div className="flex items-center gap-5">
+          <div className="w-[calc(100%-10rem)] h-full flex items-center gap-5 justify-between pl-8 ">
+            <div className="flex items-center gap-5 ">
               <div className="icon-cate size-6 ">
-                <LayoutGrid />
+                <LayoutGrid
+                  onClick={() => setHienThiCate(!hienThiCate)}
+                />
+                <div className={`absolute left-[8%] top-[14%] mt-2 z-50 ${hienThiCate ? 'block' : 'hidden'}`}>
+                  <div className='w-[1000px] h-[500px] flex  '>
+                    <div className='w-[300px] px-3 py-2 bg-white border flex flex-col rounded-l-sm'>
+                      {
+                        checkParentId.map((item: any, index: number) => (
+                          <div key={index} onMouseEnter={() => getFindCate(item.id, 1)} className={`w-full h-[40px] flex items-center justify-between px-2 rounded cursor-pointer hover:text-blue-500 hover:bg-blue-200 hover:font-bold `}>
+                            <span className='' >{item.title}</span>
+                            <ChevronRight />
+                          </div>
+                        ))
+                      }
+                    </div>
+                    <div className={`w-[300px] px-3 py-2 bg-white border flex flex-col ${findCate.length ? 'block' : 'hidden'}`}>
+                      {
+                        findCate.map((item: any, index: number) => (
+                          <div key={index} onMouseEnter={() => getFindCate(item.id, 2)} className='w-full h-[40px] flex items-center justify-between px-2 rounded cursor-pointer hover:text-blue-500 hover:bg-blue-200 hover:font-bold'>
+                            <span className='' >{item.title}</span>
+                            <ChevronRight />
+                          </div>
+                        ))
+                      }
+                    </div>
+                    <div className={`w-[300px] px-3 py-2 bg-white border flex flex-col rounded-r-sm ${findCate2.length ? 'block' : 'hidden'}`}>
+                      {
+                        findCate2.map((item: any, index: number) => (
+                          <div key={index} className='w-full h-[40px] flex items-center justify-between px-2 rounded cursor-pointer hover:text-blue-500 hover:bg-blue-200 hover:font-bold'>
+                            <span className=''>{item.title}</span>
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="input-nav h-10 flex">
                 <input type="text" placeholder="Tìm trên VNShop" className="w-[600px] h-full px-5 border rounded-tl-[16px] rounded-bl-[16px] outline-none text-[13px] bg-gray-50" />

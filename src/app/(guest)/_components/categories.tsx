@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 const titleCates: string[] = ["Cho bạn", "Đồ dùng nhà bếp", "Vệ sinh nhà cửa", "Đầm,váy", "Áo nữ", "Hoa, Cây cảnh"];
 const cateItems: { title: string, img: string }[] = [
   {
@@ -34,7 +35,22 @@ const cateItems: { title: string, img: string }[] = [
     img: 'https://media3.scdn.vn/img4/2024/06_06/zKSfCBQwy8wugUH8rQ3u.png'
   }
 ]
+
+
+
 const CategoriesGuest = () => {
+  const [categories, setCategories] = useState<any>([]);
+
+  useEffect(() => {
+    const getApi = async () => {
+      const apiCategories = await fetch('https://vnshop.top/api/categories').then(res => res.json());
+      setCategories([...apiCategories.data]);
+    }
+    getApi();
+  }, [])
+  
+  
+
   return (
     <div className="categories-home w-full">
       <div className="top w-full flex justify-between py-2">
