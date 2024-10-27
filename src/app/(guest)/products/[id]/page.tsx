@@ -73,6 +73,7 @@ export default function ProductDetailPage({ params }: { params: { id: number } }
     // console.log(`${skuValue}-${valueText}-${valueText}`);
   }
 
+console.log(choiceOpt);
 
 
   useEffect(() => {
