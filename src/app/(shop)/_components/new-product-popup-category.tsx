@@ -116,8 +116,8 @@ function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory, 
                       if (!isCategoryHasChildren(a.id)) {
                         setIsShowPopupCategory(false);
                         dispatch(confirmCategory(a.id));
-                        setValue('category', a.id);
-                        setError('category', { message: undefined })
+                        setValue('category_id', a.id);
+                        setError('category_id', { message: undefined })
                       }
                     }
                   }}>Confirm</Button>

@@ -24,7 +24,7 @@ export default async function HangXinSection() {
         </div>
         <div className="list-card-product py-3 grid grid-cols-5 gap-4">
           {data.payload.data.data.map((item: any, index: number) => (
-            <CardProduct key={index} name={item.name} image={item.image} />
+            <CardProduct key={index} p={item} />
           ))}
         </div>
       </div>

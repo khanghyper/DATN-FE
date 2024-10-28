@@ -106,39 +106,39 @@ export default function CreateShopForm({ info }: { info: any }) {
       ward_id: address[2].ward_id,
       location: address[3].name,
     };
-    console.log({ accessToken });
-    try {
-      const resToServer = await fetch('https://vnshop.top/api/shops', {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(data)
-      });
-      const payload = await resToServer.json();
-      if (resToServer.ok) {
-        const resToNextServer = await fetch('http://localhost:3000/api/auth', {
-          method: 'POST',
-          body: JSON.stringify({ accessToken })
-        })
-        if (!resToNextServer.ok) {
-          throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin VNShop!'
-        }
-        toast({
-          variant: "success",
-          title: "success",
-          description: "Tạo shop thành công"
-        })
-        window.location.href = '/shop';
-        // console.log(payload);
-      } else {
-        throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin VNShop!'
-      }
+    console.log(data);
+    // try {
+    //   const resToServer = await fetch('https://vnshop.top/api/shops', {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-type": "application/json",
+    //       "Authorization": `Bearer ${accessToken}`
+    //     },
+    //     body: JSON.stringify(data)
+    //   });
+    //   const payload = await resToServer.json();
+    //   if (resToServer.ok) {
+    //     const resToNextServer = await fetch('http://localhost:3000/api/auth', {
+    //       method: 'POST',
+    //       body: JSON.stringify({ accessToken })
+    //     })
+    //     if (!resToNextServer.ok) {
+    //       throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin VNShop!'
+    //     }
+    //     toast({
+    //       variant: "success",
+    //       title: "success",
+    //       description: "Tạo shop thành công"
+    //     })
+    //     window.location.href = '/shop';
+    //     // console.log(payload);
+    //   } else {
+    //     throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin VNShop!'
+    //   }
 
-    } catch (error) {
-      setErrorMessage(error as string);
-    }
+    // } catch (error) {
+    //   setErrorMessage(error as string);
+    // }
 
   }
 

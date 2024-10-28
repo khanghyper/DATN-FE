@@ -211,7 +211,7 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
           />
         </div>
       </div>
-      {errors.category && <p className="text-sm text-red-500 ml-[102px] mt-1">{errors.category.message?.toString()}</p>}
+      {errors.category_id && <p className="text-sm text-red-500 ml-[102px] mt-1">{errors.category_id.message?.toString()}</p>}
       <div className="w-full flex mb-6">
         <div>
           <div className="w-[144px] h-10 mr-6 flex justify-end items-center gap-1">

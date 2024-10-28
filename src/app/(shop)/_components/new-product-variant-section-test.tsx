@@ -15,10 +15,10 @@ export default function NewProductVariantSectionTest() {
   return (
     <div className="px-6 py-6 bg-white shadow rounded">
       <div className={`text-[20px] font-semibold mb-6 ${!isConfirmCategories && 'text-gray-400'}`}>Thông tin bán hàng</div>
-      {true && (
+      {isConfirmCategories && (
         <div>
-          {!true && (<NewProductVariantWithoutVariantPart />)}
-          {true && (
+          {!isChangeVariantMode && (<NewProductVariantWithoutVariantPart />)}
+          {isChangeVariantMode && (
             <NewProductVariantWithVariantPart />
           )}
         </div>

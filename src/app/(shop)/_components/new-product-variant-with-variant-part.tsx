@@ -9,13 +9,16 @@ import { ImagePlus, Plus, Trash2, X } from "lucide-react";
 import { FormEvent, useState } from 'react';
 import { useDispatch } from "react-redux";
 
+
 export default function NewProductVariantWithVariantPart() {
   const dispatch = useDispatch();
-  const variantItems = useAppSelector(state => state.shopListProduct.varriant.variantItems);
-  const variantProducts = useAppSelector(state => state.shopListProduct.varriant.variantProducts);
+  // const variantItems = useAppSelector(state => state.shopListProduct.varriant.variantItems);
+  // const variantProducts = useAppSelector(state => state.shopListProduct.varriant.variantProducts);
   const [price, setPrice] = useState<string | undefined>('');
   const [inStock, setInstock] = useState<string | undefined>(undefined);
   const [sku, setSku] = useState('');
+  const variantItems = useAppSelector(state => state.shopListProduct.varriant.variantItems);
+  const variantProducts = useAppSelector(state => state.shopListProduct.varriant.variantProducts);
 
   const handleChangeVariantMode = () => {
     dispatch(changeVariantMode())
@@ -101,9 +104,9 @@ export default function NewProductVariantWithVariantPart() {
               Áp dụng cho tất cả sản phẩm phân loại
             </button>
           </div>
-          {variantItems.length > 0 && (
+          {/* {variantItems.length > 0 && (
             <NewProductVariantTable />
-          )}
+          )} */}
         </div>
       </div>
 

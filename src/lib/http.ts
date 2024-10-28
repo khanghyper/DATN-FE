@@ -52,8 +52,25 @@ class AccessToken {
     }
   }
 }
+class ShopId {
+  private shop_id = 0;
+
+  get value() {
+    return this.shop_id;
+  }
+
+  set value(token: number) {
+    // Nếu gọi methode này ở server thì bị lỗi
+    if (typeof window === 'undefined') {
+      // throw new Error('Cannot set token on server side!');
+    } else {
+      this.shop_id = token;
+    }
+  }
+}
 
 export const clientAccessToken = new AccessToken();
+export const shop_id = new ShopId();
 
 const request = async <Response>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',

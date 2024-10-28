@@ -1,9 +1,11 @@
 'use client'
 
+import { CreateProductFormData } from "@/app/(shop)/_components/new-product-form";
 import { changeVariantMode } from "@/redux/slices/shop-new-product.slice";
+import { UseFormRegister } from "react-hook-form";
 import { useDispatch } from "react-redux"
 
-export default function NewProductVariantWithoutVariantPart() {
+export default function NewProductVariantWithoutVariantPart({ register }: { register: UseFormRegister<CreateProductFormData> }) {
   const dispatch = useDispatch();
 
   const handleChangeVariantMode = () => {
@@ -39,7 +41,7 @@ export default function NewProductVariantWithoutVariantPart() {
         <div className="w-full">
           <div className="h-10 w-72 border rounded px-3 py-2 flex shadow-sm">
             <div className="text-[10px] border-r pr-2 flex items-center">₫</div>
-            <input type="text" className="w-full border-none text-[14px] outline-none pl-2" />
+            <input {...register('price')} type="number" className="w-full border-none text-[14px] outline-none pl-2" />
           </div>
         </div>
       </div>
@@ -54,7 +56,7 @@ export default function NewProductVariantWithoutVariantPart() {
         </div>
         <div className="w-full">
           <div className="h-10 w-72 border rounded px-3 py-2 shadow-sm">
-            <input type="text" defaultValue={0} className="w-full border-none text-[14px] outline-none" />
+            <input {...register('stock')} type="string" defaultValue={0} className="w-full border-none text-[14px] outline-none" />
           </div>
         </div>
       </div>

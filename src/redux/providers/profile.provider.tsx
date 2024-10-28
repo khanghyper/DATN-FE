@@ -1,6 +1,6 @@
 'use client'
 
-import { clientAccessToken } from "@/lib/http"
+import { clientAccessToken, shop_id } from "@/lib/http"
 import { addAccessToken, addInfo } from "@/redux/slices/profile.slice"
 import { ProfileStore, profileStore } from "@/redux/stores/profile.store"
 import { useRef } from "react"
@@ -23,6 +23,8 @@ export default function ProfileProvider({
     clientAccessToken.value = accessToken;
     if (accessToken) {
       storeRef.current.dispatch(addInfo(info));
+      shop_id.value = info.shop_id;
+      console.log({ shop_id: shop_id.value });
     }
     // if (typeof window !== 'undefined') {
     //   clientAccessToken.value = accessToken;
