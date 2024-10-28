@@ -1,7 +1,7 @@
 'use client'
 
 import { FormEvent, useEffect, useState } from "react";
-import { useAppDispatch } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import NewProductVariantSection from "@/app/(shop)/_components/new-product-variant-section";
 import { getListCategoryNested } from "@/redux/slices/shop-new-product.slice";
 import NewProductFirstSection from "@/app/(shop)/_components/new-product-first-section";
@@ -34,6 +34,33 @@ const createProductFormSchema = z.object({
   height: z.coerce.number().min(1, { message: "Vui lòng nhập chiều cao" }),
   sku: z.string().min(1, { message: "Vui lòng nhập sku sản phẩm" }),
   shop_id: z.number().min(1),
+  changeVariantMode: z.boolean()
+}).superRefine((data, ctx) => {
+  if (!data.changeVariantMode) {
+    console.log('variant mode: false');
+    if (!data.stock) {
+      ctx.addIssue({
+        message: "Vui lòng nhập số lượng kho sản phẩm",
+        code: z.ZodIssueCode.custom,
+        path: ['stock']
+      })
+    }
+    if (!data.price) {
+      ctx.addIssue({
+        message: "Vui lòng nhập giá sản phẩm",
+        code: z.ZodIssueCode.custom,
+        path: ['price']
+      })
+    }
+  } else {
+    if (!data.variant) {
+      ctx.addIssue({
+        message: "Vui lòng nhập các giá trị ở phần biến thể1",
+        code: z.ZodIssueCode.custom,
+        path: ['variant']
+      })
+    }
+  }
 });
 
 export type CreateProductFormData = z.infer<typeof createProductFormSchema>;
@@ -41,6 +68,7 @@ export type CreateProductFormData = z.infer<typeof createProductFormSchema>;
 export default function NewProductForm() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
+  const changeVariantMode = useAppSelector(state => state.shopListProduct.varriant.isChangeVariantMode);
   const { register, getValues, handleSubmit, setValue, setError, formState: { errors }, watch } = useForm<CreateProductFormData>({
     resolver: zodResolver(createProductFormSchema),
     defaultValues: {
@@ -52,7 +80,8 @@ export default function NewProductForm() {
       price: null,
       stock: null,
       sku: '',
-      shop_id: shop_id.value
+      shop_id: shop_id.value,
+      changeVariantMode: false
     },
     mode: 'all',  // Thực hiện validate khi mất focus
     reValidateMode: 'onChange',
@@ -105,6 +134,7 @@ export default function NewProductForm() {
     }
   }, [dispatch])
 
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-6">
@@ -117,14 +147,17 @@ export default function NewProductForm() {
           setError={setError}
         />
         <NewProductDetailSection />
-        <NewProductVariantSection handleVariant={handleVariant} register={register} />
+        <NewProductVariantSection setValue={setValue} errors={errors} handleVariant={handleVariant} register={register} setError={setError} />
         <NewProductShippingSection errors={errors} register={register} />
         <NewProductOtherInfoSection register={register} errors={errors} />
         <NewProductFooterSection />
 
         <button onClick={() => {
-          console.log({ a: getValues('variant') });
-        }} type="button">click</button>
+          console.log({ a: getValues() });
+        }} type="button">log data</button>
+        <button onClick={() => {
+          console.log({ a: errors });
+        }} type="button">log errors</button>
       </div>
       {loading && (<LoadingScreen />)}
     </form>

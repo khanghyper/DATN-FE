@@ -1,5 +1,6 @@
 'use client'
 
+import { toast } from "@/components/ui/use-toast"
 import { clientAccessToken, shop_id } from "@/lib/http"
 import { addAccessToken, addInfo } from "@/redux/slices/profile.slice"
 import { ProfileStore, profileStore } from "@/redux/stores/profile.store"
@@ -24,7 +25,11 @@ export default function ProfileProvider({
     if (accessToken) {
       storeRef.current.dispatch(addInfo(info));
       shop_id.value = info.shop_id;
-      console.log({ shop_id: shop_id.value });
+      toast({
+        variant: "success",
+        title: "Thành công",
+        description: "Chào mừng bạn quay trở lại VNShop",
+      })
     }
     // if (typeof window !== 'undefined') {
     //   clientAccessToken.value = accessToken;

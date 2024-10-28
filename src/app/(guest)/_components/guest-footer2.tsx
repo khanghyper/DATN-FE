@@ -11,10 +11,10 @@ const GuestFooter2 = () => {
   return (
     <>
       {['verify', 'verify_email'].every(p => !pathname.endsWith(p)) && (
-        <div className='w-full flex justify-center'>
-          <div className='w-content h-[300px] bg-[#101e41]'>
-            <div className='top w-full h-[250px] flex'>
-              <div className='w-[800px] h-ful border-r-[1.5px] border-gray-500  border-b-[1.5px] flex items-center justify-around text-white'>
+        <div className='w-full flex justify-center bg-[#101e41]'>
+          <div className='w-content'>
+            <div className='top w-full h-[250px] flex justify-between'>
+              <div className='w-1/2 h-full border-r-[1.5px] border-gray-500  border-b-[1.5px] flex items-center justify-around text-white'>
                 <div className="section1 w-[180px] h-[180px] flex flex-col gap-2 text-[14px]">
                   <span className='font-bold '>Về chúng tôi</span>
                   <span>Giới thiệu về VNShop</span>
@@ -40,13 +40,13 @@ const GuestFooter2 = () => {
                   <span>Mở shop trên VNShop</span>
                 </div>
               </div>
-              <div className='w-[400px] h-full border-b-[1.5px] border-gray-500 flex flex-col'>
+              <div className='w-1/2 h-full border-b-[1.5px] border-gray-500 flex flex-col'>
                 <div className='w-full h-[70px] bg-[#e40a3e] flex justify-center items-center gap-4'>
                   <div className='w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center'>
                     <PhoneCall color='#e40a3e' />
                   </div>
                   <div className='text-white text-[18px] font-bold'>
-                    <p>Liên hệ với chúng tôi</p>
+                    <p className=''>Liên hệ với chúng tôi</p>
                   </div>
                 </div>
                 <div className='w-full h-[300px] flex flex-col items-center'>
@@ -54,14 +54,14 @@ const GuestFooter2 = () => {
                     <MailboxIcon size={50} color='white' />
                     <div className='flex flex-col text-white text-[18px]'>
                       <p className='font-bold'>Giải quyết thắc mắc </p>
-                      <p>lienhe@vnshop.vn</p>
+                      <p className='text-[16px]'>lienhe@vnshop.vn</p>
                     </div>
                   </div>
                   <div className='w-[300px] h-[100px] flex items-center gap-2 '>
                     <CirclePlayIcon size={50} color='white' />
                     <div className='flex flex-col text-white text-[18px]'>
                       <p className='font-bold'>Liên hệ quảng cáo</p>
-                      <p>quangcao@vnshop.vn</p>
+                      <p className='text-[16px]'>quangcao@vnshop.vn</p>
                     </div>
                   </div>
                 </div>

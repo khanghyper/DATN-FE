@@ -2,7 +2,7 @@
 import './table.css';
 import { Input } from '@/components/ui/input';
 import { ImageUp, Plus, Trash2, X } from "lucide-react";
-import { Controller, FieldArrayWithId, useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { Controller, FieldArrayWithId, useFieldArray, useForm, UseFormSetError, UseFormSetValue, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useEffect, useRef, useState } from 'react';
@@ -12,6 +12,8 @@ import NewProductVariantTable from '@/app/(shop)/_components/new-product-variant
 import slugify from 'slugify';
 import { useAppDispatch } from '@/redux/store';
 import { changeVariantMode, changeVariantMode1 } from '@/redux/slices/shop-new-product.slice';
+import { CreateShopFormData } from '@/app/(shop)/_components/create-shop-form-test';
+import { CreateProductFormData } from '@/app/(shop)/_components/new-product-form';
 
 
 
@@ -103,7 +105,12 @@ const combineVariants = (variants: FormData['variantItems']): FormData['variantP
   }) as FormData['variantProducts'];
 };
 
-export default function NewProductVariantWithVariantPartTest({ handleVariant }: { handleVariant: (data: any) => void }) {
+export default function NewProductVariantWithVariantPartTest({ handleVariant, setValueProduct, setErrorProduct }:
+  {
+    handleVariant: (data: any) => void,
+    setValueProduct: UseFormSetValue<CreateProductFormData>
+    setErrorProduct: UseFormSetError<CreateProductFormData>
+  }) {
   const accessToken = clientAccessToken.value;
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(0);
@@ -244,7 +251,7 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant }: 
             //   name: `variantItems.${index}.values`
             // });
             return (
-              <div key={index} className="w-full bg-[#f5f8fe] p-4 rounded-lg relative">
+              <div key={index} className="w-full bg-[#f5f8fe] p-4 rounded-lg relative mb-4">
                 <div onClick={() => {
                   remove(index);
                   if (getValues('variantItems').length === 0) {
@@ -252,6 +259,8 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant }: 
                     removeVariantProduct();
                     dispatch(changeVariantMode1(false));
                     handleVariant(null);
+                    setValueProduct('changeVariantMode', false);
+                    setErrorProduct('variant', { message: undefined })
                   }
                   console.log({ a: getValues('variantItems'), b: getValues('variantProducts') });
                 }} className='absolute top-4 right-4'><X /></div>

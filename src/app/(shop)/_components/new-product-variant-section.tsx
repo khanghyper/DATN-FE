@@ -7,9 +7,15 @@ import NewProductVariantWithoutVariantPart from "@/app/(shop)/_components/new-pr
 import { useAppSelector } from "@/redux/store"
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister, UseFormSetError, UseFormSetValue } from "react-hook-form";
 
-export default function NewProductVariantSection({ handleVariant, register }: { handleVariant: (data: any) => void, register: UseFormRegister<CreateProductFormData> }) {
+export default function NewProductVariantSection({ handleVariant, register, setError, errors, setValue }: {
+  handleVariant: (data: any) => void,
+  register: UseFormRegister<CreateProductFormData>
+  setError: UseFormSetError<CreateProductFormData>
+  errors: FieldErrors<CreateProductFormData>
+  setValue: UseFormSetValue<CreateProductFormData>
+}) {
   const isConfirmCategories = useAppSelector(state => state.shopListProduct.category.isConfirmCategories);
   // const isConfirmCategories = true;
   const isChangeVariantMode = useAppSelector(state => state.shopListProduct.varriant.isChangeVariantMode);
@@ -20,15 +26,16 @@ export default function NewProductVariantSection({ handleVariant, register }: { 
       <div className={`text-[20px] font-semibold mb-6 ${!isConfirmCategories && 'text-gray-400'}`}>Thông tin bán hàng</div>
       {isConfirmCategories && (
         <div>
-          {!isChangeVariantMode && (<NewProductVariantWithoutVariantPart register={register} />)}
+          {!isChangeVariantMode && (<NewProductVariantWithoutVariantPart setValue={setValue} errors={errors} setError={setError} register={register} />)}
           {isChangeVariantMode && (
-            <NewProductVariantWithVariantPartTest handleVariant={handleVariant} />
+            <NewProductVariantWithVariantPartTest setErrorProduct={setError} setValueProduct={setValue} handleVariant={handleVariant} />
           )}
         </div>
       )}
       {!isConfirmCategories && (
         <div className={`-mt-2 text-[14px] ${!isConfirmCategories && 'text-gray-400'}`}>Có thể điều chỉnh sau khi chọn ngành hàng</div>
       )}
+      {errors.variant && <p className="text-sm text-red-500 ml-[102px] mt-1">{errors.variant.message?.toString()}</p>}
     </div>
   )
 }

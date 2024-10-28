@@ -12,9 +12,6 @@ export async function middleware(request: NextRequest) {
   const info = request.cookies.get('info')?.value;
 
 
-  if (pathname === '/shop') {
-    console.log({ accessToken, info });
-  }
 
   if (privatePaths.some(path => pathname.startsWith(path)) && !accessToken) {
     return NextResponse.redirect(new URL('auth/login', request.url))

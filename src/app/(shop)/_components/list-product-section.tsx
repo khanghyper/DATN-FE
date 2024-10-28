@@ -101,6 +101,11 @@ export default function ListProductSection() {
         throw 'loi'
       }
       setProducts([...payload.data.data]);
+      toast({
+        variant: 'success',
+        title: "Thành công",
+        content: 'Xóa sản phẩm thành công'
+      })
     } catch (error) {
       toast({
         variant: 'destructive',
