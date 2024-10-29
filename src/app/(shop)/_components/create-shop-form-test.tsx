@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from "@/components/ui/use-toast";
+import LoadingScreen from "@/app/(guest)/_components/loading-screen";
 
 
 const schema = z.object({
@@ -42,10 +43,12 @@ export default function CreateShopFormTest({ info }: { info: any }) {
     mode: 'all',
     defaultValues: initialValues
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const onSubmit = async (data: CreateShopFormData) => {
     const newData = { ...data, address: undefined, ...data.address };
     try {
+      setLoading(true);
       const resToServer = await fetch('https://vnshop.top/api/shops', {
         method: "POST",
         headers: {
@@ -69,12 +72,13 @@ export default function CreateShopFormTest({ info }: { info: any }) {
           description: "Tạo shop thành công"
         })
         window.location.href = '/shop';
-        console.log(payload);
+        setLoading(false);
       } else {
         throw 'Có lỗi xãy ra, xin vui lòng liên hệ admin VNShop!'
       }
 
     } catch (error) {
+      setLoading(false);
       setErrorMessage(error as string);
     }
 
@@ -147,6 +151,7 @@ export default function CreateShopFormTest({ info }: { info: any }) {
           <div className="text-sm text-red-500">{errorMessage}</div>
         )}
       </form>
+      {loading && <LoadingScreen />}
     </>
   )
 }

@@ -25,7 +25,7 @@ import ListProductItem from "@/app/(shop)/_components/list-product-item";
 import ListProductPagination from "@/app/(shop)/_components/list-product-pagination";
 import Link from "next/link";
 import ListProductPopupCategory from "@/app/(shop)/_components/list-product-popup-category";
-import ListProductSection from "@/app/(shop)/_components/list-product-section";
+import ProductListSection from "@/app/(shop)/_components/product-list-section";
 
 
 
@@ -44,7 +44,7 @@ export default function ListProductPage() {
           </Link>
         </div>
       </div>
-      <ListProductSection />
+      <ProductListSection />
     </div>
   )
 }

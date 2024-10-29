@@ -1,6 +1,7 @@
 'use client'
 
 import LoadingScreen from "@/app/(guest)/_components/loading-screen"
+import EmptyProductList from "@/app/(shop)/_components/empty-product-list"
 import ListProductItem from "@/app/(shop)/_components/list-product-item"
 import ListProductPagination from "@/app/(shop)/_components/list-product-pagination"
 import ListProductPopupCategory from "@/app/(shop)/_components/list-product-popup-category"
@@ -45,7 +46,7 @@ const filters = [
 const apiurl = `${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}`;
 
 
-export default function ListProductSection() {
+export default function ProductListSection() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [status, setStatus] = useState<number>(1);
@@ -166,9 +167,10 @@ export default function ListProductSection() {
           </div>
         </div>
         <div className="border border-t-0 rounded-br rounded-bl">
-          {products.map((p, index) => (
+          {products.length > 0 && products.map((p, index) => (
             <ListProductItem key={index} p={p} handleDeleteProduct={handleDeleteProduct} />
           ))}
+          {!products.length && <EmptyProductList />}
           <ListProductPagination />
         </div>
         {/* <OrderItem />

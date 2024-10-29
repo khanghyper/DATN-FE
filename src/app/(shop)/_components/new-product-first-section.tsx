@@ -75,6 +75,8 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
     dispatch(changeProductName(name));
   }
 
+
+
   return (
     <div className="px-6 py-6 bg-white shadow rounded">
       <div className="text-[20px] font-semibold mb-6">Thông tin bán hàng</div>

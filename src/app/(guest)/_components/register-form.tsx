@@ -9,12 +9,12 @@ import { z } from 'zod';
 import { useForm } from "react-hook-form";
 
 const registerSchema = z.object({
-  fullname: z.string().min(1, { message: "Fullname is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  fullname: z.string().min(6, { message: "Tên phải từ 6 ký tự" }),
+  email: z.string().email({ message: "Email không hợp lệ" }),
+  password: z.string().min(6, { message: "Mật khẩu phải từ 6 ký tự" }),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: "Mật khẩu không khớp",
   path: ["confirmPassword"],
 });
 
@@ -33,6 +33,7 @@ export default function RegisterForm() {
 
   const { register, handleSubmit, setError, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: "all"
   });
 
   const onSubmit = async (dt: RegisterFormData) => {
