@@ -9,19 +9,23 @@ import { ImagePlus, Plus, Trash2, X } from "lucide-react";
 import { FormEvent, useState } from 'react';
 import { useDispatch } from "react-redux";
 
+
 export default function NewProductVariantWithVariantPart() {
   const dispatch = useDispatch();
-  const variantItems = useAppSelector(state => state.shopListProduct.varriant.variantItems);
-  const variantProducts = useAppSelector(state => state.shopListProduct.varriant.variantProducts);
+  // const variantItems = useAppSelector(state => state.shopListProduct.varriant.variantItems);
+  // const variantProducts = useAppSelector(state => state.shopListProduct.varriant.variantProducts);
   const [price, setPrice] = useState<string | undefined>('');
   const [inStock, setInstock] = useState<string | undefined>(undefined);
   const [sku, setSku] = useState('');
+  const variantItems = useAppSelector(state => state.shopListProduct.varriant.variantItems);
+  const variantProducts = useAppSelector(state => state.shopListProduct.varriant.variantProducts);
 
   const handleChangeVariantMode = () => {
     dispatch(changeVariantMode())
   }
 
-  const handleAddVariantItem = () => {
+  const handleAddVariantItem = (e: any) => {
+    e.preventDefault();
     dispatch(addVariant())
   }
 
@@ -53,9 +57,9 @@ export default function NewProductVariantWithVariantPart() {
           {
             variantItems.length < 2 && (
               <div className="bg-[#f6f6f6] p-4 rounded relative">
-                <button onClick={handleAddVariantItem} className="border-2 bg-white rounded border-dashed p-2 px-4 text-[14px] text-blue-600 hover:bg-blue-50 hover:border-blue-400">
+                <div onClick={handleAddVariantItem} className="border-2 inline-block cursor-pointer bg-white rounded border-dashed p-2 px-4 text-[14px] text-blue-600 hover:bg-blue-50 hover:border-blue-400">
                   Thêm nhóm phân loại 2
-                </button>
+                </div>
               </div>
             )
           }
@@ -100,9 +104,9 @@ export default function NewProductVariantWithVariantPart() {
               Áp dụng cho tất cả sản phẩm phân loại
             </button>
           </div>
-          {variantItems.length > 0 && (
+          {/* {variantItems.length > 0 && (
             <NewProductVariantTable />
-          )}
+          )} */}
         </div>
       </div>
 

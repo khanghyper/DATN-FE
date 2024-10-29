@@ -1,5 +1,8 @@
+'use client'
 import ShopHeader from "@/app/(shop)/_components/shop-header";
 import ShopSidebar from "@/app/(shop)/_components/shop-sidebar";
+import { toast } from "@/components/ui/use-toast";
+import { clientAccessToken } from "@/lib/http";
 import { useRouter } from "next/navigation";
 
 
@@ -9,6 +12,13 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   //   if (!test.shop_id) {
   //     router.push('/welcome');
   //   }
+  // }
+  // if (clientAccessToken.value) {
+  //   toast({
+  //     variant: "success",
+  //     title: "Chao mung",
+
+  //   })
   // }
 
   return (

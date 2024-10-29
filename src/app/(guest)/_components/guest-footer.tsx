@@ -12,7 +12,7 @@ const GuestFooter = () => {
     <>
       {!pathname.endsWith('verify') && (
         <div className='w-full flex justify-center'>
-          <div className='w-content  h-[430px]'>
+          <div className='w-content h-[430px]'>
             <div className="top-footer w-full h-[215px] flex justify-between items-center">
               <div className="section1 w-[151px] h-[172px] flex flex-col gap-2 text-[13px]">
                 <span className='font-bold '>Về chúng tôi</span>

@@ -15,8 +15,8 @@ export default function HomePage() {
       </div>
       <div className="w-content">
         <HangXinSection />
-        <Categories2 />
-        <GoiYSection />
+        {/* <Categories2 />
+        <GoiYSection /> */}
       </div>
     </>
   )

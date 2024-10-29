@@ -1,4 +1,5 @@
 'use client'
+import { CreateProductFormData } from "@/app/(shop)/_components/new-product-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,11 +16,19 @@ import { addToSelectedCategories, Category, confirmCategory } from "@/redux/slic
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { ChevronRight, Pen } from "lucide-react";
 import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
+import { UseFormSetError, UseFormSetValue } from "react-hook-form";
 
 
 
 
-function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory }: { isShowPopupCategory: boolean, setIsShowPopupCategory: Dispatch<SetStateAction<boolean>> }) {
+function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory, setValue, setError }:
+  {
+    isShowPopupCategory: boolean,
+    setIsShowPopupCategory: Dispatch<SetStateAction<boolean>>
+    setValue: UseFormSetValue<CreateProductFormData>
+    setError: UseFormSetError<CreateProductFormData>
+  }
+) {
 
   const dispatch = useAppDispatch();
   const rootCategories = useAppSelector(state => state.shopListProduct.category.rootCategories);
@@ -107,6 +116,8 @@ function NewProductPopupCategory({ isShowPopupCategory, setIsShowPopupCategory }
                       if (!isCategoryHasChildren(a.id)) {
                         setIsShowPopupCategory(false);
                         dispatch(confirmCategory(a.id));
+                        setValue('category_id', a.id);
+                        setError('category_id', { message: undefined })
                       }
                     }
                   }}>Confirm</Button>

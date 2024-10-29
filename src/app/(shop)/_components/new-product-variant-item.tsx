@@ -83,9 +83,9 @@ export default function NewProductVariantItem({ variantItem, index }: { variantI
           ))}
         </div>
         <div className="mt-4">
-          <button onClick={handleAddValueInVariantItem} className="border-2 flex gap-2 items-center bg-white rounded border-dashed p-2 px-4 text-[14px] text-blue-600 hover:bg-blue-50 hover:border-blue-400">
+          <div onClick={handleAddValueInVariantItem} className="border-2 inline-flex cursor-pointer gap-2 items-center bg-white rounded border-dashed p-2 px-4 text-[14px] text-blue-600 hover:bg-blue-50 hover:border-blue-400">
             <Plus size={14} /> Thêm
-          </button>
+          </div>
         </div>
       </div>
     </div>

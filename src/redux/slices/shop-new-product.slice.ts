@@ -3,6 +3,7 @@ import categoryApiRequest from '@/apiRequest/category'
 import { combineVariants } from '@/helpers'
 import http from '@/lib/http';
 import { AsyncThunk, createAsyncThunk, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { boolean } from 'zod';
 
 type GenericAsyncThunk = AsyncThunk<unknown, unknown, any>;
 
@@ -246,6 +247,9 @@ const shopNewProductSlice = createSlice({
         })
       }
     },
+    changeVariantMode1: (state, action: PayloadAction<boolean>) => {
+      state.varriant.isChangeVariantMode = action.payload;
+    },
     addVariant: (state) => {
       if (state.varriant.variantItems.length < 2) {
         state.varriant.variantItems.push({
@@ -350,6 +354,7 @@ export const {
   addProductDetail,
   addImage,
   changeProductPrice,
+  changeVariantMode1,
   changeProductSku,
   changeProductStock,
   deleteProductDetail,

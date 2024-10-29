@@ -1,17 +1,15 @@
 'use client'
 
+import { CreateProductFormData } from "@/app/(shop)/_components/new-product-form";
 import { changeProductSku } from "@/redux/slices/shop-new-product.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { useState } from "react";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 
-export default function NewProductOtherInfoSection() {
+export default function NewProductOtherInfoSection({ register, errors }: { register: UseFormRegister<CreateProductFormData>, errors: FieldErrors<CreateProductFormData> }) {
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const isConfirmCategories = useAppSelector(state => state.shopListProduct.category.isConfirmCategories);
-  const dispatch = useAppDispatch();
 
-  const handleChangeSku = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeProductSku(e.target.value));
-  }
 
   return (
     <div className="px-6 py-6 bg-white shadow rounded">
@@ -28,12 +26,11 @@ export default function NewProductOtherInfoSection() {
             <div className="w-full">
               <div className={`h-10 w-[400px] px-3 border rounded-sm flex ${isFocus ? 'border-black shadow-sm' : ''}`}>
                 <input
-                  onFocus={() => setIsFocus(true)}
-                  onBlur={() => setIsFocus(false)}
-                  onChange={handleChangeSku}
+                  {...register('sku')}
                   className="h-full w-full outline-none text-[14px]" placeholder="-"
                 />
               </div>
+              {errors.sku && <p className="text-sm text-red-500 mt-1 ">{errors.sku.message}</p>}
             </div>
           </div>
 

@@ -35,7 +35,7 @@ export default function NewProductDetailSection() {
                       onChange={(e) => setLabel(e.target.value)}
                     />
                   </div>
-                  <button onClick={() => {
+                  <button type="button" onClick={() => {
                     if (label) {
                       dispatch(addProductDetail(label));
                       setLabel('')

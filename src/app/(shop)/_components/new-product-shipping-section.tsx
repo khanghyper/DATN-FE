@@ -1,8 +1,13 @@
+import { CreateProductFormData } from '@/app/(shop)/_components/new-product-form';
 import { useAppSelector } from '@/redux/store';
 import { X } from 'lucide-react';
 import React from 'react'
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
-export default function NewProductShippingSection() {
+export default function NewProductShippingSection({ register, errors }: {
+  register: UseFormRegister<CreateProductFormData>,
+  errors: FieldErrors<CreateProductFormData>
+}) {
   const isConfirmCategories = useAppSelector(state => state.shopListProduct.category.isConfirmCategories);
 
   return (
@@ -19,11 +24,13 @@ export default function NewProductShippingSection() {
             </div>
             <div className="w-full">
               <div className="h-10 w-[210px] px-3 border rounded-sm flex">
-                <input className="h-full w-[150px] outline-none text-[14px]" placeholder="Input" />
+                <input type='number' {...register('weight')} className="h-full w-[150px] outline-none text-[14px]" placeholder="Input" />
                 <div className="pl-2 h-full flex items-center">
                   <div className="h-6 border-l pl-2 text-[14px] text-gray-400">Gr</div>
                 </div>
               </div>
+              {errors.weight && <p className="text-sm text-red-500 mt-1 ">{errors.weight.message}</p>}
+
             </div>
           </div>
           <div className="w-full flex mb-6">
@@ -33,25 +40,36 @@ export default function NewProductShippingSection() {
               </div>
             </div>
             <div className="w-full flex gap-4 items-center">
-              <div className="h-10 w-[210px] px-3 border rounded-sm flex">
-                <input className="h-full w-[150px] outline-none text-[14px]" placeholder="Rộng" />
-                <div className="pl-2 h-full flex items-center">
-                  <div className="h-6 border-l pl-2 text-[14px] text-gray-400">cm</div>
+              <div>
+                <div className="h-10 w-[210px] px-3 border rounded-sm flex">
+                  <input type='number' {...register('width')} className="h-full w-[150px] outline-none text-[14px]" placeholder="Rộng" />
+                  <div className="pl-2 h-full flex items-center">
+                    <div className="h-6 border-l pl-2 text-[14px] text-gray-400">cm</div>
+                  </div>
                 </div>
+                {errors.width && <p className="text-sm text-red-500 mt-1 ">{errors.width.message}</p>}
+
               </div>
               <X color="#ababab" />
-              <div className="h-10 w-[210px] px-3 border rounded-sm flex">
-                <input className="h-full w-[150px] outline-none text-[14px]" placeholder="Dài" />
-                <div className="pl-2 h-full flex items-center">
-                  <div className="h-6 border-l pl-2 text-[14px] text-gray-400">cm</div>
+              <div>
+                <div className="h-10 w-[210px] px-3 border rounded-sm flex">
+                  <input type='number' {...register('length')} className="h-full w-[150px] outline-none text-[14px]" placeholder="Dài" />
+                  <div className="pl-2 h-full flex items-center">
+                    <div className="h-6 border-l pl-2 text-[14px] text-gray-400">cm</div>
+                  </div>
                 </div>
+                {errors.length && <p className="text-sm text-red-500 mt-1 ">{errors.length.message}</p>}
+
               </div>
               <X color="#ababab" />
-              <div className="h-10 w-[210px] px-3 border rounded-sm flex">
-                <input className="h-full w-[150px] outline-none text-[14px]" placeholder="Cao" />
-                <div className="pl-2 h-full flex items-center">
-                  <div className="h-6 border-l pl-2 text-[14px] text-gray-400">cm</div>
+              <div>
+                <div className="h-10 w-[210px] px-3 border rounded-sm flex">
+                  <input type='number' {...register('height')} className="h-full w-[150px] outline-none text-[14px]" placeholder="Cao" />
+                  <div className="pl-2 h-full flex items-center">
+                    <div className="h-6 border-l pl-2 text-[14px] text-gray-400">cm</div>
+                  </div>
                 </div>
+                {errors.height && <p className="text-sm text-red-500 mt-1 ">{errors.height.message}</p>}
               </div>
             </div>
           </div>
