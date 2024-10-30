@@ -1,4 +1,4 @@
-import { ChevronDown, FileLineChart, Filter, Star, ThumbsUp } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, FileLineChart, Filter, LayoutPanelLeft, Star, ThumbsUp } from 'lucide-react';
 import React from 'react';
 import CardProduct from '../_components/card-product';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
@@ -19,8 +19,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { Button } from '@/components/ui/button';
 
-const categoriesList: any = [
+const categoriesList: any[] = [
   {
     title: 'Dụng cụ nhà bếp',
     categoryChildren: [
@@ -41,6 +42,18 @@ const categoriesList: any = [
     title: 'Nội thất'
   }
 ];
+
+const categoriesListChildren: { id: number, title: string, parentId: number }[] = [
+  { id: 1, title: 'Đồ dùng nhà cửa', parentId: 0 },
+  { id: 2, title: 'Nước lau nhà', parentId: 1 },
+  { id: 3, title: 'Nước lau nhà 2', parentId: 1 },
+  { id: 4, title: 'Nước lau nhà 3', parentId: 1 },
+  { id: 5, title: 'Dọn dẹp vệ sinh', parentId: 0 },
+  { id: 6, title: 'Nước rửa chén', parentId: 5 },
+  { id: 7, title: 'Nước rửa chén 2', parentId: 5 },
+  { id: 8, title: 'Nước rửa chén 3', parentId: 5 },
+  { id: 9, title: 'Nước rửa chén 4', parentId: 5 },
+]
 
 const filterCate: any = [
   {
@@ -64,147 +77,206 @@ const filterCate: any = [
   },
 ];
 
+const onclickProductCate = (cateId: number) => {
 
-const CategoriesPage = () => {
-  return (
-    <>
-      <Breadcrumb className="pb-5">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage className='font-semibold'>Nhà cửa - Đời sống</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div className='bottom-cate w-content flex py-4 justify-between'>
-        <div className="left-bottom-cate w-[208px] h-auto ">
-          <div className="list-cate flex flex-col w-full ">
-            <h2 className='font-bold text-[17px] mt-2'>Khám phá theo danh mục</h2>
-            <div className="section1-list-cate w-full flex flex-col gap-1 pl-[4px] mt-2">
-              <Accordion type="single" collapsible>
-                {
-                  categoriesList.map((it: any, index: number) => (
-                    <AccordionItem value={`item-${index}`} key={index} >
-                      <AccordionTrigger className='font-semibold text-[16px] pb-2'>{it.title}</AccordionTrigger>
-                      {
-                        it.categoryChildren && it.categoryChildren.map((ct: any, childIndex: number) => (
-                          <AccordionContent className='pl-1 text-[14px] font-medium pb-2' key={childIndex}>
-                            {ct.title}
-                          </AccordionContent>
-                        ))
-                      }
-                    </AccordionItem>
-                  ))
-                }
-              </Accordion>
-            </div>
-          </div>
-          <div className="list-cate flex flex-col w-full ">
-            <h2 className='font-bold text-[17px] mt-2'>Lọc sản phẩm</h2>
-            <div className="section1-list-cate w-full flex flex-col gap-1 pl-[4px] mt-2">
-              <Accordion type="single" collapsible>
-                {
-                  filterCate.map((it: any, index: number) => (
-                    <AccordionItem value={`item-${index}`} key={index}>
-                      <AccordionTrigger className='font-semibold text-[16px] pb-2'>{it.title}</AccordionTrigger>
-                      {
-                        it.opt && it.opt.map((cd: any, index: number) => (
-                          <AccordionContent key={index} className='pl-1 text-[14px] font-medium pb-2'>
-                            {cd.title}
-                          </AccordionContent>
-                        ))
-                      }
-                    </AccordionItem>
-                  ))
-                }
-              </Accordion>
-            </div>
-          </div>
+}
 
-        </div>
-        <div className="right-bottom-cate w-[971px] h-auto">
-          {/* <div className="title-right-cate w-full h-[74px] flex items-center">
-            <h1 className='font-extrabold text-[20px] pl-[14px]'>Nhà cửa & Đời sống</h1>
-          </div> */}
-          <div className="banner-right-cate w-full h-[190px] flex gap-3">
-            <img src="./images/banner1.webp" className='w-1/2 rounded ' />
-            <img src="./images/banner1.webp" className='w-1/2 rounded' />
-          </div>
-          <CategoriesIconGuest />
-          <div className="option-cate-right w-full h-[103px] pt-4 ">
-            <div className='w-full flex items-center'>
-              <div className="title w-full h-[24px] ">
-                <h2 className='font-bold text-[18px]'>Tất cả sản phẩm</h2>
-              </div>
-              <div className="mt-2 right-opt w-[95px] h-[36px] flex gap-3 border rounded-[15px] px-2 py-1 items-center cursor-pointer">
-                <Filter size={18} />
-                <h2 className='text-[14px]'>Tất cả</h2>
-              </div>
-            </div>
-            <div className="opt-bottom w-full h-[24px] flex justify-between items-center mt-4 text-[14px]">
-              <div className="left-bottom w-600px h-full flex items-center gap-3">
-                <div className='flex gap-1 items-center'>
-                  <span className='border py-3 px-3 rounded-[10px] bg-gray-200'></span>
-                  <span className='text-red-600 font-bold'>NOW</span>
-                  <span>Giao hỏa tốc 2H</span>
+
+const CategoriesPage = async () => {
+  try {
+    const apiProduct = await fetch('https://vnshop.top/api/products').then(res => res.json());
+    if (apiProduct) {
+      return (
+        <>
+          <Breadcrumb className="pb-5">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className='font-semibold'>Danh mục sản phẩm</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <div className='bottom-cate w-content flex py-4 justify-between'>
+            <div className="left-bottom-cate w-[208px] h-auto">
+              <div className="list-cate flex flex-col w-full ">
+                <div className='w-full h-[50px] flex gap-2 items-center border-b-2'>
+                  <LayoutPanelLeft size={20} />
+                  <h2 className='font-bold text-[18px]'>Tất cả danh mục</h2>
                 </div>
-                <div className='flex gap-1 items-center'>
-                  <span className='border py-3 px-3 rounded-[10px] bg-gray-200'></span>
-                  <ThumbsUp size={16} className='text-red-600' />
-                  <span className='text-red-600 font-bold'>TOP DEAL 25.7</span>
-                  <span>Siêu rẻ</span>
+                <div className="section1-list-cate w-full flex flex-col gap-1 pl-[4px] mt-4">
+                  <Accordion type="single" collapsible>
+                    {/* {
+                      categoriesListChildren.filter(item => item.parentId == 0).map((item: any) => (
+                        <AccordionItem value={item.id} key={item.id} >
+                          <AccordionTrigger className='font-semibold text-[16px] pb-2'>{item.title}</AccordionTrigger>
+                          {
+                            categoriesListChildren.filter(parentId => parentId.parentId == item.id).map((item2: any) => (
+                              <AccordionContent className='pl-2 text-[14px] font-medium pb-2' key={item2.id}>
+                                - {item2.title}
+                              </AccordionContent>
+                            ))
+                          }
+                        </AccordionItem>
+                      ))
+                    } */}
+                    {
+                      categoriesListChildren.filter(filterCate => filterCate.parentId == 0).map((item: any, index: number) => (
+                        <AccordionItem value={item.id} key={index} >
+                          <AccordionTrigger className=' text-[16px] pb-2 '>{item.title}</AccordionTrigger>
+                        </AccordionItem>
+                      ))
+                    }
+                  </Accordion>
                 </div>
-                <div className='flex gap-1 items-center'>
-                  <span className='border py-3 px-3 rounded-[10px] bg-gray-200'></span>
-                  <Star size={16} color='yellow' />
-                  <Star size={16} color='yellow' />
-                  <Star size={16} color='yellow' />
-                  <Star size={16} color='yellow' />
+              </div>
+              <div className="filter-cate flex flex-col w-full mt-2 border-b-2 ">
+                <div className='w-full h-[50px] flex gap-2 items-center border-b-2  '>
+                  <Filter size={20} />
+                  <h2 className='font-bold text-[18px]'>Lọc sản phẩm</h2>
+                </div>
+                <div className="section1-list-cate w-full flex flex-col gap-2 pl-[4px] mt-2 ">
+                  <span>Theo danh mục</span>
+                  <div className='w-full flex flex-col gap-2 mb-2'>
+                    {
+                      categoriesListChildren.filter(filterCate => filterCate.parentId == 0).map((item: any, index: number) => (
+                        <div className='w-full flex h-[32px] gap-2 items-center' key={index}>
+                          <span className='size-4 border'></span>
+                          <span className='text-[14px]'>{item.title}</span>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              </div>
+              <div className='khoangGiaSection w-full h-[140px] border-b-2 flex flex-col gap-3 py-4'>
+                <span>Khoảng Giá</span>
+                <div className='w-full h-[30px] flex gap-2 items-center'>
+                  <input type="number" placeholder='đ TỪ' className='w-[80px] text-[12px] h-full outline-none border pl-2' />
+                  <span className='w-[30px] border h-0'></span>
+                  <input type="number" placeholder='đ ĐẾN' className='w-[80px] text-[12px] h-full outline-none border pl-2' />
+                </div>
+                <Button className='h-[32px] rounded-none bg-blue-500'>Áp dụng</Button>
+              </div>
+              <div className='danhGiaSection w-full  flex flex-col gap-2 border-b-2 py-4'>
+                <span>Đánh Giá</span>
+                <div className='w-full h-[25px] flex gap-2 pl-4 items-center'>
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                </div>
+                <div className='w-full h-[25px] flex gap-2 pl-4 items-center'>
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
                   <Star size={16} color='black' />
-                  <span>Từ 4 sao</span>
+                  <span>trở lên</span>
+                </div>
+                <div className='w-full h-[25px] flex gap-2 pl-4 items-center'>
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='black' />
+                  <Star size={16} color='black' />
+                  <span>trở lên</span>
+                </div>
+                <div className='w-full h-[25px] flex gap-2 pl-4 items-center'>
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='black' />
+                  <Star size={16} color='black' />
+                  <Star size={16} color='black' />
+                  <span>trở lên</span>
+                </div>
+                <div className='w-full h-[25px] flex gap-2 pl-4 items-center'>
+                  <Star size={16} color='orange' />
+                  <Star size={16} color='black' />
+                  <Star size={16} color='black' />
+                  <Star size={16} color='black' />
+                  <Star size={16} color='black' />
+                  <span>trở lên</span>
                 </div>
               </div>
-              <div className="right-bottom w-[182px] h-full flex items-center gap-2 ">
-                <span>Sắp xếp</span>
-                <div className='h-full flex border py-4 px-4 items-center rounded-[15px] '>
-                  <span>Phổ biến</span>
-                  <ChevronDown size={16} />
-                </div>
+              <div className='w-full h-[30px] pt-4'>
+                <Button className='w-full rounded-none bg-blue-500'>Xóa tất cả</Button>
               </div>
             </div>
-          </div>
-          <div className='card-product w-full'>
-            <div className="list-card-product py-3 grid grid-cols-4 gap-4">
-              {
-                Array.from({ length: 20 }, (_, i) => i + 1).map(item => (
-                  <CardProduct key={item} />
-                ))
-              }
+            <div className="right-bottom-cate w-[971px] h-auto ">
+              {/* <div className="title-right-cate w-full h-[74px] flex items-center">
+                <h1 className='font-extrabold text-[20px] pl-[14px]'>Nhà cửa & Đời sống</h1>
+              </div> */}
+              {/* <div className="banner-right-cate w-full h-[190px] flex gap-3">
+                <img src="./images/banner1.webp" className='w-1/2 rounded ' />
+                <img src="./images/banner1.webp" className='w-1/2 rounded' />
+              </div> */}
+              {/* <CategoriesIconGuest /> */}
+              <div className="option-cate-right w-full h-[50px] border-b-2 bg-gray-200 flex justify-between">
+                <div className='w-[700px] h-full flex gap-4 px-4 items-center '>
+                  <span>Sắp xếp theo</span>
+                  <Button className=' h-[34px] px-[15px] rounded-none bg-blue-500'>Phổ biến</Button>
+                  <Button className=' h-[34px] px-[15px] rounded-none bg-white text-black hover:bg-white'>Mới Nhất</Button>
+                  <Button className=' h-[34px] px-[15px] rounded-none bg-white text-black hover:bg-white'>Bán Chạy</Button>
+                  <div className='w-[200px] h-[34px] flex justify-between items-center bg-white px-2 py-2 relative'>
+                    <span>Giá</span>
+                    <ChevronDown />
+                    <div className='hidden w-full bg-white absolute top-[33px] left-0 flex flex-col gap-2 p-2'>
+                      <span>Giá: Thấp đến Cao</span>
+                      <span>Giá: Cao đến Thấp</span>
+                    </div>
+                  </div>
+                </div>
+                <div className='w-[calc(100% - 700px)] flex items-center gap-2 px-4'>
+                  <div className=''>
+                    <span className='text-orange-500'>1</span>
+                    <span>/</span>
+                    <span>17</span>
+                  </div>
+                  <div className='flex'>
+                    <ChevronLeft size={12} className='px-1 w-[30px] h-[30px] border bg-white' />
+                    <ChevronRight size={12} className='px-1 w-[30px] h-[30px] border bg-white' />
+                  </div>
+                </div>
+              </div>
+              <div className='card-product w-full'>
+                <div className="list-card-product py-3 grid grid-cols-4 gap-4">
+                  {
+                    apiProduct.data.data.map((item: any, index: number) => (
+                      <CardProduct key={index} p={item} />
+                    ))
+                  }
+                </div>
+              </div>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           </div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      </div>
-    </>
-  );
+        </>
+      );
+    } else {
+      throw new Error('Lỗi lấy api kìa');
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default CategoriesPage;
