@@ -8,19 +8,19 @@ import { Input } from '@/components/ui/input';
 import LoadingScreen from './loading-screen';
 
 const ProductDetailSection = ({ product }: { product: any }) => {
-  const [productDetail,setProductDetail] = useState<any>([...product]);
+  const [productDetail, setProductDetail] = useState<any>([product]);
   const [name, setName] = useState<string>(product.name);
   const [loading, setLoading] = useState<boolean>(false);
 
   console.log(productDetail);
-  
+
   // useEffect(() => {
   //   const getData = async() =>{
   //     try {
   //       const result = await getData123(1)
   //       console.log(result);
   //     } catch (error) {
-        
+
   //     }finally{
   //       setLoading(false)
   //     }
@@ -41,21 +41,15 @@ const ProductDetailSection = ({ product }: { product: any }) => {
                     <img className="border size-full object-contain" src={`${productDetail[0].image}`} alt="" />
                   </div>
                   <div className=" my-[5px] -mx-[5px] flex">
-                    <div className="p-[5px] size-[92px]">
-                      <div className="size-full">
-                        <img className="border size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                      </div>
-                    </div>
-                    <div className="p-[5px] size-[92px]">
-                      <div className="size-full">
-                        <img className="border size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                      </div>
-                    </div>
-                    <div className="p-[5px] size-[92px]">
-                      <div className="size-full">
-                        <img className="border size-full object-cover" src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lk0onee5bmb8cc" alt="" />
-                      </div>
-                    </div>
+                    {
+                      productDetail[0].images.map((image: any) => (
+                        <div className="p-[5px] size-[92px]">
+                          <div className="size-full">
+                            <img className="border size-full object-cover" src={`${image.url}`} alt="" />
+                          </div>
+                        </div>
+                      ))
+                    }
                   </div>
                 </div>
               </div>
@@ -444,7 +438,7 @@ const ProductDetailSection = ({ product }: { product: any }) => {
         )
       }
       {
-        loading && <LoadingScreen/>
+        loading && <LoadingScreen />
       }
     </>
   );
