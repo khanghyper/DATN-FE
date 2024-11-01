@@ -6,12 +6,16 @@ import { clientAccessToken } from "@/lib/http";
 import { addImage, changeProductName } from "@/redux/slices/shop-new-product.slice";
 import { useAppSelector } from "@/redux/store";
 import { useAppInfoSelector } from "@/redux/stores/profile.store";
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
-import { FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetError, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { Control, FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetError, UseFormSetValue, UseFormWatch, useWatch } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { closestCenter, DndContext, DragEndEvent, MeasuringStrategy } from '@dnd-kit/core'
+import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable'
+import ProductImage from "@/app/(shop)/_components/product-image";
 
-export default function NewProductFirstSection({ register, errors, getValues, watch, setValue, setError }:
+
+export default function NewProductFirstSection({ register, errors, getValues, watch, setValue, control, setError }:
   {
     register: UseFormRegister<CreateProductFormData>,
     errors: FieldErrors<CreateProductFormData>
@@ -19,11 +23,14 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
     watch: UseFormWatch<CreateProductFormData>
     setValue: UseFormSetValue<CreateProductFormData>
     setError: UseFormSetError<CreateProductFormData>
+    control: Control<CreateProductFormData>
   }
 ) {
   const [isShowPopupCategory, setIsShowPopupCategory] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const images = useAppSelector(state => state.shopListProduct.images);
+  // const images = useAppSelector(state => state.shopListProduct.images);
+  // const images = getValues('images');
+  const images = useWatch({ control, name: "images" });
   const [imagesLimit, setImagesLimit] = useState<number>(9)
   const productName = useAppSelector(state => state.shopListProduct.name);
   const dispatch = useDispatch();
@@ -31,7 +38,6 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
 
   const accessToken = clientAccessToken.value;
 
-  console.log({ accessToken });
 
   const handleImageClick = () => {
     if (images.length < 9) {
@@ -75,6 +81,32 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
     dispatch(changeProductName(name));
   }
 
+  const handleDeleteImg = (i: number) => {
+    const newImages = getValues('images').filter((_, index) => index !== i);
+    setValue('images', [...newImages]);
+  }
+
+  const handleDragEnd = (e: DragEndEvent) => {
+    console.log('handle drag end: ', e);
+
+    const { active, over, delta } = e;
+    if (over) {
+      if (active.id !== over.id) {
+        const oldIndex = images.findIndex((_, index) => index === active.id);
+        const newIndex = images.findIndex((_, index) => index === over.id);
+
+        const newImages = arrayMove(images, oldIndex, newIndex);
+        setValue('images', newImages);
+      }
+    } else {
+      return
+    }
+    // if (delta.x === delta.y && delta.x === 0) {
+    //   const id = active.id;
+    //   const newImages = images.filter((_, index) => id !== index);
+    //   setValue('images', newImages);
+    // }
+  }
 
 
   return (
@@ -87,17 +119,42 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
             <div className="text-[14px] h-full font-medium flex items-center">Hình ảnh sản phẩm</div>
           </div>
         </div>
-        <div className="">
+        <div className="w-full">
           <div className="flex gap-2 h-10">
             <input type="radio" defaultChecked={true} />
             <div className="text-[14px] font-medium f-full flex items-center">Ảnh tỷ lệ 1:1</div>
           </div>
-          <div className="flex gap-5">
-            {images.length > 0 && images.map((it, index) => (
-              <div className="size-20">
-                <img key={index} src={it} className="object-cover size-full border rounded shadow-sm" alt="" />
+          <div className="flex gap-5 w-full">
+
+            <DndContext
+              measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+              onDragStart={(e) => {
+                console.log('handle drg start: ', e);
+              }}
+              onDragEnd={handleDragEnd}
+            >
+              <div className="flex gap-5 relative">
+                {images.length > 0 && images.map((it, index) => (
+                  <SortableContext key={index} items={images.map((_, index) => index)} strategy={horizontalListSortingStrategy}>
+                    <ProductImage handleDeleteImg={handleDeleteImg} id={index} image={it} />
+                  </SortableContext>
+                ))}
               </div>
-            ))}
+            </DndContext>
+            {/* <div className="flex gap-5">
+              {images.length > 0 && images.map((it, index) => (
+                <div className="size-20 relative" draggable>
+                  <img key={index} src={it} className="object-cover size-full border rounded shadow-sm" alt="" />
+                  <div
+                    onClick={() => handleDeleteImg(index)}
+                    className="rounded-full bg-red-400 size-4 absolute flex items-center justify-center -top-1 -right-1 cursor-pointer"
+                  >
+                    <X strokeWidth={1.25} className="size-3" color="white" />
+                  </div>
+                </div>
+              ))}
+            </div> */}
+
             {loading && (
               <div
                 className="border-dashed border-gray-400 border size-20 cursor-pointer hover:bg-blue-100 rounded">

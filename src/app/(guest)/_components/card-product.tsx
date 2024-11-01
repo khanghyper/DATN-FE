@@ -13,7 +13,7 @@ export default function CardProduct({ p }: { p: any }) {
   }
 
   return (
-    <div className="card-product py-1 shadow rounded border">
+    <div className="card-product py-1 shadow rounded border bg-white">
       <div className="img w-full px-5 pt-2 h-[200px]">
         <Link href={`/products/${p.slug}`}>
           <img className="size-full object-cover " src={p.image ? p.image : 'https://images.unsplash.com/photo-1517037673086-5d09c5e1a537?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} alt="" />

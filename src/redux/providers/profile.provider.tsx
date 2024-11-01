@@ -25,11 +25,11 @@ export default function ProfileProvider({
     if (accessToken) {
       storeRef.current.dispatch(addInfo(info));
       shop_id.value = info.shop_id;
-      toast({
-        variant: "success",
-        title: "Thành công",
-        description: "Chào mừng bạn quay trở lại VNShop",
-      })
+      // toast({
+      //   variant: "success",
+      //   title: "Thành công",
+      //   description: "Chào mừng bạn quay trở lại VNShop",
+      // })
     }
     // if (typeof window !== 'undefined') {
     //   clientAccessToken.value = accessToken;
