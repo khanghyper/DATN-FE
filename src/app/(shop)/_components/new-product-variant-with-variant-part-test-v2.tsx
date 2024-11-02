@@ -30,9 +30,11 @@ type VariantProduct = {
   variants: { name: string; value: string }[];
 };
 const variantItemSchema = z.object({
+  id: z.string().min(1),
   name: z.string().min(1, { message: "Vui lòng nhập tên biến thể" }).refine(v => v.length > 0, { message: "Vui lòng nhập tên biến thể" }),
   values: z.array(
     z.object({
+      id: z.string().min(1),
       value: z.string().min(1, { message: "Vui lòng nhập giá trị biến thể" }).refine(v => v.length > 0, { message: "Vui lòng nhập giá trị biến thể" }),
       image: z.string().min(0)
     })
@@ -42,12 +44,14 @@ const variantItemSchema = z.object({
 type VariantItemFormData = z.infer<typeof variantItemSchema>
 
 const variantProductSchema = z.object({
+  id: z.string().min(1),
   price: z.coerce.number({ message: "Vui lòng nhập giá" }),
   stock: z.coerce.number({ message: "Vui lòng nhập số lượng" }).int().min(0, { message: "InStock must be a positive integer" }),
   sku: z.string().min(1, { message: "Vui lòng nhập sku" }),
   image: z.string().min(0, { message: "Image must be a valid URL" }),
   variants: z.array(
     z.object({
+      id: z.string().min(1),
       name: z.string().min(1, { message: "Variant name is required" }),
       value: z.string().min(1, { message: "Variant value is required" })
     })
@@ -64,22 +68,23 @@ const formSchema = z.object({
 export type FormData = z.infer<typeof formSchema>;
 
 const combineVariants = (variants: FormData['variantItems']): FormData['variantProducts'] => {
-  const init: { name: string; value: string }[][] = [[]];
+  const init: { name: string; value: string, id: string }[][] = [[]];
 
   // Lấy tên và giá trị từ các biến thể, lọc những giá trị không có
   const a = variants.map(item => ({
+    id: nanoid(12),
     name: item.name,
     values: item.values
       .filter(i => i.value) // Lọc các giá trị không rỗng
-      .map(i => i.value) // Lấy giá trị
+      .map(i => ({ value: i.value, id: i.id })) // Lấy giá trị
   }));
 
   // Kết hợp các biến thể
   const b = a.reduce((acc, curr) => {
-    const result: { name: string; value: string }[][] = [];
+    const result: { name: string; value: string, id: string }[][] = [];
     acc.forEach(a => {
       curr.values.forEach(v => {
-        result.push([...a, { name: curr.name, value: v }]);
+        result.push([...a, { name: curr.name, value: v.value, id: v.id }]);
       });
     });
     return result;
@@ -97,6 +102,7 @@ const combineVariants = (variants: FormData['variantItems']): FormData['variantP
 
     // Trả về đối tượng VariantProduct
     return {
+      id: nanoid(12),
       price: 0,      // Giá mặc định
       stock: 0,    // Số lượng có sẵn mặc định
       sku: '',       // SKU mặc định
@@ -149,7 +155,7 @@ const combineVariants1 = (variants: any): any => {
   });
 };
 
-export default function NewProductVariantWithVariantPartTest({ handleVariant, setValueProduct, setErrorProduct }:
+export default function NewProductVariantWithVariantPartTestV2({ handleVariant, setValueProduct, setErrorProduct }:
   {
     handleVariant: (data: any) => void,
     setValueProduct: UseFormSetValue<CreateProductFormData>
@@ -168,8 +174,9 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant, se
     defaultValues: {
       variantItems: [
         {
+          id: nanoid(12),
           name: "",
-          values: [{ value: "", image: "" }]
+          values: [{ value: "", image: "", id: nanoid(12) }]
         }
       ],
       variantProducts: []
@@ -224,26 +231,14 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant, se
         handleVariant(null);
       } else {
         setIsComfirm(true);
-        const a = getValues('variantItems').map(x => ({ ...x, id: nanoid(12), values: x.values.map(z => ({ ...z, id: nanoid(12) })) }));
-        handleVariant({ variantItems: a, variantProducts: combineVariants1(a) });
+        handleVariant({ variantItems: watchedVariantItems, variantProducts: watchedVariantProducts });
       }
     }
     a()
   }, [watchedVariantProducts, trigger, variantItems, errors])
 
-  const createVariantProductsTable = async () => {
-    // Kiểm tra lỗi trong variantItems
-    trigger();
-    const isValid = await trigger("variantItems");
-    console.log(watchedVariantItems);
-    if (isValid) {
-      console.log('ko loi~', getValues('variantItems'));
-    } else {
-      console.log("Variant Items contain errors. Please fix them first.", errors);
-    }
-  };
 
-  const handleUploadImage = async (index: number, subIndex: number, image: File, item: FieldArrayWithId<FormData, "variantItems", "id">) => {
+  const handleUploadImage = async (index: number, subIndex: number, image: File, item: any) => {
     const formData = new FormData();
     formData.append('images[]', image);
     try {
@@ -267,9 +262,6 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant, se
     }
   }
 
-  const handleClickUploadImage = (index: number) => {
-    fileInputRefs.current[index]?.click();
-  };
 
 
   const onSubmit = (data: FormData) => {
@@ -374,7 +366,7 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant, se
                     // await trigger(`variantItems.${index}.values.${variantItems[index].values.length - 1}`);
                     // console.log({ variantItems });
                     const a = getValues(`variantItems.${index}`);
-                    a.values.push({ image: "", value: "" });
+                    a.values.push({ image: "", value: "", id: nanoid(12) });
                     update(index, a);
                     const x = getValues('variantItems');
                     const z = combineVariants(x);
@@ -387,7 +379,7 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant, se
           })}
           {variantItems.length < 2 && (
             <div onClick={() => {
-              append({ name: "", values: [{ value: "", image: "" }] })
+              append({ id: nanoid(12), name: "", values: [{ value: "", image: "", id: nanoid(12) }] })
               trigger();
             }} className='inline-block border mt-4 p-2 rounded text-sm cursor-pointer'>Thêm biến thể</div>
           )}
@@ -395,9 +387,10 @@ export default function NewProductVariantWithVariantPartTest({ handleVariant, se
         </div>
       </div>
 
-      {/* <div onClick={async () => {
-        await createVariantProductsTable()
-      }} className='border inline-block p-4'>Tạo sản phẩm biến thể</div> */}
+      <div onClick={async () => {
+        console.log({ watchedVariantItems });
+        console.log({ abx: combineVariants(watchedVariantItems) });
+      }} className='border inline-block p-4'>Tạo sản phẩm biến thể</div>
 
       <div className="w-full flex mb-6">
         <div>

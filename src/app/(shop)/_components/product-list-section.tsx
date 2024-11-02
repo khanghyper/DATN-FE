@@ -76,6 +76,8 @@ export default function ProductListSection() {
     a();
   }, [status])
 
+  console.log({ products });
+
   const handleChangeStatus = (s: number) => {
     setStatus(s);
   }
@@ -122,6 +124,7 @@ export default function ProductListSection() {
 
   return (
     <>
+      <div>he</div>
       <div className="flex p-2 px-3 gap-2">
         {statusList.map((item => (
           <div key={item.value}
@@ -173,9 +176,6 @@ export default function ProductListSection() {
           {!products.length && <EmptyProductList />}
           <ListProductPagination />
         </div>
-        {/* <OrderItem />
-        <OrderItem /> */}
-        {/* <EmptyOrder /> */}
       </div>
       {loading && <LoadingScreen />}
     </>

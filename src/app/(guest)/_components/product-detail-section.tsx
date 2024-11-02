@@ -9,18 +9,50 @@ import { formattedPrice } from "@/lib/utils"
 import { Heart, PhoneCall, ShoppingBasket, SquareCheckBig, Star, Store } from "lucide-react"
 import { useEffect, useState } from "react"
 
-export default function ProductDetailSection({ product, variantInfo, variantsString }: { product: any, variantInfo: any, variantsString: any }) {
+export default function ProductDetailSection({ product, variant }: { product: any, variant: any }) {
   let show_price = (product.show_price as string).split(' - ').length > 1 ?
     (product.show_price as string).split(' - ').map(p => formattedPrice(+p)).join(" - ") : formattedPrice(+product.show_price);
 
   // const [attributes, setAttributes] = useState<any[]>(variantInfo.attribute);
   // const [values, setValues] = useState<any[]>(variantInfo.value);
   // const [variantProducts, setVariantProducts] = useState<any[]>(variantInfo.variant);
-  const [variantSelected, setVariantSelected] = useState<any>(() => {
-    return 1;
+  const [variantSelected, setVariantSelected] = useState<any[]>(() => {
+    if (variant) {
+      return variant.json.variantItems.map((a: any, index: number) => ({ index, id: "" }))
+    }
+    return []
   });
 
-  console.log(JSON.stringify({ variantSelected, variantInfo }));
+  const [rootProduct, setRootProduct] = useState<any>({ ...product, show_price })
+
+  console.log({ a: variant.json.variantItems });
+
+  useEffect(() => {
+    if (variant) {
+      const variantProductsMe = variant.json.variantProducts;
+      const variantProductBE = variant.variantProducts;
+
+      const findProduct = variantProductsMe.find((p: { variants: { id: string }[] }) => {
+        if (variantSelected.length !== p.variants.length) return false;
+        const setA = new Set(variantSelected.map(item => item.id));
+        const setB = new Set(p.variants.map(item => item.id));
+        return (
+          setA.size === setB.size &&
+          Array.from(setA).every((id) => setB.has(id))
+        );
+      });
+      if (findProduct) {
+        const findProduct1 = variantProductBE.find((a: any) => a.id_fe === findProduct.id);
+        alert(JSON.stringify({ id: findProduct1.id, product_id: findProduct1.product_id, shop_id: product.shop_id }));
+        console.log(findProduct1);
+        setRootProduct((prev: any) => {
+          return { ...prev, image: findProduct1.images, show_price: formattedPrice(+findProduct1.price) }
+        })
+      }
+    }
+
+
+  }, [variantSelected])
 
 
   return (
@@ -29,10 +61,10 @@ export default function ProductDetailSection({ product, variantInfo, variantsStr
         <div className="w-2/5 p-4">
           <div className="w-full">
             <div className="w-full h-[450px]">
-              <img className="border size-full object-cover" src={product.images[0].url} alt="" />
+              <img className="border size-full object-cover" src={rootProduct.image} alt="" />
             </div>
             <div className=" my-[5px] -mx-[5px] flex">
-              {product.images.map((i: { url: string }, index: number) => (
+              {rootProduct.images.map((i: { url: string }, index: number) => (
                 <div key={index} className="p-[5px] size-[92px]">
                   <div className="size-full">
                     <img className="border size-full object-cover" src={i.url} alt="" />
@@ -47,13 +79,13 @@ export default function ProductDetailSection({ product, variantInfo, variantsStr
           <div className="w-full">
             <div className="w-full h-[180px] relative">
               <div className="w-full mb-2">
-                <span className="text-[20px] font-bold">{product.name}</span>
+                <span className="text-[20px] font-bold">{rootProduct.name}</span>
               </div>
               <div className="w-full">
                 <span className="text-[14px] font-normal">Thương hiệu: OEM</span>
               </div>
               <div className="w-full">
-                <span className="text-[24px] font-bold text-red-500">{show_price}</span>
+                <span className="text-[24px] font-bold text-red-500">{rootProduct.show_price}</span>
               </div>
               {/* <div className="w-full">
                 <span className="text-[14px] font-normal">
@@ -73,26 +105,40 @@ export default function ProductDetailSection({ product, variantInfo, variantsStr
                   <span className="text-[14px] text-blue-500">71 đánh giá</span>
                   <div className="flex gap-1 items-center">
                     <ShoppingBasket size={16} className="text-gray-400" />
-                    <span className="text-[14px] text-gray-400">{product.sold_count} lượt mua</span>
+                    <span className="text-[14px] text-gray-400">{rootProduct.sold_count} lượt mua</span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="w-full mt-4 py-[5px] border-t">
               <div className="w-full mt-2">
-                {variantsString.map((va: any, index: number) => (
-                  <div key={index} className="flex w-full mb-6 mr-2">
-                    <div className="w-[200px] text-gray-500 text-[14px] leading-8">
-                      {va.name}
-                    </div>
-                    <div className="w-[calc(100%-160px)] flex gap-1">
-                      {va.values.map((v: any, index: number) => (
-                        <div key={index} className="inline-flex items-center justify-center border cursor-pointer hover:border-blue-600 hover:text-blue-600 min-w-[60px] text-[14px] rounded-sm p-2 mt-2 mr-2 text-gray-500">{v.value}</div>
-                      ))}
+                {
+                  variant ? variant.json.variantItems.map((va: any, index: number) => (
+                    <div key={index} className="flex w-full mb-6 mr-2 items-center">
+                      <div className="w-[200px] text-gray-500 text-[14px] leading-8">
+                        Chọn {va.name}
+                      </div>
+                      <div className="w-[calc(100%-160px)] flex gap-1">
+                        {va.values.map((v: any, subIndex: number) => (
+                          <div onClick={() => {
+                            setVariantSelected((prev) => {
+                              prev[index].id = v.id;
+                              // prev[index].id = v.id;
+                              // console.log({ index });
+                              return [...prev]
+                            })
+                          }} key={subIndex} className={`inline-flex items-center justify-center border cursor-pointer hover:border-blue-600 hover:text-blue-600 min-w-[60px] text-[14px] rounded-sm p-2 mt-2 mr-2 text-gray-500 ${variantSelected.some((x: any) => x.id === v.id) ? "border-blue-500" : ""} flex gap-2`}>
+                            {v.image && (
+                              <img src={v.image} alt="" className="size-8" />
+                            )}
+                            {v.value}
+                          </div>
+                        ))}
 
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )) : ""
+                }
 
               </div>
               <div className="w-full flex mb-6">
@@ -404,4 +450,7 @@ export default function ProductDetailSection({ product, variantInfo, variantsStr
       </div>
     </>
   )
+
 }
+
+

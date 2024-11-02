@@ -83,8 +83,8 @@ export default function GuestHeader() {
         const res = await a.json();
         dispatch(addAccessToken(''));
         dispatch(addInfo(null));
-        router.push('/');
-        console.log(1);
+        // router.push('/');
+        window.location.href = '/'
       }
     } catch (error) {
       setLoading(false);
@@ -200,7 +200,9 @@ export default function GuestHeader() {
                           </HoverCardTrigger>
                           <HoverCardContent className='p-0 w-[180px] rounded-sm'>
                             <ul className=' w-full'>
-                              <li className='p-3 text-[14px] transition-all hover:text-blue-700 hover:bg-gray-50 cursor-pointer'>
+                              <li onClick={() => {
+                                router.push('/account')
+                              }} className='p-3 text-[14px] transition-all hover:text-blue-700 hover:bg-gray-50 cursor-pointer'>
                                 Tài khoản của tôi
                               </li>
                               <li className='p-3 text-[14px] transition-all hover:text-blue-700 hover:bg-gray-50 cursor-pointer'>

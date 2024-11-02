@@ -108,7 +108,7 @@ export default function NewProductForm() {
           variant: 'success',
           title: "Tao san pham thanh cong!"
         })
-        router.push('/shop/product/list')
+        // router.push('/shop/product/list')
       }
     } catch (error) {
       console.log(error);
@@ -154,7 +154,7 @@ export default function NewProductForm() {
         <NewProductFooterSection />
 
         <button onClick={() => {
-          console.log({ a: getValues() });
+          console.log(JSON.stringify(getValues()));
         }} type="button">log data</button>
         <button onClick={() => {
           console.log({ a: errors });

@@ -33,26 +33,31 @@ export default async function ProductDetailPage({ params: { slug } }: { params: 
     const product = payloadProduct.data;
     const resVariant = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/variantattribute/${product.shop_id}/${product.id}`);
     const payloadVariant = await resVariant.json();
-    const { attribute, value, variant, variantattribute } = payloadVariant.data;
+    // const { attribute, value, variant, variantattribute } = payloadVariant.data;
 
-    const variantsString = attribute.map((a: any) => {
-      const valuesVariant = value.filter((v: any) => +v[0].attribute_id === a[0].id).map((v: any) => v[0]);
-      return {
-        name: `Chọn ${a[0].name}`,
-        values: valuesVariant
-      }
-    });
+    // const variantsString = attribute.map((a: any) => {
+    //   const valuesVariant = value.filter((v: any) => +v[0].attribute_id === a[0].id).map((v: any) => v[0]);
+    //   return {
+    //     name: `Chọn ${a[0].name}`,
+    //     values: valuesVariant
+    //   }
+    // });
+
+    const variant = payloadVariant.json ? { json: payloadVariant.json, variantProducts: payloadVariant.variants.product_variants } : null;
 
     return (
-      <div className="w-full ">
-        <Head>
-          <title>{product.name}</title>
-        </Head>
-        <GuestBreadCrumb />
-        <ProductDetailSection product={product} variantInfo={payloadVariant.data} variantsString={variantsString} />
-      </div>
+      <ProductDetailSection product={payloadProduct.data} variant={variant} />
+
+      // <div className="w-full ">
+      //   <Head>
+      //     <title>{product.name}</title>
+      //   </Head>
+      //   <GuestBreadCrumb />
+      //   <ProductDetailSection product={product} variantInfo={payloadVariant.data} variantsString={variantsString} />
+      // </div>
     )
   } catch (error) {
+    console.log(error);
     notFound();
   }
 
