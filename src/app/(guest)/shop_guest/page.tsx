@@ -58,11 +58,11 @@ const ShopPageGuest = () => {
       </div>
       <div className='voucher_list w-full flex justify-center py-3'>
         <div className='w-[1000px] grid grid-cols-3 gap-3'>
-          {
+          {/* {
             Array.from({ length: 3 }, (_, i) => i + 1).map(item => (
               <VoucherComponent key={item} />
             ))
-          }
+          } */}
         </div>
       </div>
       <div className='banner w-full h-[247px] flex gap-2'>
@@ -238,11 +238,11 @@ const ShopPageGuest = () => {
           <p className='cursor-pointer hover:text-[#0B74E5] hover:underline underline-offset-8'>Giá cao đến thấp</p>
         </div>
         <div className='w-full grid grid-cols-5 mt-4 gap-2'>
-          {
+          {/* {
             Array.from({ length: 20 }, (_, i) => i + 1).map(item => (
               <CardProduct key={item} />
             ))
-          }
+          } */}
         </div>
         <Pagination className='mt-2'>
             <PaginationContent>
