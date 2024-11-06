@@ -23,7 +23,7 @@ export default async function HangXinSection() {
           <div className="text-[13px] text-blue-500 cursor-pointer underline font-semibold">Xem tất cả</div>
         </div>
         <div className="list-card-product py-3 grid grid-cols-5 gap-4">
-          {data.payload.data.data.map((item: any, index: number) => (
+          {data.payload.data.data.sort(() => Math.random() - 0.5).slice(0,5).map((item: any, index: number) => (
             <CardProduct key={index} p={item} />
           ))}
         </div>

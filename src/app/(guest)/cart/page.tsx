@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/breadcrumb"
 import CartSection from '@/app/(guest)/_components/cart-section';
 
-
 const CartPageGuest = () => {
   return (
     <div className='w-full'>
