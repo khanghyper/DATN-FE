@@ -183,7 +183,7 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
               </div>
             )}
 
-            <input ref={fileInputRef} accept=".jpg, .jpeg, .png" onChange={handleFileChange} type="file" multiple className="hidden" name="" id="" />
+            <input ref={fileInputRef} accept=".jpg, .jpeg, .png, .webp" onChange={handleFileChange} type="file" multiple className="hidden" name="" id="" />
           </div>
         </div>
       </div>

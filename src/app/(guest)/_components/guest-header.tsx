@@ -16,7 +16,8 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import LoadingScreen from '@/app/(guest)/_components/loading-screen';
-import { addAccessToken, addInfo } from '@/redux/slices/profile.slice';
+import { addAccessToken, addCart, addInfo } from '@/redux/slices/profile.slice';
+import envConfig from '@/config';
 
 
 const tags: { title: string, icon: any }[] = [
@@ -68,7 +69,8 @@ export default function GuestHeader() {
   const info = useAppInfoSelector(state => state.profile.info);
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppInfoDispatch();
-  const router = useRouter()
+  const router = useRouter();
+  const cart = useAppInfoSelector(state => state.profile.cart);
 
 
 
@@ -81,8 +83,9 @@ export default function GuestHeader() {
       });
       if (a.ok) {
         const res = await a.json();
-        dispatch(addAccessToken(''));
-        dispatch(addInfo(null));
+        // dispatch(addAccessToken(''));
+        // dispatch(addInfo(null));
+        // dispatch(addCart(null));
         // router.push('/');
         window.location.href = '/'
       }
@@ -144,7 +147,19 @@ export default function GuestHeader() {
                       className="cursor-pointer"
                       strokeWidth={1.5}
                       size={20}
+                      onClick={() => {
+                        if (clientAccessToken.value) {
+                          router.push('/cart')
+                        }
+                      }}
                     />
+                    {cart && (
+                      <div className='absolute -top-4 -right-4 text-[10px] w-6 h-4 p-1 flex items-center justify-center bg-red-500 rounded-xl text-white'>
+                        {cart.reduce((acc: number, cur: any) => {
+                          return acc + cur.items.reduce((a: number, c: any) => a + (+c.quantity), 0);
+                        }, 0)}
+                      </div>
+                    )}
                     {/* {hienThiMiniCart && (
                   <div className="absolute right-[-150px] mt-2 z-50">
                     <MiniCart />

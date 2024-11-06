@@ -3,12 +3,14 @@ import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 interface Profile {
   accessToken: string,
-  info: any
+  info: any,
+  cart: any
 }
 
 const initialState = {
   accessToken: '',
-  info: {}
+  info: {},
+  cart: null
 } as Profile
 
 const profileSlice = createSlice({
@@ -20,6 +22,9 @@ const profileSlice = createSlice({
     },
     addInfo: (state, action: PayloadAction<any>) => {
       state.info = action.payload;
+    },
+    addCart: (state, action: PayloadAction<any>) => {
+      state.cart = action.payload;
     }
   },
   extraReducers(builder) {
@@ -31,7 +36,8 @@ const profileSlice = createSlice({
 
 export const {
   addAccessToken,
-  addInfo
+  addInfo,
+  addCart
 } = profileSlice.actions
 
 export default profileSlice.reducer;

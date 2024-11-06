@@ -11,8 +11,8 @@ import { FormEvent, useState } from 'react';
 
 
 export default function LoginForm() {
-  const [email, setEmail] = useState<string>('ngodinhtungthia@gmail.com');
-  const [password, setPassword] = useState<string>('1234');
+  const [email, setEmail] = useState<string>('khangnd1806@gmail.com');
+  const [password, setPassword] = useState<string>('123456');
   const [loading, setLoading] = useState<boolean>(false);
   const [errrorMessage, setErrorMessage] = useState<string>('');
   const dispatch = useAppInfoDispatch();

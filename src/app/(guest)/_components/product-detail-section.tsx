@@ -4,12 +4,17 @@ import AttributesTable from "@/app/(guest)/_components/attributes-table"
 import Comment from "@/app/(guest)/_components/comment"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
 import envConfig from "@/config"
+import { clientAccessToken } from "@/lib/http"
 import { formattedPrice } from "@/lib/utils"
-import { Heart, PhoneCall, ShoppingBasket, SquareCheckBig, Star, Store } from "lucide-react"
+import { addCart } from "@/redux/slices/profile.slice"
+import { useAppDispatch } from "@/redux/store"
+import { Check, Heart, PhoneCall, ShoppingBasket, SquareCheckBig, Star, Store } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export default function ProductDetailSection({ product, variant }: { product: any, variant: any }) {
+export default function ProductDetailSection({ product, variant, test }: { product: any, variant: any, test?: any }) {
   let show_price = (product.show_price as string).split(' - ').length > 1 ?
     (product.show_price as string).split(' - ').map(p => formattedPrice(+p)).join(" - ") : formattedPrice(+product.show_price);
 
@@ -22,10 +27,21 @@ export default function ProductDetailSection({ product, variant }: { product: an
     }
     return []
   });
+  const dispatch = useAppDispatch();
 
-  const [rootProduct, setRootProduct] = useState<any>({ ...product, show_price })
 
-  console.log({ a: variant.json.variantItems });
+  const [rootProduct, setRootProduct] = useState<any>({ ...product, show_price });
+  const [selectedProduct, setSelectedProduct] = useState<any>(
+    {
+      ...rootProduct,
+      stock: variant ? variant.variantProducts.reduce((acc: number, cur: any) => acc + (+cur.stock), 0) : +rootProduct.quantity
+    }
+  );
+  const [imageHoverSelected, setImageHoverSelected] = useState<string>('');
+  const [quantity, setQuantity] = useState<number>(1);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const router = useRouter();
+  const [success, setSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (variant) {
@@ -43,10 +59,8 @@ export default function ProductDetailSection({ product, variant }: { product: an
       });
       if (findProduct) {
         const findProduct1 = variantProductBE.find((a: any) => a.id_fe === findProduct.id);
-        alert(JSON.stringify({ id: findProduct1.id, product_id: findProduct1.product_id, shop_id: product.shop_id }));
-        console.log(findProduct1);
-        setRootProduct((prev: any) => {
-          return { ...prev, image: findProduct1.images, show_price: formattedPrice(+findProduct1.price) }
+        setSelectedProduct((prev: any) => {
+          return { ...prev, image: findProduct1.images, show_price: formattedPrice(+findProduct1.price), variant_id: +findProduct1.id, stock: +findProduct1.stock }
         })
       }
     }
@@ -54,19 +68,105 @@ export default function ProductDetailSection({ product, variant }: { product: an
 
   }, [variantSelected])
 
+  const handleAddToCart = async () => {
+    if (!clientAccessToken.value) {
+      router.push('/auth/login')
+    }
+    let data: any = { shop_id: +selectedProduct.shop_id, product_id: selectedProduct.id, quantity }
+
+    if (variant) {
+      const isValid = variantSelected.every(v => v.id);
+      if (!isValid) {
+        setErrorMessage("Vui lòng chọn phân loại hàng");
+        return
+      }
+      if (!selectedProduct.stock) {
+        return
+      }
+      data = { ...data, variant_id: selectedProduct.variant_id };
+
+    }
+    try {
+      const res = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/carts`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${clientAccessToken.value}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+      const payload = await res.json();
+      if (!res.ok) {
+        throw 'Error'
+      }
+      const resToServer = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/carts`, {
+        headers: {
+          "Authorization": `Bearer ${clientAccessToken.value}`,
+          "Content-Type": "application/json"
+        },
+      });
+
+      if (!resToServer.ok) {
+        throw 'Error'
+      }
+      const cartPayload = await resToServer.json();
+      const newCart = cartPayload.shop.map((shop: any) => {
+        const shop_id = shop.id;
+        const items = cartPayload.cart.filter((p: any) => +p.shop_id === shop_id);
+
+        return {
+          ...shop,
+          items
+        }
+      })
+      dispatch(addCart(newCart))
+      setSuccess(true);
+    } catch (error) {
+      console.log(error);
+      toast({ title: "Error", variant: "destructive" })
+    } finally {
+      setTimeout(() => {
+        setSuccess(false);
+      }, 2000)
+    }
+  }
+
+
 
   return (
     <>
+      {success && (
+        <div className="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full  overflow-auto font-[sans-serif]">
+          <div className="w-[300px] h-[180px]">
+            <div className="w-full h-full max-w-lg bg-[black] opacity-70 before:bg-[rgba(0,0,0,0.5)] shadow-lg rounded-lg p-6 relative">
+
+
+            </div>
+            <div className="my-8 text-center absolute top-[250px] left-[630px]">
+              <div className="size-20 ml-[88px] bg-[#16d8a5] rounded-full flex items-center justify-center">
+                <Check color="#ffffff" size={48} />
+              </div>
+              <h4 className="text-sm text-white font-medium mt-4">Sản phẩm đã được thêm vào giỏ hàng</h4>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       <div className="w-full flex border shadow bg-white rounded">
         <div className="w-2/5 p-4">
           <div className="w-full">
             <div className="w-full h-[450px]">
-              <img className="border size-full object-cover" src={rootProduct.image} alt="" />
+              <img className="border size-full object-cover" src={imageHoverSelected ? imageHoverSelected : selectedProduct.image} alt="" />
             </div>
             <div className=" my-[5px] -mx-[5px] flex">
-              {rootProduct.images.map((i: { url: string }, index: number) => (
+              {selectedProduct.images.map((i: { url: string }, index: number) => (
                 <div key={index} className="p-[5px] size-[92px]">
-                  <div className="size-full">
+                  <div
+                    onMouseEnter={() => setImageHoverSelected(i.url)}
+                    onMouseLeave={() => setImageHoverSelected('')}
+                    onClick={() => setSelectedProduct({ ...selectedProduct, image: i.url })}
+                    className={`size-full cursor-pointer border ${i.url === selectedProduct.image ? "border-blue-500" : "border-white"}`}>
                     <img className="border size-full object-cover" src={i.url} alt="" />
                   </div>
                 </div>
@@ -79,13 +179,13 @@ export default function ProductDetailSection({ product, variant }: { product: an
           <div className="w-full">
             <div className="w-full h-[180px] relative">
               <div className="w-full mb-2">
-                <span className="text-[20px] font-bold">{rootProduct.name}</span>
+                <span className="text-[20px] font-bold">{selectedProduct.name}</span>
               </div>
               <div className="w-full">
                 <span className="text-[14px] font-normal">Thương hiệu: OEM</span>
               </div>
               <div className="w-full">
-                <span className="text-[24px] font-bold text-red-500">{rootProduct.show_price}</span>
+                <span className="text-[24px] font-bold text-red-500">{selectedProduct.show_price}</span>
               </div>
               {/* <div className="w-full">
                 <span className="text-[14px] font-normal">
@@ -105,7 +205,7 @@ export default function ProductDetailSection({ product, variant }: { product: an
                   <span className="text-[14px] text-blue-500">71 đánh giá</span>
                   <div className="flex gap-1 items-center">
                     <ShoppingBasket size={16} className="text-gray-400" />
-                    <span className="text-[14px] text-gray-400">{rootProduct.sold_count} lượt mua</span>
+                    <span className="text-[14px] text-gray-400">{selectedProduct.sold_count} lượt mua</span>
                   </div>
                 </div>
               </div>
@@ -113,53 +213,106 @@ export default function ProductDetailSection({ product, variant }: { product: an
             <div className="w-full mt-4 py-[5px] border-t">
               <div className="w-full mt-2">
                 {
-                  variant ? variant.json.variantItems.map((va: any, index: number) => (
-                    <div key={index} className="flex w-full mb-6 mr-2 items-center">
-                      <div className="w-[200px] text-gray-500 text-[14px] leading-8">
-                        Chọn {va.name}
-                      </div>
-                      <div className="w-[calc(100%-160px)] flex gap-1">
-                        {va.values.map((v: any, subIndex: number) => (
-                          <div onClick={() => {
-                            setVariantSelected((prev) => {
-                              prev[index].id = v.id;
-                              // prev[index].id = v.id;
-                              // console.log({ index });
-                              return [...prev]
-                            })
-                          }} key={subIndex} className={`inline-flex items-center justify-center border cursor-pointer hover:border-blue-600 hover:text-blue-600 min-w-[60px] text-[14px] rounded-sm p-2 mt-2 mr-2 text-gray-500 ${variantSelected.some((x: any) => x.id === v.id) ? "border-blue-500" : ""} flex gap-2`}>
-                            {v.image && (
-                              <img src={v.image} alt="" className="size-8" />
-                            )}
-                            {v.value}
-                          </div>
-                        ))}
+                  variant ? variant.json.variantItems.map((va: any, index: number) => {
+                    // const newVa = { ...va };
+                    // if (index === 0) {
+                    //   newVa.values.map((i: any) => {
+                    //     const id = i.id;
+                    //     const valid = variant.json.variantProducts.filter((z: any) => {
+                    //       if (z.variants.some((x: any) => x.id === id)) return true;
+                    //       return false
+                    //     });
+                    //     console.log(valid);
+                    //   })
+                    // }
 
+                    return (
+                      <div key={index} className="flex w-full mb-6 mr-2 items-center">
+                        <div className="w-[200px] text-gray-500 text-[14px] leading-8">
+                          Chọn {va.name}
+                        </div>
+                        <div className="w-[calc(100%-160px)] flex gap-1 flex-wrap">
+                          {va.values.map((v: any, subIndex: number) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  setVariantSelected((prev) => {
+                                    prev[index].id = v.id;
+                                    return [...prev]
+                                  });
+                                  setErrorMessage('')
+                                }}
+                                key={subIndex}
+                                className={`inline-flex items-center justify-center
+                                        hover:border-blue-400 hover:text-blue-600 min-w-[60px] border-2
+                                        text-[14px] rounded p-2 mt-2 mr-2 relative cursor-pointer
+                                        ${variantSelected.some((x: any) => x.id === v.id) ? "border-blue-400 text-blue-600 " : "text-gray-500 "} 
+                                        flex gap-3
+                                        `
+                                }
+                                onMouseEnter={() => setImageHoverSelected(v.image)}
+                                onMouseLeave={() => setImageHoverSelected('')}
+                              >
+                                {v.image && (
+                                  <img src={v.image} alt="" className="size-8" />
+                                )}
+                                <p>{v.value}</p>
+                                {variantSelected.some((x: any) => x.id === v.id) && (
+                                  <div className="absolute -top-[2px] -right-[1px]">
+                                    <img className="size-4" src="https://salt.tikicdn.com/ts/upload/6d/62/b9/ac9f3bebb724a308d710c0a605fe057d.png" alt="" />
+                                  </div>
+                                )}
+
+                              </div>
+                            )
+                          })}
+
+                        </div>
                       </div>
-                    </div>
-                  )) : ""
+                    )
+                  }) : ""
                 }
 
               </div>
-              <div className="w-full flex mb-6">
+              <div className="w-full flex mb-6 items-center">
                 <div className="w-[200px] text-gray-500 text-[14px] leading-8">
                   Chọn số lượng:
                 </div>
-                <div className="w-[calc(100%-160px)] flex">
-                  <div className="p-[5px]">
-                    <Button className="bg-gray-100 size-8 hover:bg-gray-100 text-gray-500">-</Button>
+                {variantSelected.every(v => v.id) && (
+                  <div className="flex">
+                    <div className="p-[5px]">
+                      <Button className="bg-gray-100 size-8 hover:bg-gray-100 text-gray-500">-</Button>
+                    </div>
+                    <div className="p-[5px]">
+                      <Input min={1} onChange={(e) => setQuantity(+e.target.value)} className="w-12 text-center h-8 text-[14px]" type="number" value={quantity} />
+                    </div>
+                    <div className="p-[5px]">
+                      <Button className="bg-gray-100 size-8 hover:bg-gray-100 text-gray-500">+</Button>
+                    </div>
                   </div>
-                  <div className="p-[5px]">
-                    <Input className="w-10 h-8 text-[14px]" placeholder="1" />
+                )}
+                {!variantSelected.every(v => v.id) && (
+                  <div className="flex">
+                    <div className="p-[5px]">
+                      <Button className="bg-gray-100 size-8 hover:bg-gray-100 text-gray-500">-</Button>
+                    </div>
+                    <div className="p-[5px]">
+                      <Input readOnly defaultValue={1} className="w-12 text-center h-8 text-[14px]" type="number" />
+                    </div>
+                    <div className="p-[5px]">
+                      <Button className="bg-gray-100 size-8 hover:bg-gray-100 text-gray-500">+</Button>
+                    </div>
                   </div>
-                  <div className="p-[5px]">
-                    <Button className="bg-gray-100 size-8 hover:bg-gray-100 text-gray-500">+</Button>
-                  </div>
-                </div>
+                )}
+                <div className="ml-8 w-[200px] text-gray-500 text-[14px] leading-8">{selectedProduct.stock} sản phẩm sẵn có</div>
               </div>
+              {errorMessage && (<div className="text-red-600 text-sm">{errorMessage}</div>)}
               <div className="w-full flex my-2">
-                <Button className="bg-gray-100 h-12 w-60 rounded-none hover:bg-gray-100 text-gray-500 mr-4">Thêm vào giỏ</Button>
-                <Button className="bg-red-600 h-12 w-60 rounded-none hover:bg-red-600 text-white">Mua ngay</Button>
+                <>
+                  <Button onClick={handleAddToCart} className={`bg-white h-12 w-60 font-semibold text-blue-500 border-blue-500 border-2 rounded hover:bg-white mr-4 ${selectedProduct.stock ? "cursor-pointer" : "cursor-not-allowed"}`}>Thêm vào giỏ</Button>
+                  <Button className="bg-[#ff424e] h-12 w-60 font-semibold  rounded text-white hover:bg-[#ff424e]">Mua ngay</Button>
+                </>
+
               </div>
             </div>
             <div className="w-full border-t">
