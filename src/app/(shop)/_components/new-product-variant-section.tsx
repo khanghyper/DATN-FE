@@ -3,6 +3,7 @@
 import { CreateProductFormData } from "@/app/(shop)/_components/new-product-form";
 import NewProductVariantWithVariantPart from "@/app/(shop)/_components/new-product-variant-with-variant-part";
 import NewProductVariantWithVariantPartTest from "@/app/(shop)/_components/new-product-variant-with-variant-part-test";
+import NewProductVariantWithVariantPartTestV2 from "@/app/(shop)/_components/new-product-variant-with-variant-part-test-v2";
 import NewProductVariantWithoutVariantPart from "@/app/(shop)/_components/new-product-variant-without-variant-part";
 import { useAppSelector } from "@/redux/store"
 import { Plus } from "lucide-react";
@@ -28,7 +29,7 @@ export default function NewProductVariantSection({ handleVariant, register, setE
         <div>
           {!isChangeVariantMode && (<NewProductVariantWithoutVariantPart setValue={setValue} errors={errors} setError={setError} register={register} />)}
           {isChangeVariantMode && (
-            <NewProductVariantWithVariantPartTest setErrorProduct={setError} setValueProduct={setValue} handleVariant={handleVariant} />
+            <NewProductVariantWithVariantPartTestV2 setErrorProduct={setError} setValueProduct={setValue} handleVariant={handleVariant} />
           )}
         </div>
       )}

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const authPaths = ['/auth/login', '/auth/register', '/auth/verify'];
-const privatePaths = ['/admin', '/admin/products/all', '/admin/products/create', '/admin/categories/create']
+const privatePaths = ['/admin', '/admin/products/all', '/admin/products/create', '/admin/categories/createm', '/account']
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
@@ -12,10 +12,11 @@ export async function middleware(request: NextRequest) {
   const info = request.cookies.get('info')?.value;
 
 
-
   if (privatePaths.some(path => pathname.startsWith(path)) && !accessToken) {
-    return NextResponse.redirect(new URL('auth/login', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
+
+
   if (authPaths.some(path => pathname.startsWith(path)) && accessToken) {
     return NextResponse.redirect(new URL('/', request.url))
   }

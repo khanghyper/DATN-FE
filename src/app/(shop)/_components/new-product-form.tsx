@@ -69,7 +69,7 @@ export default function NewProductForm() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const changeVariantMode = useAppSelector(state => state.shopListProduct.varriant.isChangeVariantMode);
-  const { register, getValues, handleSubmit, setValue, setError, formState: { errors }, watch } = useForm<CreateProductFormData>({
+  const { register, getValues, control, handleSubmit, setValue, setError, formState: { errors }, watch } = useForm<CreateProductFormData>({
     resolver: zodResolver(createProductFormSchema),
     defaultValues: {
       images: [],
@@ -108,7 +108,7 @@ export default function NewProductForm() {
           variant: 'success',
           title: "Tao san pham thanh cong!"
         })
-        router.push('/shop/product/list')
+        // router.push('/shop/product/list')
       }
     } catch (error) {
       console.log(error);
@@ -139,6 +139,7 @@ export default function NewProductForm() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-6">
         <NewProductFirstSection
+          control={control}
           register={register}
           errors={errors}
           getValues={getValues}
@@ -153,7 +154,7 @@ export default function NewProductForm() {
         <NewProductFooterSection />
 
         <button onClick={() => {
-          console.log({ a: getValues() });
+          console.log(JSON.stringify(getValues()));
         }} type="button">log data</button>
         <button onClick={() => {
           console.log({ a: errors });

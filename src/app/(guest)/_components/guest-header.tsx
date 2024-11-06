@@ -16,7 +16,8 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import LoadingScreen from '@/app/(guest)/_components/loading-screen';
-import { addAccessToken, addInfo } from '@/redux/slices/profile.slice';
+import { addAccessToken, addCart, addInfo } from '@/redux/slices/profile.slice';
+import envConfig from '@/config';
 
 
 const tags: { title: string, icon: any }[] = [
@@ -68,7 +69,8 @@ export default function GuestHeader() {
   const info = useAppInfoSelector(state => state.profile.info);
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppInfoDispatch();
-  const router = useRouter()
+  const router = useRouter();
+  const cart = useAppInfoSelector(state => state.profile.cart);
 
 
 
@@ -81,10 +83,11 @@ export default function GuestHeader() {
       });
       if (a.ok) {
         const res = await a.json();
-        dispatch(addAccessToken(''));
-        dispatch(addInfo(null));
-        router.push('/');
-        console.log(1);
+        // dispatch(addAccessToken(''));
+        // dispatch(addInfo(null));
+        // dispatch(addCart(null));
+        // router.push('/');
+        window.location.href = '/'
       }
     } catch (error) {
       setLoading(false);
@@ -144,7 +147,19 @@ export default function GuestHeader() {
                       className="cursor-pointer"
                       strokeWidth={1.5}
                       size={20}
+                      onClick={() => {
+                        if (clientAccessToken.value) {
+                          router.push('/cart')
+                        }
+                      }}
                     />
+                    {cart && (
+                      <div className='absolute -top-4 -right-4 text-[10px] w-6 h-4 p-1 flex items-center justify-center bg-red-500 rounded-xl text-white'>
+                        {cart.reduce((acc: number, cur: any) => {
+                          return acc + cur.items.reduce((a: number, c: any) => a + (+c.quantity), 0);
+                        }, 0)}
+                      </div>
+                    )}
                     {/* {hienThiMiniCart && (
                   <div className="absolute right-[-150px] mt-2 z-50">
                     <MiniCart />
@@ -200,7 +215,9 @@ export default function GuestHeader() {
                           </HoverCardTrigger>
                           <HoverCardContent className='p-0 w-[180px] rounded-sm'>
                             <ul className=' w-full'>
-                              <li className='p-3 text-[14px] transition-all hover:text-blue-700 hover:bg-gray-50 cursor-pointer'>
+                              <li onClick={() => {
+                                router.push('/account')
+                              }} className='p-3 text-[14px] transition-all hover:text-blue-700 hover:bg-gray-50 cursor-pointer'>
                                 Tài khoản của tôi
                               </li>
                               <li className='p-3 text-[14px] transition-all hover:text-blue-700 hover:bg-gray-50 cursor-pointer'>

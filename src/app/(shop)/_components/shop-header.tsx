@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/breadcrumb"
 
 import { Bell, BookOpen, ChevronDown, ChevronUp, GripHorizontal, User } from "lucide-react"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AccountInfo from '@/app/(shop)/_components/account-info';
 import Notifications from '@/app/(shop)/_components/notifications';
 import Image from 'next/image';
 import { useAppInfoSelector } from '@/redux/stores/profile.store';
+import { clientAccessToken } from '@/lib/http';
+import envConfig from '@/config';
 
 
 export default function ShopHeader() {
@@ -25,7 +27,8 @@ export default function ShopHeader() {
   const [isNotiVisible, setIsNotiVisible] = useState(false);
   const [isAccountInfoVisible, setIsAccountInfoVisible] = useState(false);
   const info = useAppInfoSelector(state => state.profile.info);
-  const test = { ...info, shop_id: null };
+
+
 
   return (
     <header className="w-full h-[56px] bg-white sticky top-0 z-50 shadow border-b">
@@ -109,7 +112,7 @@ export default function ShopHeader() {
               <div className="size-[30px] rounded-full flex items-center justify-center">
                 <img className='size-full object-cover rounded-full' src="https://phunuvietnam.mediacdn.vn/media/news/33abffcedac43a654ac7f501856bf700/anh-profile-tiet-lo-g-ve-ban-1.jpg" alt="" />
               </div>
-              <span className="text-[14px] font-medium">{test.fullname}</span>
+              <span className="text-[14px] font-medium">{info.fullname}</span>
               {isShowAccountInfo ? (
                 <ChevronDown strokeWidth={1.5} size={20} />
               ) : (

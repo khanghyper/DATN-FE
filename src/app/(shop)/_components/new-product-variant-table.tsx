@@ -1,6 +1,6 @@
 'use client'
 
-import { FormData } from "@/app/(shop)/_components/new-product-variant-with-variant-part-test";
+import { FormData } from "@/app/(shop)/_components/new-product-variant-with-variant-part-test-v2";
 import { changeInputInStockVariantProduct, changeInputPriceVariantProduct, changeInputSkuVariantProduct, VariantItem } from "@/redux/slices/shop-new-product.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store"
 import { Image } from "lucide-react";
