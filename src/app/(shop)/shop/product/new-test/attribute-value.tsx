@@ -89,9 +89,9 @@ function AttributeValue({ item, productFormHandle, attributeValuesFormHandle, in
           <div >
             <input
               {...productFormHandle.register(`variant.variantAttributes.${index}.values.${subIndex}.value`, {
-                // onChange(event) {
-
-                // },
+                onChange(event) {
+                  productFormHandle.setValue('isCreated', false);
+                },
               })}
               className={`
                 border outline-none px-2 py-1 text-sm rounded w-[400px] focus:ring-1 

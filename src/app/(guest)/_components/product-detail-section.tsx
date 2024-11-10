@@ -119,6 +119,7 @@ export default function ProductDetailSection({ product, variant, test }: { produ
           items
         }
       })
+      console.log(newCart);
       dispatch(addCart(newCart))
       setSuccess(true);
     } catch (error) {

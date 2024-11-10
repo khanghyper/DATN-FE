@@ -2,6 +2,7 @@ import AttributesTable from "@/app/(guest)/_components/attributes-table";
 import Comment from "@/app/(guest)/_components/comment";
 import { GuestBreadCrumb } from "@/app/(guest)/_components/guest-breadcrumb";
 import ProductDetailSection from "@/app/(guest)/_components/product-detail-section";
+import TestAbx from "@/app/(guest)/products/test";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import envConfig from "@/config";
@@ -46,15 +47,14 @@ export default async function ProductDetailPage({ params: { slug } }: { params: 
     const variant = payloadVariant.json ? { json: payloadVariant.json, variantProducts: payloadVariant.variants.product_variants } : null;
 
     return (
-      <ProductDetailSection product={payloadProduct.data} variant={variant} />
 
-      // <div className="w-full ">
-      //   <Head>
-      //     <title>{product.name}</title>
-      //   </Head>
-      //   <GuestBreadCrumb />
-      //   <ProductDetailSection product={product} variantInfo={payloadVariant.data} variantsString={variantsString} />
-      // </div>
+      <div className="w-full ">
+        <Head>
+          <title>{product.name}</title>
+        </Head>
+        <GuestBreadCrumb />
+        <ProductDetailSection product={payloadProduct.data} variant={variant} />
+      </div>
     )
   } catch (error) {
     console.log(error);

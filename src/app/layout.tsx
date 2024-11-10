@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import AppProvider from "@/redux/providers/app.provider";
 import ProfileProvider from "@/redux/providers/profile.provider";
 import envConfig from "@/config";
+import { nanoid } from "nanoid";
 
 
 const nunito = Nunito({
@@ -44,7 +45,7 @@ export default async function RootLayout({
     const payload = await res.json();
     const newCart = payload.shop.map((shop: any) => {
       const shop_id = shop.id;
-      const items = payload.cart.filter((p: any) => +p.shop_id === shop_id);
+      const items = payload.cart.filter((p: any) => +p.shop_id === shop_id).map((p: any) => ({ ...p }));
 
       return {
         ...shop,
