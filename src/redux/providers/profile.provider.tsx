@@ -1,10 +1,11 @@
 'use client'
 
 import { toast } from "@/components/ui/use-toast"
+import envConfig from "@/config"
 import { clientAccessToken, shop_id } from "@/lib/http"
 import { addAccessToken, addCart, addInfo } from "@/redux/slices/profile.slice"
 import { ProfileStore, profileStore } from "@/redux/stores/profile.store"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Provider } from "react-redux"
 
 export default function ProfileProvider({
@@ -16,7 +17,7 @@ export default function ProfileProvider({
   children: React.ReactNode,
   accessToken?: string
   info?: any
-  cart?: any
+  cart?: any | null
 }) {
   const storeRef = useRef<ProfileStore>()
   if (!storeRef.current) {
@@ -33,6 +34,7 @@ export default function ProfileProvider({
     //   clientAccessToken.value = accessToken;
     // }
   }
+
   return (
     <Provider store={storeRef.current}>{children}</Provider>
   )

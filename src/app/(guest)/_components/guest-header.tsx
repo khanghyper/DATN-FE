@@ -70,8 +70,7 @@ export default function GuestHeader() {
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppInfoDispatch();
   const router = useRouter();
-  const cart = useAppInfoSelector(state => state.profile.cart);
-
+  const cart = useAppInfoSelector(state => state.profile.cart?.cartInfo) as any[];
 
 
   const handleLogout = async () => {
@@ -99,12 +98,13 @@ export default function GuestHeader() {
 
 
 
+
   return (
     <>
       {['verify', 'verify_email'].every(p => !pathname.endsWith(p)) && (
-        <div className="w-full flex justify-center border-b sticky top-0 bg-white z-50">
+        <div className="w-full flex justify-center border-b sticky top-0 bg-white z-50 shadow-sm">
           <div className="w-content bg-white">
-            <div className="top-nav w-full flex gap-4 py-2 text-[14px] text-[#8E8181] font-semibold">
+            <div className="top-nav w-full flex gap-4 pt-2 text-[13px] text-[#8E8181] font-normal">
               <Link href={'/shop'}>Kênh người bán</Link>
               <span>Chăm sóc khách hàng</span>
               <span>Nhà cung cấp</span>
@@ -243,7 +243,7 @@ export default function GuestHeader() {
                 </div>
               </div>
             </div>
-            <div className="bottom-nav flex w-full h-[23px] items-center gap-4 py-4">
+            <div className="bottom-nav flex w-full h-[20px] items-center gap-4 py-4">
               {tags.map(item => (
                 <div key={item.title} className="flex gap-2 items-center">
                   <span className="text-[14px] font-medium">{item.title}</span>

@@ -28,7 +28,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
         <div className="w-full flex">
           <ShopSidebar />
           <div className=" w-[calc(100vw-292px)] pl-2.5 pr-4">
-            <div className="w-full h-auto bg-white rounded">
+            <div className="w-full h-auto rounded">
               {children}
             </div>
           </div>

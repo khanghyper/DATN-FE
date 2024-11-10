@@ -1,12 +1,25 @@
 'use client'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import NewProductVariantTableTest from "@/app/(shop)/shop/product/new-test/new-product-variant-table-test";
 import VariantAttribute from "@/app/(shop)/shop/product/new-test/variant-attribute";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Asterisk, Plus } from "lucide-react";
 import { nanoid } from "nanoid";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, UseFieldArrayReturn, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import CategorySection from "@/app/(shop)/shop/product/new-test/category-section";
+
+let a = `{"name":"","description":"","base_price":0,"variant":{"variantAttributes":[{"attribute":"Màu sắc","values":[{"image":"https://res.cloudinary.com/dg5xvqt5i/image/upload/v1730997693/fezssmr33wcbcxkmmdjo.jpg","value":"Đỏ","id":"KHEe7uPH2xNn"},{"id":"UvmWW-PShcR7","image":"https://res.cloudinary.com/dg5xvqt5i/image/upload/v1730997701/wifesk9mwan06xbfch9f.jpg","value":"xanh"}]}],"variantProducts":[{"image":"https://res.cloudinary.com/dg5xvqt5i/image/upload/v1730997693/fezssmr33wcbcxkmmdjo.jpg","sku":"sku","price":100000,"stock":10,"attributes":[{"id":"KHEe7uPH2xNn","attribute":"Màu sắc","value":"Đỏ"}]},{"image":"https://res.cloudinary.com/dg5xvqt5i/image/upload/v1730997701/wifesk9mwan06xbfch9f.jpg","sku":"sku","price":100000,"stock":10,"attributes":[{"id":"UvmWW-PShcR7","attribute":"Màu sắc","value":"xanh"}]}]}}`
 
 // Schema cho từng thuộc tính của biến thể (e.g., màu sắc, kích thước)
 const AttributeSchema = z.object({
@@ -41,7 +54,8 @@ const ProductSchema = z.object({
   variant: z.object({
     variantAttributes: z.array(AttributeSchema),
     variantProducts: z.array(VariantSchema)
-  }).nullable()
+  }).nullable(),
+  isCreated: z.boolean()
 });
 
 export type Product = z.infer<typeof ProductSchema>;
@@ -90,14 +104,16 @@ function generateVariantProducts(attributes: Array<z.infer<typeof AttributeSchem
 
 
 export default function NewProductTestForm() {
+
   const productFormHandle = useForm<Product>({
     resolver: zodResolver(ProductSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      base_price: 0,
-      variant: { variantAttributes: [], variantProducts: [] }
-    },
+    // defaultValues: {
+    //   name: "",
+    //   description: "",
+    //   base_price: 0,
+    //   variant: { variantAttributes: [], variantProducts: [] }
+    // },
+    defaultValues: { ...JSON.parse(a), isCreated: true } as Product,
     mode: "all"
   });
 
@@ -124,17 +140,49 @@ export default function NewProductTestForm() {
 
   useEffect(() => {
     if (watchedAttributes && !productFormHandle.formState.errors.variant?.variantAttributes) {
-      console.log('co');
-      setTimeout(() => {
-        const a = generateVariantProducts(productFormHandle.getValues('variant.variantAttributes'));
-        productFormHandle.setValue('variant.variantProducts', a);
-        productFormHandle.trigger('variant.variantProducts');
-      }, 100)
+      if (productFormHandle.getValues('isCreated') === false) {
+        setTimeout(() => {
+          const a = generateVariantProducts(productFormHandle.getValues('variant.variantAttributes'));
+          productFormHandle.setValue('variant.variantProducts', a);
+          productFormHandle.trigger('variant.variantProducts');
+        }, 100)
+      }
     }
   }, [watchedAttributes, productFormHandle.formState.errors.variant?.variantAttributes])
+
   return (
-    <form onSubmit={productFormHandle.handleSubmit(onSubmit)}>
-      <div className="w-full">
+    <form className="flex flex-col gap-4" onSubmit={productFormHandle.handleSubmit(onSubmit)}>
+      <div className="w-full bg-white rounded-xl">
+        <div className="p-6 w-full">
+          <div className="w-full">
+            <div className="text-xl font-semibold">
+              <span>Thông tin cơ bản</span>
+            </div>
+            <div className="my-6">
+              <div className="text-sm mb-2 font-semibold flex items-center gap-1">
+                <Asterisk size={16} color="#e83030" strokeWidth={1.25} />
+                Tên sản phẩm
+              </div>
+              <span className="">
+                <input
+                  className={` border outline-none h-[30px] px-4 py-1 text-sm rounded-xl focus:ring-1 w-full`}
+                  type="text"
+                  placeholder="Ex. Nikon Coolpix A300 Máy Ảnh Kỹ Thuật Số"
+                />
+                {/* <span>he</span> */}
+              </span>
+            </div>
+            <CategorySection />
+            <div className="my-6">
+              <div className="text-sm mb-2 font-semibold flex items-center gap-1">
+                Ảnh sản phẩm
+                <Asterisk size={16} color="#e83030" strokeWidth={1.25} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="w-full bg-white rounded-xl">
         <div className="p-6">
           <div className="flex flex-col gap-4">
             {variantFields.map((v, index) => (
@@ -174,7 +222,7 @@ export default function NewProductTestForm() {
           }} className="mt-6 border p-2" type="button">log error</button>
           <button className="mt-6 border p-2" type="submit">Them san pham</button>
         </div>
-      </div>
+      </div> */}
     </form>
 
   )

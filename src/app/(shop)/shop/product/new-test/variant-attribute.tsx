@@ -47,6 +47,7 @@ function VariantAttribute({ attributeFormHandle, productFormHandle, index }:
         <input
           {...productFormHandle.register(`variant.variantAttributes.${index}.attribute`, {
             onChange(event) {
+              productFormHandle.setValue('isCreated', false);
             },
             // required: "Attribute value is required",
             // validate: value => value.trim() !== "" || "Attribute value cannot be empty",
