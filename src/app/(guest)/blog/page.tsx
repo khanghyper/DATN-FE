@@ -20,7 +20,6 @@ const blogPosts = [
     author: 'Ngân Phạm',
     slug: 'review-mat-na-bioaqua'
   },
-  // Thêm các bài viết khác tương tự
 ];
 
 export default function BlogPage() {

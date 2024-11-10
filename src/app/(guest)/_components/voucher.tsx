@@ -1,15 +1,18 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import React from 'react';
 
-const VoucherComponent = () => {
+const VoucherComponent = ({data}:{data:any}) => {
+  console.log(data);
+  
   return (
     <div className='flex justify-center '>
-      <div className='w-[318px] h-[92px] flex'>
+      <div className='w-[318px] flex'>
         <div className='w-[212px] h-full shadow border-y-2 border-l-2'>
           <div className='top w-full h-[60px] flex justify-between  px-1 rounded-l-[5px]'>
             <div className='w-[157px] flex flex-col font-bold text-[15px] justify-center text-[#D5600C]'>
-              <span>Giảm giá 200K đơn từ</span>
-              <span>2Tr</span>
+              <span>{data.title}</span>
+              <span>{data.limitValue}</span>
             </div>
             <div className='w-[48px] h-[38px] text-[12px] flex items-center justify-end'>
               <span className='text-[#0F62FE]'>Chi tiết</span>

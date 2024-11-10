@@ -606,5 +606,3 @@ export default function ProductDetailSection({ product, variant, test }: { produ
   )
 
 }
-
-
