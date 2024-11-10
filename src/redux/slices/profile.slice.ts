@@ -76,6 +76,12 @@ const profileSlice = createSlice({
       if (state.cart) {
         state.cart.cartInfo[index].items[subIndex].quantity = quantity.toString()
       }
+    },
+    changeQuantity2: (state, action: PayloadAction<{ quantity: number, index: number, subIndex: number }>) => {
+      let { index, quantity, subIndex } = action.payload;
+      if (state.cart) {
+        state.cart.cartInfo[index].items[subIndex].quantity = quantity.toString()
+      }
     }
   },
   extraReducers(builder) {
