@@ -34,7 +34,7 @@ const iconProfile: { title: string, icon: any }[] = [
   }
 ]
 
-const HistoryBuyPage = async() => {
+const HistoryBuyPage = async () => {
   const cookieToken = await cookies();
   const tokenUser = cookieToken.get('accessToken');
   // console.log(tokenUser?.value);
@@ -74,9 +74,11 @@ const HistoryBuyPage = async() => {
             }
           </div>
         </div>
-        <HistoryBuySection token = {tokenUser?.value}/>
+        <div className='right-body w-[920px] h-auto'>
+          <HistoryBuySection token={tokenUser?.value} />
+        </div>
       </div>
-    </div>
+    </div >
   );
 };
 

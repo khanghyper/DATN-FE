@@ -11,17 +11,26 @@ import {
 import { Bell, Calendar, MailPlus, Pencil, Store, TicketIcon, Truck, UserRound } from 'lucide-react';
 import { cookies } from 'next/headers';
 
-const HistoryBuySection = ({ token }: { token: any }) => {
+const HistoryBuySection = ({ token, }: { token: any }) => {
   const tokenUser = token;
+  const [isCheckedTitle, setIsCheckedTitle] = useState<number>(1);
   const [orders, setOrders] = useState<any>([]);
   const [orderDetails, setOrderDetails] = useState<any>([]);
   const [shops, setShops] = useState<any>([]);
   const [products, setProducts] = useState<any>([]);
 
+  const titles: { id: number, title: string }[] = [
+    { id: 1, title: "Tất cả" },
+    { id: 2, title: "Chờ thanh toán" },
+    { id: 3, title: "Chờ giao hàng" },
+    { id: 4, title: "Hoàn thành" },
+    { id: 5, title: "Trả hàng/Hoàn tiền" }
+  ]
+
   useEffect(() => {
     const getApiOrder = async () => {
       try {
-        const apiOrder = await fetch(`http://vnshop.top/api/order/user/history`, {
+        const apiOrder = await fetch(`http://vnshop.top/api/order/user`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -29,6 +38,8 @@ const HistoryBuySection = ({ token }: { token: any }) => {
           }
         });
         const payLoad = await apiOrder.json();
+        console.log(payLoad);
+
         if (apiOrder.ok) {
           setOrders([...payLoad.data])
         } else {
@@ -77,85 +88,100 @@ const HistoryBuySection = ({ token }: { token: any }) => {
     getProduct();
   }, [])
 
-
+  const handleStyle = (id: number) => {
+    setIsCheckedTitle(id);
+  }
 
 
   return (
     <div>
-      <div className='right-body w-[920px] h-auto'>
-        <div className='nav-menu w-full h-[50px] flex items-center justify-around border rounded shadow'>
-          <span className='border-b-2 border-b-blue-500 font-semibold text-blue-500 cursor-pointer'>Tất cả</span>
-          <span className='border-b-2 border-b-blue-500 font-medium cursor-pointer'>Chờ thanh toán</span>
-          <span className='border-b-2 border-b-blue-500 font-medium cursor-pointer'>Vận chuyển</span>
-          <span className='border-b-2 border-b-blue-500 font-medium cursor-pointer'>Chờ giao hàng</span>
-          <span className='border-b-2 border-b-blue-500 font-medium cursor-pointer'>Hoàn thành</span>
-          <span className='border-b-2 border-b-blue-500 font-medium cursor-pointer'>Đã hủy</span>
-          <span className='border-b-2 border-b-blue-500 font-medium cursor-pointer'>Trả hàng/Hoàn tiền</span>
-        </div>
+      <div className='nav-menu w-full h-[50px] flex items-center justify-center gap-8 border rounded shadow'>
         {
-          orders.map((item: any) => {
-            const findShop = shops.find((fShop: any) => fShop.id == item.shop_id);
-
-            return (
-              <div className='listProduct w-full h-[475px] mt-2 border rounded shadow flex flex-col gap-3'>
-                <div className='nav-list-product w-full h-[35px] flex justify-between mt-2 px-3'>
-                  <div className='flex gap-3 items-end '>
-                    <p className='font-semibold text-[16px]'>{findShop ? findShop.shop_name : 'Shop đã biến mất'}</p>
-                    <div className='w-[76px] h-[31px] flex items-center justify-center gap-1 border bg-blue-500 rounded-[5px] text-white'>
-                      <MailPlus size={20} />
-                      <p>Chat</p>
-                    </div>
-                    <div className='w-[117px] h-[31px] flex items-center justify-center gap-1 border-[2px] rounded-[5px] text-gray-500 font-bold'>
-                      <Store size={20} />
-                      <p>Xem Shop</p>
-                    </div>
+          titles.map((item: any) => (
+            <span onClick={() => handleStyle(item.id)} className={` border-b-blue-500 font-semibold cursor-pointer ${isCheckedTitle == item.id ? 'text-blue-500 border-b-2' : 'text-black border-b-[1px]'}`}>{item.title}</span>
+          ))
+        }
+      </div>
+      {
+        orders.filter((filProduct: any) => filProduct.status == isCheckedTitle).map((item: any) => {
+          const findShop = shops.find((fShop: any) => fShop.id == item.shop_id);
+          return (
+            <div className='listProduct w-full mt-2 border rounded shadow flex flex-col gap-3 py-4'>
+              <div className='nav-list-product w-full h-[35px] flex justify-between mt-2 px-3'>
+                <div className='flex gap-3 items-end '>
+                  <p className='font-semibold text-[16px]'>{findShop ? findShop.shop_name : 'Shop đã biến mất'}</p>
+                  <div className='w-[76px] h-[31px] flex items-center justify-center gap-1 border bg-blue-500 rounded-[5px] text-white'>
+                    <MailPlus size={20} />
+                    <p>Chat</p>
                   </div>
-                  <div className='flex gap-2 items-end font-semibold text-[#0A68FF]'>
-                    <Truck />
-                    <p>Giao hàng thành công</p>
+                  <div className='w-[117px] h-[31px] flex items-center justify-center gap-1 border-[2px] rounded-[5px] text-gray-500 font-bold'>
+                    <Store size={20} />
+                    <p>Xem Shop</p>
                   </div>
                 </div>
-                <div className='w-full h-[350px] flex flex-col justify-between px-3'>
+                <div className='flex gap-2 items-end font-semibold text-[#0A68FF]'>
+                  <Truck />
                   {
-                    item.order_details.map((detail: any) => {
-                      const findProduct = products.find((fProduct: any) => fProduct.id == detail.product_id)
-                      return (
-                        <div className='h-[165px] flex gap-3 pt-2'>
-                          <img src={`${findProduct.image}`} className='w-[136px] h-full border object-cover' />
-                          <div className='flex flex-col justify-center'>
-                            <span >{findProduct ? findProduct.name : 'Sản phẩm không hoạt động'}</span>
-                            <span className='text-[14px] text-gray-500'>Phân loại: Nano Bạc</span>
-                            <span>x{detail.quantity}</span>
-                            <div className='flex gap-1 text-red-500'>
-                              <span>{findProduct.price}</span>
-                              <span>đ</span>
-                              <span className='text-[12px]'>-20%</span>
-                            </div>
-                            <span className='px-2 py-2 border border-[#4A4AFF] w-[190px] text-[14px] text-[#4A4AFF] '>Trả hàng miển phí 15 ngày</span>
-                          </div>
-                        </div>
-                      )
-                    })
+                    item.status == 2 && (
+                      <p>Chờ duyệt đơn hàng</p>
+                    )
                   }
-                  <div className='w-full h-[1px] bg-gray-300'></div>
-                </div>
-                <div className='bottom-list-product w-full h-[47px] flex justify-around'>
-                  <div className='w-[257px] flex flex-col gap-1 text-[14px] justify-center '>
-                    <p>Đánh giá trước ngày 02 - 08- 2024</p>
-                    <p className='text-[#7777FF]'>Đánh giá và nhận ngay voucher</p>
-                  </div>
-                  <div className='w-[334px] flex gap-5 items-center justify-center '>
-                    <span className='px-4 py-2 border cursor-pointer bg-[#0A68FF] text-white  hover:bg-gray-400 hover:text-black'>Đánh giá</span>
-                    <span className='px-4 py-2 border cursor-pointer text-[#4E4E4E] hover:bg-[#0A68FF] hover:text-white'>Liên hệ</span>
-                    <span className='px-4 py-2 border cursor-pointer text-[#4E4E4E] hover:bg-[#0A68FF] hover:text-white'>Mua lại</span>
-                  </div>
+                  {
+                    item.status == 3 && (
+                      <p>Đơn hàng đang giao</p>
+                    )
+                  }
+                  {
+                    item.status == 4 && (
+                      <p>Đơn hàng giao thành công</p>
+                    )
+                  }
+                  {
+                    item.status == 5 && (
+                      <p>Đơn hàng đã hoàn trả</p>
+                    )
+                  }
                 </div>
               </div>
-            )
-          })
-        }
-
-      </div>
+              <div className='w-full flex flex-col justify-between px-3'>
+                {
+                  item.order_details.map((detail: any) => {
+                    const findProduct = products.find((fProduct: any) => fProduct.id == detail.product_id)
+                    return (
+                      <div className='h-[165px] flex gap-3 pt-2'>
+                        <img src={`${findProduct.image}`} className='w-[136px] h-full border object-cover' />
+                        <div className='flex flex-col justify-center'>
+                          <span >{findProduct ? findProduct.name : 'Sản phẩm không hoạt động'}</span>
+                          <span className='text-[14px] text-gray-500'>Phân loại: Nano Bạc</span>
+                          <span>x{detail.quantity}</span>
+                          <div className='flex gap-1 text-red-500'>
+                            <span>{findProduct.price}</span>
+                            <span>đ</span>
+                            <span className='text-[12px]'>-20%</span>
+                          </div>
+                          <span className='px-2 py-2 border border-[#4A4AFF] w-[190px] text-[14px] text-[#4A4AFF] '>Trả hàng miển phí 15 ngày</span>
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+                <div className='w-full h-[1px] bg-gray-300'></div>
+              </div>
+              <div className='bottom-list-product w-full h-[47px] flex justify-around'>
+                <div className='w-[257px] flex flex-col gap-1 text-[14px] justify-center '>
+                  <p>Đánh giá trước ngày 02 - 08- 2024</p>
+                  <p className='text-[#7777FF]'>Đánh giá và nhận ngay voucher</p>
+                </div>
+                <div className='w-[334px] flex gap-5 items-center justify-center '>
+                  <span className='px-4 py-2 border cursor-pointer bg-[#0A68FF] text-white  hover:bg-[#455B80] '>Đánh giá</span>
+                  <span className='px-4 py-2 border cursor-pointer text-[#4E4E4E] hover:bg-[#0A68FF] hover:text-white'>Liên hệ</span>
+                  <span className='px-4 py-2 border cursor-pointer text-[#4E4E4E] hover:bg-[#0A68FF] hover:text-white'>Mua lại</span>
+                </div>
+              </div>
+            </div>
+          )
+        })
+      }
     </div>
   );
 };
