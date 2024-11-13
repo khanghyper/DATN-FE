@@ -1,4 +1,5 @@
 import { VariantItem, VariantProduct } from "@/redux/slices/shop-new-product.slice";
+import CryptoJS from "crypto-js";
 
 export const combineVariants = (variants: VariantItem[]): VariantProduct[] => {
   const init: { name: string, value: string }[][] = [[]]
@@ -30,4 +31,21 @@ export const combineVariants = (variants: VariantItem[]): VariantProduct[] => {
   })
 };
 
+const secretKey = "your_secret_key";
 
+type EncodeData = number[]
+
+export function encodeData(data: any): string {
+  // Chuyển đổi chuỗi thành WordArray và mã hóa bằng AES với mật khẩu
+  const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
+  return encrypted;
+}
+
+// Giải mã dữ liệu với UTF-8
+export function decodeData(encryptedData: string): string {
+  // Giải mã dữ liệu
+  const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+  // Chuyển kết quả giải mã thành chuỗi UTF-8
+  const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+  return decryptedData;
+}

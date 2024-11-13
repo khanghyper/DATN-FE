@@ -139,11 +139,8 @@ export default function ProductDetailSection({ product, variant, test }: { produ
       {success && (
         <div className="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full  overflow-auto font-[sans-serif]">
           <div className="w-[300px] h-[180px]">
-            <div className="w-full h-full max-w-lg bg-[black] opacity-70 before:bg-[rgba(0,0,0,0.5)] shadow-lg rounded-lg p-6 relative">
-
-
-            </div>
-            <div className="my-8 text-center absolute top-[250px] left-[630px]">
+            <div className="w-full h-full max-w-lg bg-[black] opacity-70 before:bg-[rgba(0,0,0,0.5)] shadow-lg rounded-lg p-6 relative"></div>
+            <div className="my-8 text-center absolute top-[250px] translate-x-7">
               <div className="size-20 ml-[88px] bg-[#16d8a5] rounded-full flex items-center justify-center">
                 <Check color="#ffffff" size={48} />
               </div>

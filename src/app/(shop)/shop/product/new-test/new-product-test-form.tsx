@@ -182,7 +182,7 @@ export default function NewProductTestForm() {
           </div>
         </div>
       </div>
-      {/* <div className="w-full bg-white rounded-xl">
+      <div className="w-full bg-white rounded-xl">
         <div className="p-6">
           <div className="flex flex-col gap-4">
             {variantFields.map((v, index) => (
@@ -222,7 +222,7 @@ export default function NewProductTestForm() {
           }} className="mt-6 border p-2" type="button">log error</button>
           <button className="mt-6 border p-2" type="submit">Them san pham</button>
         </div>
-      </div> */}
+      </div>
     </form>
 
   )

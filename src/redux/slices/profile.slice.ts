@@ -8,12 +8,14 @@ interface Profile {
     cartInfo: any[],
     selectedItems: any[]
   } | null
+  checkoutState: string
 }
 
 const initialState = {
   accessToken: '',
   info: {},
-  cart: null
+  cart: null,
+  checkoutState: ''
 } as Profile
 
 const profileSlice = createSlice({
@@ -35,53 +37,52 @@ const profileSlice = createSlice({
     selectAllProducts: (state, action: PayloadAction<boolean>) => {
       let checked = action.payload;
       if (state.cart) {
-        state.cart.selectedItems = checked ? state.cart.cartInfo.reduce((acc, curr) => [...acc, ...curr.items], []) : []
+        if (checked) {
+          let items = state.cart.cartInfo.reduce((acc: any, cur: any) => [...acc, ...cur.items.map((i: any) => i.id)], []);
+          state.cart.selectedItems = [...items];
+        } else {
+          state.cart.selectedItems = [];
+        }
       }
     },
     selectAllShopProducts: (state, action: PayloadAction<{ checked: boolean, index: number }>) => {
       let { checked, index } = action.payload;
-      const items = state.cart?.cartInfo[index].items;
       if (state.cart) {
-        let shop_id = state.cart?.cartInfo[index].id;
-        const newA = state.cart.selectedItems.filter(i => +i.shop_id !== shop_id);
+        let itemsWithShopId = state.cart.cartInfo[index].items.map((i: any) => i.id);
+        let itemSlectedWithoutShopId = state.cart.selectedItems.filter(i => !itemsWithShopId.includes(i));
         if (checked) {
-          newA.push(...items);
-          state.cart.selectedItems = [...newA];
+          state.cart.selectedItems = [...itemSlectedWithoutShopId, ...itemsWithShopId];
         } else {
-          state.cart.selectedItems = [...newA];
+          state.cart.selectedItems = [...itemSlectedWithoutShopId]
         }
       }
     },
     selectItem: (state, action: PayloadAction<{ checked: boolean, id: number, shop_id: number }>) => {
       let { checked, id, shop_id } = action.payload;
-
       if (state.cart) {
-        const shop = state.cart.cartInfo.find(s => s.id === shop_id);
-        const item = shop.items.find((i: any) => i.id === id);
         if (checked) {
-          state.cart.selectedItems.push(item);
+          state.cart.selectedItems.push(id)
         } else {
-          state.cart.selectedItems = state.cart.selectedItems.filter(i => i.id !== id);
+          const newItems = state.cart.selectedItems.filter(i => i !== id);
+          state.cart.selectedItems = [...newItems];
         }
       }
     },
     changeQuantity: (state, action: PayloadAction<{ quantity: number, index: number, subIndex: number }>) => {
       let { index, quantity, subIndex } = action.payload;
       if (state.cart) {
-        state.cart.cartInfo[index].items[subIndex].quantity = quantity.toString()
+        if (quantity) {
+          state.cart.cartInfo[index].items[subIndex].quantity = quantity.toString();
+        } else {
+          state.cart.cartInfo[index].items.splice(subIndex, 1);
+          if (!state.cart.cartInfo[index].items.length) {
+            state.cart.cartInfo.splice(index, 1);
+          }
+        }
       }
     },
-    changeQuantity1: (state, action: PayloadAction<{ quantity: number, index: number, subIndex: number }>) => {
-      let { index, quantity, subIndex } = action.payload;
-      if (state.cart) {
-        state.cart.cartInfo[index].items[subIndex].quantity = quantity.toString()
-      }
-    },
-    changeQuantity2: (state, action: PayloadAction<{ quantity: number, index: number, subIndex: number }>) => {
-      let { index, quantity, subIndex } = action.payload;
-      if (state.cart) {
-        state.cart.cartInfo[index].items[subIndex].quantity = quantity.toString()
-      }
+    changeCheckoutState: (state, action: PayloadAction<string>) => {
+      state.checkoutState = action.payload;
     }
   },
   extraReducers(builder) {
@@ -106,7 +107,8 @@ export const {
   selectAllProducts,
   selectAllShopProducts,
   selectItem,
-  changeQuantity
+  changeQuantity,
+  changeCheckoutState
 } = profileSlice.actions
 
 export default profileSlice.reducer;
