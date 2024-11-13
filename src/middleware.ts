@@ -3,13 +3,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const authPaths = ['/auth/login', '/auth/register', '/auth/verify'];
-const privatePaths = ['/admin', '/admin/products/all', '/admin/products/create', '/admin/categories/createm', '/account']
+const privatePaths = ['/admin', '/admin/products/all', '/admin/products/create', '/admin/categories/createm', '/account', '/checkout']
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get('accessToken')?.value;
   const info = request.cookies.get('info')?.value;
+  const stateCheckout = request.cookies.get('stateCheckout')?.value;
+
 
 
   if (privatePaths.some(path => pathname.startsWith(path)) && !accessToken) {
@@ -42,6 +44,7 @@ export async function middleware(request: NextRequest) {
       }
     }
   }
+
 
 
 
