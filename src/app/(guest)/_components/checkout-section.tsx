@@ -4,6 +4,7 @@ import LoadingScreen from "@/app/(guest)/_components/loading-screen"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { decodeData } from "@/helpers"
+import { clientAccessToken } from "@/lib/http"
 import { formattedPrice } from "@/lib/utils"
 import { useAppInfoSelector } from "@/redux/stores/profile.store"
 import { CreditCard, MapPinIcon, MessageCircleMore, Store, Ticket, TicketCheck } from "lucide-react"
@@ -24,28 +25,65 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
   const selectedItems = useAppInfoSelector(state => state.profile.cart?.selectedItems) as any[];
 
 
+
   useEffect(() => {
-    if (!stateCheckout && !stateCheckoutInProfle) return notFound();
-    let decodeSelectedItems = stateCheckout ? JSON.parse(decodeData(stateCheckout)) : selectedItems;
-    let a: any[] = [];
-    cart.forEach((s) => {
-      let items: any[] = [];
-      s.items.forEach((i: any) => {
-        if ((decodeSelectedItems as number[]).includes(i.id)) {
-          items.push(i)
+    const controller = new AbortController(); // Khởi tạo AbortController
+    const signal = controller.signal;
+
+    const getData = async () => {
+      if (!stateCheckout && !stateCheckoutInProfle) return notFound();
+
+      let decodeSelectedItems = stateCheckout ? JSON.parse(decodeData(stateCheckout)) : selectedItems;
+      let a: any[] = [];
+      cart.forEach((s) => {
+        let items: any[] = [];
+        s.items.forEach((i: any) => {
+          if ((decodeSelectedItems).includes(i.id)) {
+            items.push(i);
+          }
+        });
+        if (items.length) {
+          a.push({ ...s, items });
         }
-      })
-      if (items.length) {
-        a.push({ ...s, items })
+      });
+
+      console.log(a);
+
+      const body = a.map(s => ({ shop_id: s.id, items: s.items.map((i: any) => i.id) }));
+
+      try {
+        const calShipFeeRes = await fetch('https://vnshop.top/api/calculate/ship_fee', {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${clientAccessToken.value}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body),
+          signal // Thêm signal để có thể hủy yêu cầu khi cần thiết
+        });
+
+        if (!calShipFeeRes.ok) throw new Error('Failed to fetch');
+
+        const payload = await calShipFeeRes.json();
+        setCheckoutItems([...a.map((s, index: number) => ({ ...s, ship_fee: payload[index].ship_fee }))])
+        setLoading(false);
+      } catch (error: any) {
+        if (error.name !== 'AbortError') {
+          console.error("Fetch error: ", error); // Xử lý lỗi khác ngoài AbortError
+        }
       }
-    });
-    console.log(a);
-    setCheckoutItems([...a]);
-    setLoading(false)
-  }, [selectedItems.length]);
+    };
 
-  console.log(checkoutItems);
+    getData();
 
+
+    // Cleanup function để hủy request khi component unmount
+    return () => {
+      controller.abort();
+    };
+  }, [selectedItems.length])
+
+  console.log();
 
   return (
 
@@ -152,7 +190,7 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
                                 Đảm bảo nhận hàng từ 13 Tháng 11 - 14 Tháng 11
                               </div>
                               <div className="col-start-3 row-end-2 row-start-1"></div>
-                              <div className="col-start-4 row-end-2 row-start-1 text-right text-sm font-medium">20.000đ</div>
+                              <div className="col-start-4 row-end-2 row-start-1 text-right text-sm font-medium">{formattedPrice(s.ship_fee)}</div>
                             </div>
                           </div>
                         </div>
@@ -161,7 +199,7 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
                         <div className="flex h-10  items-center justify-end">
                           <div className="text-sm font-normal">Tổng số tiền ({s.items.reduce((acc: number, i: any) => acc + (+i.quantity), 0)} sản phẩm):</div>
                           <div className="pl-[10px] pr-[25px] h-full flex items-center text-[#ee4d2d] text-[24px] font-semibold">
-                            {formattedPrice(+s.items.reduce((acc: number, i: any) => acc + (+i.quantity * (i.product_price ? (+i.product_price) : (+i.variant_price))), 0))}
+                            {formattedPrice(+s.items.reduce((acc: number, i: any) => acc + (+i.quantity * (i.product_price ? (+i.product_price) : (+i.variant_price))), 0) + s.ship_fee)}
                           </div>
 
                         </div>
@@ -200,10 +238,22 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
                   <li className="h-10 flex text-sm items-center">Tổng thanh toán</li>
                 </ul>
                 <ul className="pr-[25px]">
-                  <li className="justify-end h-10 flex text-sm items-center text-black font-medium">21.000.000đ</li>
-                  <li className="justify-end h-10 flex text-sm items-center text-black font-medium">26.000đ</li>
-                  <li className="justify-end h-10 flex text-sm items-center text-black font-medium">-1.000.000đ</li>
-                  <li className="text-[#ee4d2d] justify-end h-10 flex text-[28px] font-semibold items-center">20.026.000đ</li>
+                  <li className="justify-end h-10 flex text-sm items-center text-black font-medium">{
+                    formattedPrice(checkoutItems.reduce((acc: number, s: any) => acc + s.items.reduce((acc: number, i: any) => acc + (+i.quantity * (i.product_price ? (+i.product_price) : (+i.variant_price))), 0), 0))
+                  }
+                  </li>
+                  <li className="justify-end h-10 flex text-sm items-center text-black font-medium">
+                    {
+                      formattedPrice(checkoutItems.reduce((acc: number, s: any) => acc + s.ship_fee, 0))
+                    }
+                  </li>
+                  <li className="justify-end h-10 flex text-sm items-center text-black font-medium">-0đ</li>
+                  <li className="text-[#ee4d2d] justify-end h-10 flex text-[28px] font-semibold items-center">
+                    {
+
+                      formattedPrice(checkoutItems.reduce((acc: number, s: any) => acc + s.ship_fee + s.items.reduce((acc: number, i: any) => acc + (+i.quantity * (i.product_price ? (+i.product_price) : (+i.variant_price))), 0), 0))
+                    }
+                  </li>
                 </ul>
               </div>
               <div className="footer mt-[10px] h-[100px] px-[30px] flex items-center justify-between border-t">
@@ -211,7 +261,27 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
                   <div className="text-sm">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo <span>Điều khoản VNShop</span></div>
                 </div>
                 <div className="btn">
-                  <Button className="bg-blue-700 w-[200px] h-[40px] text-[16px] text-white font-bold">Đặt hàng</Button>
+                  <Button onClick={async () => {
+                    const carts = checkoutItems.reduce((acc: any, s: any) => [...acc, ...s.items.map((i: any) => i.id)], []);
+                    try {
+                      const res = await fetch('https://vnshop.top/api/purchase_to_cart', {
+                        method: "POST",
+                        body: JSON.stringify({ carts, payment: 11 }),
+                        headers: {
+                          "Authorization": `Bearer ${clientAccessToken.value}`,
+                          "Content-Type": "application/json"
+                        }
+                      });
+                      const payload = await res.json();
+                      if (!res.ok) {
+                        console.log(payload);
+
+                      }
+                      console.log(payload);
+                    } catch (error) {
+
+                    }
+                  }} className="bg-blue-700 w-[200px] h-[40px] text-[16px] text-white font-bold">Đặt hàng</Button>
                 </div>
               </div>
             </div>
