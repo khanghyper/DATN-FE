@@ -13,9 +13,9 @@ const GuestFooter = () => {
   return (
     <>
       {!pathname.endsWith('verify') && (
-        <div className='w-full flex justify-center'>
+        <div className='w-full flex justify-center bg-[#455B80]'>
           <div className='w-content'>
-            <div className="bottom-footer w-full border flex justify-around items-start bg-[#455B80] py-2">
+            <div className="bottom-footer w-full  flex justify-between items-start  py-2">
               <div className="bottom-footer-left text-white w-[345px] h-full flex flex-col gap-4 py-5 ">
                 <Image
                   src="/images/logo3.png"
