@@ -56,6 +56,7 @@ function AttributeValue({ item, productFormHandle, attributeValuesFormHandle, in
         const { images } = payload;
         const image = images[0];
         // attributeValuesFormHandle.update(subIndex, { ...attributeValuesFormHandle.fields[subIndex], image })
+        productFormHandle.setValue('isCreated', false);
         productFormHandle.setValue(`variant.variantAttributes.${index}.values.${subIndex}.image`, image);
         if (!resToServer.ok) {
           throw 'Error!'
@@ -70,10 +71,12 @@ function AttributeValue({ item, productFormHandle, attributeValuesFormHandle, in
 
   const handleDeleteVariantValue = (subIndex: number) => {
     attributeValuesFormHandle.remove(subIndex);
+    productFormHandle.setValue('isCreated', false);
   }
 
   const handleDeleteVariantImage = (index: number, subIndex: number) => {
     productFormHandle.setValue(`variant.variantAttributes.${index}.values.${subIndex}.image`, "");
+    productFormHandle.setValue('isCreated', false);
   }
 
 

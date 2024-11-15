@@ -16,10 +16,6 @@ const nunito = Nunito({
 
 
 
-export const metadata: Metadata = {
-  title: "Admin",
-  description: "Admin app",
-};
 
 export default async function RootLayout({
   children,

@@ -1,30 +1,30 @@
 'use client'
 
+import CheckoutSekeleton from "@/app/(guest)/_components/checkout-sekeleton"
 import LoadingScreen from "@/app/(guest)/_components/loading-screen"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
+import envConfig from "@/config"
 import { decodeData } from "@/helpers"
 import { clientAccessToken } from "@/lib/http"
 import { formattedPrice } from "@/lib/utils"
-import { useAppInfoSelector } from "@/redux/stores/profile.store"
-import { CreditCard, MapPinIcon, MessageCircleMore, Store, Ticket, TicketCheck } from "lucide-react"
-import { notFound, useSearchParams } from "next/navigation"
+import { changeCheckoutState } from "@/redux/slices/profile.slice"
+import { useAppInfoDispatch, useAppInfoSelector } from "@/redux/stores/profile.store"
+import { CreditCard, MapPinIcon, MessageCircleMore, Plus, Store, Ticket, TicketCheck } from "lucide-react"
+import { notFound, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { Cross2Icon } from "@radix-ui/react-icons"
+import AddressSection from "@/app/(guest)/_components/address-section"
 
 export default function CheckoutSection({ stateCheckout }: { stateCheckout: string | undefined | null }) {
-  // let a = ''
-  // if (!stateCheckout) {
-  //   a = useAppInfoSelector(state => state.profile.checkoutState)
-  // };
-  // a = stateCheckout as string;
-  // console.log(a);
+  const dispatch = useAppInfoDispatch();
   const [checkoutItems, setCheckoutItems] = useState<any[]>([]);
   const stateCheckoutInProfle = useAppInfoSelector(state => state.profile.checkoutState);
   const [loading, setLoading] = useState<boolean>(true);
   const cart = useAppInfoSelector(state => state.profile.cart?.cartInfo) as any[];
   const selectedItems = useAppInfoSelector(state => state.profile.cart?.selectedItems) as any[];
-
-
+  const router = useRouter();
 
   useEffect(() => {
     const controller = new AbortController(); // Khởi tạo AbortController
@@ -47,29 +47,31 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
         }
       });
 
-      console.log(a);
 
       const body = a.map(s => ({ shop_id: s.id, items: s.items.map((i: any) => i.id) }));
 
       try {
-        const calShipFeeRes = await fetch('https://vnshop.top/api/calculate/ship_fee', {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${clientAccessToken.value}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(body),
-          signal // Thêm signal để có thể hủy yêu cầu khi cần thiết
-        });
-
-        if (!calShipFeeRes.ok) throw new Error('Failed to fetch');
-
-        const payload = await calShipFeeRes.json();
-        setCheckoutItems([...a.map((s, index: number) => ({ ...s, ship_fee: payload[index].ship_fee }))])
+        const [calShipFeeRes] = await Promise.all([
+          fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/calculate/ship_fee`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${clientAccessToken.value}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body),
+            signal // Thêm signal để có thể hủy yêu cầu khi cần thiết
+          })
+        ]);
+        if (!calShipFeeRes.ok) {
+          throw 'Error'
+        }
+        const calShipFeePayload = await calShipFeeRes.json();
+        setCheckoutItems([...a.map((s, index: number) => ({ ...s, ship_fee: calShipFeePayload[index].ship_fee }))])
         setLoading(false);
       } catch (error: any) {
         if (error.name !== 'AbortError') {
           console.error("Fetch error: ", error); // Xử lý lỗi khác ngoài AbortError
+          toast({ title: "Error", variant: "destructive" })
         }
       }
     };
@@ -83,32 +85,52 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
     };
   }, [selectedItems.length])
 
-  console.log();
+  const handleCheckout = async () => {
+    const carts = checkoutItems.reduce((acc: any, s: any) => [...acc, ...s.items.map((i: any) => i.id)], []);
+    try {
+      const res = await fetch('https://vnshop.top/api/purchase_to_cart', {
+        method: "POST",
+        body: JSON.stringify({ carts, payment: 11 }),
+        headers: {
+          "Authorization": `Bearer ${clientAccessToken.value}`,
+          "Content-Type": "application/json"
+        }
+      });
+      const payload = await res.json();
+      if (!res.ok) {
+        throw 'Error'
+      }
+      await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth/del-cookie`, {
+        method: "POST",
+      });
+      dispatch(changeCheckoutState(""));
+      // router.push('/');
+      // toast({ title: "Đặt hàng thành công!", variant: "success" })
+      location.href = '/'
+
+    } catch (error) {
+      toast({ title: "Lỗi", variant: "destructive" })
+    }
+  }
+
+
+  // useEffect(() => {
+  //   fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/address`, {
+  //     headers: {
+  //       "Authorization": `Bearer ${clientAccessToken.value}`
+  //     }
+  //   })
+  // }, [])
 
   return (
 
     <>
-      {loading && <LoadingScreen />}
+      {loading && <CheckoutSekeleton />}
       {!loading && (
         <div className="w-full flex justify-center">
           <div className="w-full">
-            <div className="header  bg-white border rounded px-[30px] pt-7 pb-6 mt-5 text-[#000000]">
-              <div className="title flex items-center" >
-                <MapPinIcon color="#2969d1" strokeWidth={1.25} size={16} />
-                <div className="ml-2 text-blue-700 text-[18px]">Địa Chỉ Nhận Hàng</div>
-              </div>
-              <div className="header-content flex items-center justify-between mt-4">
-                <div className="flex items-center">
-                  <div className="text-[16px] font-bold">
-                    Nguyễn Hữu Tường (+84)9920938848
-                  </div>
-                  <div className="ml-4 text-[16px]">nghi xuân nghi lộc nghệ an</div>
-                </div>
-                <div className="text-blue-700">
-                  Thay đổi
-                </div>
-              </div>
-            </div>
+            <AddressSection />
+
             {checkoutItems.map((s: any) => (
               <div key={s.id} className="w-full mt-3 rounded-sm bg-white">
                 <div className="w-full pt-6 px-[30px] flex items-center">
@@ -201,7 +223,6 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
                           <div className="pl-[10px] pr-[25px] h-full flex items-center text-[#ee4d2d] text-[24px] font-semibold">
                             {formattedPrice(+s.items.reduce((acc: number, i: any) => acc + (+i.quantity * (i.product_price ? (+i.product_price) : (+i.variant_price))), 0) + s.ship_fee)}
                           </div>
-
                         </div>
                       </div>
                     </div>
@@ -261,27 +282,7 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
                   <div className="text-sm">Nhấn "Đặt hàng" đồng nghĩa với việc bạn đồng ý tuân theo <span>Điều khoản VNShop</span></div>
                 </div>
                 <div className="btn">
-                  <Button onClick={async () => {
-                    const carts = checkoutItems.reduce((acc: any, s: any) => [...acc, ...s.items.map((i: any) => i.id)], []);
-                    try {
-                      const res = await fetch('https://vnshop.top/api/purchase_to_cart', {
-                        method: "POST",
-                        body: JSON.stringify({ carts, payment: 11 }),
-                        headers: {
-                          "Authorization": `Bearer ${clientAccessToken.value}`,
-                          "Content-Type": "application/json"
-                        }
-                      });
-                      const payload = await res.json();
-                      if (!res.ok) {
-                        console.log(payload);
-
-                      }
-                      console.log(payload);
-                    } catch (error) {
-
-                    }
-                  }} className="bg-blue-700 w-[200px] h-[40px] text-[16px] text-white font-bold">Đặt hàng</Button>
+                  <Button onClick={handleCheckout} className="bg-blue-700 w-[200px] h-[40px] text-[16px] text-white font-bold">Đặt hàng</Button>
                 </div>
               </div>
             </div>

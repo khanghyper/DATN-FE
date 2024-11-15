@@ -8,6 +8,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import CartSection from '@/app/(guest)/_components/cart-section';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Giỏ hàng",
+};
 
 const CartPageGuest = () => {
   return (

@@ -29,6 +29,10 @@ function VariantAttribute({ attributeFormHandle, productFormHandle, index }:
 
   const handleDeleteVariant = (index: number) => {
     attributeFormHandle.remove(index);
+    // const variants = productFormHandle.getValues(`variant.variantAttributes`);
+    // variants.splice(index, 1);
+    // productFormHandle.setValue(`variant.variantAttributes`, variants);
+    productFormHandle.setValue(`isCreated`, false);
   }
 
 

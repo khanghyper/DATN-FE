@@ -71,10 +71,13 @@ const profileSlice = createSlice({
     changeQuantity: (state, action: PayloadAction<{ quantity: number, index: number, subIndex: number }>) => {
       let { index, quantity, subIndex } = action.payload;
       if (state.cart) {
+        let item = state.cart.cartInfo[index].items[subIndex];
         if (quantity) {
-          state.cart.cartInfo[index].items[subIndex].quantity = quantity.toString();
-        } else {
+          item.quantity = quantity.toString();
+        } else if (quantity === 0) {
           state.cart.cartInfo[index].items.splice(subIndex, 1);
+          let selectedItems = state.cart.selectedItems.filter(i => i !== item.id);
+          state.cart.selectedItems = [...selectedItems];
           if (!state.cart.cartInfo[index].items.length) {
             state.cart.cartInfo.splice(index, 1);
           }
@@ -83,7 +86,7 @@ const profileSlice = createSlice({
     },
     changeCheckoutState: (state, action: PayloadAction<string>) => {
       state.checkoutState = action.payload;
-    }
+    },
   },
   extraReducers(builder) {
     builder

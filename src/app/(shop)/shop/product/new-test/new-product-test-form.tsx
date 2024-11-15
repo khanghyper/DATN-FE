@@ -1,14 +1,13 @@
 'use client'
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import NewProductVariantTableTest from "@/app/(shop)/shop/product/new-test/new-product-variant-table-test";
 import VariantAttribute from "@/app/(shop)/shop/product/new-test/variant-attribute";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,6 +43,7 @@ const VariantSchema = z.object({
       value: z.string().min(1)
     }
   )),
+
 });
 
 // Schema cho sản phẩm chính
@@ -55,7 +55,8 @@ const ProductSchema = z.object({
     variantAttributes: z.array(AttributeSchema),
     variantProducts: z.array(VariantSchema)
   }).nullable(),
-  isCreated: z.boolean()
+  isCreated: z.boolean(),
+  variantMode: z.boolean()
 });
 
 export type Product = z.infer<typeof ProductSchema>;
@@ -113,9 +114,11 @@ export default function NewProductTestForm() {
     //   base_price: 0,
     //   variant: { variantAttributes: [], variantProducts: [] }
     // },
-    defaultValues: { ...JSON.parse(a), isCreated: true } as Product,
+    defaultValues: { ...JSON.parse(a), isCreated: true, variantMode: (JSON.parse(a) as any).variant ? true : false } as Product,
     mode: "all"
   });
+
+
 
   const watchedAttributes = useWatch({
     control: productFormHandle.control,
@@ -140,12 +143,17 @@ export default function NewProductTestForm() {
 
   useEffect(() => {
     if (watchedAttributes && !productFormHandle.formState.errors.variant?.variantAttributes) {
-      if (productFormHandle.getValues('isCreated') === false) {
+      if (!productFormHandle.getValues('isCreated')) {
+
         setTimeout(() => {
           const a = generateVariantProducts(productFormHandle.getValues('variant.variantAttributes'));
+          // productFormHandle.setValue('variantMode', true);
+          productFormHandle.setValue('variantMode', a.length > 0 ? true : false);
           productFormHandle.setValue('variant.variantProducts', a);
           productFormHandle.trigger('variant.variantProducts');
+
         }, 100)
+
       }
     }
   }, [watchedAttributes, productFormHandle.formState.errors.variant?.variantAttributes])
@@ -184,6 +192,12 @@ export default function NewProductTestForm() {
       </div>
       <div className="w-full bg-white rounded-xl">
         <div className="p-6">
+          <div className="text-xl font-semibold">
+            <span>Giá bán, Kho hàng và Biến thể</span>
+            <div className="text-[13px] text-gray-400 font-normal">
+              Tạo biến thể nếu sản phẩm có hơn một tùy chọn, ví dụ như về kích thước hay màu sắc.
+            </div>
+          </div>
           <div className="flex flex-col gap-4">
             {variantFields.map((v, index) => (
               <VariantAttribute
@@ -208,11 +222,61 @@ export default function NewProductTestForm() {
             Giá bán & Kho hàng
           </div>
 
-          <NewProductVariantTableTest
-            variantProductFields={variantProducts}
-            variantFields={productFormHandle.getValues('variant.variantAttributes')}
-            productFormHandle={productFormHandle}
-          />
+          {productFormHandle.getValues('variantMode') && (
+            <NewProductVariantTableTest
+              variantProductFields={variantProducts}
+              variantFields={productFormHandle.getValues('variant.variantAttributes')}
+              productFormHandle={productFormHandle}
+            />
+          )}
+
+          {!productFormHandle.getValues('variantMode') && (
+            <Table>
+              <TableHeader >
+                <TableRow className="bg-[#f5f8fe] hover:bg-[#f5f8fe] ">
+                  <TableHead className="w-1/3 text-center text-black font-semibold">Giá</TableHead>
+                  <TableHead className="w-1/3 text-center text-black font-semibold">Kho hàng</TableHead>
+                  <TableHead className="w-1/3 text-center text-black font-semibold">SKU</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow className=" hover:bg-white">
+                  <TableCell className="w-1/3">
+                    <div className="w-full px-1 py-3">
+                      <div className="w-full flex items-center justify-center">
+                        <div className="border w-56 h-8 px-3 py-1 flex rounded">
+                          <div className="flex items-center text-[12px] pr-2 text-gray-400">
+                            ₫
+                            <div className="ml-2 border-r h-full" />
+                          </div>
+                          <input className="w-full h-full outline-none text-[14px]" placeholder="Giá" type="number" defaultValue={0} />
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="w-1/3">
+                    <div className="w-full px-1 py-3">
+                      <div className="w-full flex items-center justify-center">
+                        <div className="border w-56 h-8 px-3 py-1 flex rounded">
+                          <input className="w-full h-full outline-none text-[14px]" placeholder="Giá" type="number" defaultValue={0} />
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="w-1/3">
+                    <div className="w-full px-1 py-3">
+                      <div className="w-full flex items-center justify-center">
+                        <div className="border w-56 h-8 px-3 py-1 flex rounded">
+                          <input className="w-full h-full outline-none text-[14px]" placeholder="Giá" type="number" defaultValue={0} />
+                        </div>
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          )}
+
 
           <button onClick={() => {
             console.log(productFormHandle.getValues());

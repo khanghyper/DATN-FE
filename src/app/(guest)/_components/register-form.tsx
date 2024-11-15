@@ -7,6 +7,7 @@ import { useState } from "react";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useForm } from "react-hook-form";
+import { toast } from "@/components/ui/use-toast";
 
 const registerSchema = z.object({
   fullname: z.string().min(6, { message: "Tên phải từ 6 ký tự" }),
@@ -47,20 +48,19 @@ export default function RegisterForm() {
           "Content-type": "application/json"
         }
       });
-      if (registerUser.ok) {
-        const res = await registerUser.json();
-        // console.log(res);
-        router.push(`/auth/verify?email=${dt.email}`)
-      } else {
-        const res = await registerUser.json();
-        throw res.message;
+      if (!registerUser.ok) {
+        throw 'Error'
       }
+      const res = await registerUser.json();
+      // console.log(res);
+      router.push(`/auth/verify?email=${dt.email}`)
 
     } catch (error) {
-      setError('root', {
-        type: "manual",
-        message: error as string
-      })
+      // setError('root', {
+      //   type: "manual",
+      //   message: error as string
+      // })
+      toast({ title: "error", variant: 'destructive' })
       setLoading(false);
     }
   };

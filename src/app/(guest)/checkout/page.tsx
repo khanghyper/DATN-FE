@@ -16,8 +16,12 @@ import {
 } from "lucide-react";
 import CheckoutSection from "@/app/(guest)/_components/checkout-section";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
-import { decodeData } from "@/helpers";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Thanh toán",
+};
+
 
 const CheckoutPage = () => {
   const cookieStore = cookies();

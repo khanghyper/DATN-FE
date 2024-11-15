@@ -119,7 +119,6 @@ export default function ProductDetailSection({ product, variant, test }: { produ
           items
         }
       })
-      console.log(newCart);
       dispatch(addCart(newCart))
       setSuccess(true);
     } catch (error) {
@@ -128,7 +127,7 @@ export default function ProductDetailSection({ product, variant, test }: { produ
     } finally {
       setTimeout(() => {
         setSuccess(false);
-      }, 2000)
+      }, 1000)
     }
   }
 

@@ -33,7 +33,6 @@ export default function CategorySection() {
     }
   }, [categoriesSlected])
 
-  console.log({ isValid });
 
 
   useEffect(() => {
