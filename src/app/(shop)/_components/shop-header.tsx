@@ -31,7 +31,7 @@ export default function ShopHeader() {
 
 
   return (
-    <header className="w-full h-[56px] bg-white sticky top-0 z-50 shadow border-b">
+    <header className="w-full h-[56px] bg-white sticky top-0 z-[100] shadow border-b">
       <div className="w-full h-full flex justify-between">
         <div className="flex items-center gap-4">
           <div className="logo w-40 h-[48px]">
