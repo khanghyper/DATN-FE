@@ -17,6 +17,7 @@ import { clientAccessToken } from "@/lib/http"
 import { PencilLine, Plus, Trash2 } from "lucide-react"
 import { ChangeEvent, memo, useRef, useState } from "react"
 import { FieldArrayWithId, UseFieldArrayReturn, UseFormReturn } from "react-hook-form"
+import envConfig from "@/config"
 
 function AttributeValue({ item, productFormHandle, attributeValuesFormHandle, index, subIndex }: {
   item: any
@@ -45,7 +46,7 @@ function AttributeValue({ item, productFormHandle, attributeValuesFormHandle, in
         const file = files[0];
         const formData = new FormData();
         formData.append('images[]', file);
-        const resToServer = await fetch(`https://vnshop.top/api/product/uploadImage`, {
+        const resToServer = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/product/uploadImage`, {
           method: "POST",
           body: formData,
           headers: {

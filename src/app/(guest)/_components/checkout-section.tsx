@@ -124,7 +124,7 @@ export default function CheckoutSection({ stateCheckout }: { stateCheckout: stri
       }
     })
     try {
-      const res = await fetch('https://vnshop.top/api/purchase_to_cart', {
+      const res = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/purchase_to_cart`, {
         method: "POST",
         body: JSON.stringify({
           carts,

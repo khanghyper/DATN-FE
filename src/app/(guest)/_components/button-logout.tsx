@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from 'react';
 import LoadingScreen from '@/app/(guest)/_components/loading-screen';
+import envConfig from '@/config';
 
 export default function ButtonLogout({ }) {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function ButtonLogout({ }) {
   const handleLogout = async () => {
     try {
       setLoading(true);
-      const a = await fetch('http://localhost:3000/api/auth/logout', {
+      const a = await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth/logout`, {
         method: 'POST',
         body: JSON.stringify({})
       });

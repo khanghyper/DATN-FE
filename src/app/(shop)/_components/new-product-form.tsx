@@ -17,6 +17,7 @@ import { clientAccessToken, shop_id } from "@/lib/http";
 import { toast } from "@/components/ui/use-toast";
 import LoadingScreen from "@/app/(guest)/_components/loading-screen";
 import { useRouter } from "next/navigation";
+import envConfig from "@/config";
 
 
 
@@ -92,7 +93,7 @@ export default function NewProductForm() {
     const newData = { ...data, infomation: [] }
     try {
       setLoading(true);
-      const resToServer = await fetch('https://vnshop.top/api/products', {
+      const resToServer = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/products`, {
         method: "POST",
         body: JSON.stringify(newData),
         headers: {

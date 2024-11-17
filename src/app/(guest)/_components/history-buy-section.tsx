@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Bell, Calendar, MailPlus, Pencil, Store, TicketIcon, Truck, UserRound } from 'lucide-react';
 import { cookies } from 'next/headers';
+import envConfig from '@/config';
 
 const HistoryBuySection = ({ token }: { token: any }) => {
   const tokenUser = token;
@@ -63,7 +64,7 @@ const HistoryBuySection = ({ token }: { token: any }) => {
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const apiProducts = await fetch('https://vnshop.top/api/products');
+        const apiProducts = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/products`);
         const payLoad = await apiProducts.json();
         if (apiProducts.ok) {
           setProducts([...payLoad.data.data])

@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Bell, Calendar, MailPlus, Pencil, Store, TicketIcon, Truck, UserRound } from 'lucide-react';
+import envConfig from '@/config';
 
 const WaitDeliveryBuySection = ({ token }: { token: any }) => {
   const tokenUser = token;
@@ -62,7 +63,7 @@ const WaitDeliveryBuySection = ({ token }: { token: any }) => {
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const apiProducts = await fetch('https://vnshop.top/api/products');
+        const apiProducts = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/products`);
         const payLoad = await apiProducts.json();
         if (apiProducts.ok) {
           setProducts([...payLoad.data.data])
@@ -152,7 +153,7 @@ const WaitDeliveryBuySection = ({ token }: { token: any }) => {
           })
         }
 
-        
+
 
       </div>
     </div>

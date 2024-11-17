@@ -15,6 +15,7 @@ import { changeVariantMode, changeVariantMode1 } from '@/redux/slices/shop-new-p
 import { CreateShopFormData } from '@/app/(shop)/_components/create-shop-form-test';
 import { CreateProductFormData } from '@/app/(shop)/_components/new-product-form';
 import { nanoid } from 'nanoid';
+import envConfig from '@/config';
 
 
 
@@ -242,7 +243,7 @@ export default function NewProductVariantWithVariantPartTestV2({ handleVariant, 
     const formData = new FormData();
     formData.append('images[]', image);
     try {
-      const resToServer = await fetch(`https://vnshop.top/api/product/uploadImage`, {
+      const resToServer = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/product/uploadImage`, {
         method: "POST",
         body: formData,
         headers: {

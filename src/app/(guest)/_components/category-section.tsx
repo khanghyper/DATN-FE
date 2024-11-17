@@ -20,18 +20,19 @@ import {
 import { Button } from '@/components/ui/button';
 import CardProduct from './card-product';
 import Link from 'next/link';
+import envConfig from '@/config';
 
 const CategorySection = () => {
   const [products, setProducts] = useState<any>([]);
   const [categories, setCategories] = useState<any>([]);
-  const [priceMin , setPriceMin ] = useState<number>(0);
-  const [priceMax , setPriceMax ] = useState<number>(0);
-  
+  const [priceMin, setPriceMin] = useState<number>(0);
+  const [priceMax, setPriceMax] = useState<number>(0);
+
 
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const apiProduct = await fetch('https://vnshop.top/api/products');
+        const apiProduct = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/products`);
         const payLoad = await apiProduct.json();
         if (apiProduct.ok) {
           setProducts([...payLoad.data.data])
@@ -48,7 +49,7 @@ const CategorySection = () => {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const apiCategories = await fetch('https://vnshop.top/api/categories').then(res => res.json());
+        const apiCategories = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/categories`).then(res => res.json());
         if (apiCategories) {
           setCategories([...apiCategories.data])
         } else {
@@ -62,22 +63,9 @@ const CategorySection = () => {
   }, [])
 
   const handleFilter = () => {
-    
+
   }
 
-  // useEffect(() => {
-  //   const getFilProduct = async() =>{
-  //     try {
-  //       const apiFil = await fetch(`https://vnshop.top/api/products/filter`).then(res => res.json());
-  //       if(apiFil.data.length > 0){
-
-  //       }
-  //     } catch (error) { 
-  //       console.log(error);
-  //     }
-  //   }
-  //   getFilProduct();
-  // },[])
 
   return (
     <div>

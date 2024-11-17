@@ -1,4 +1,5 @@
 
+import envConfig from "@/config";
 import { CircleCheckBig, Mail } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation"
@@ -11,7 +12,7 @@ export default async function VerifyEmail1Page({
 }) {
   const token = searchParams.token;
   if (token && typeof token === 'string') {
-    const res = await fetch('https://vnshop.top/api/confirm', {
+    const res = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/confirm`, {
       method: 'POST',
       body: JSON.stringify({ token }),
       headers: {
@@ -47,14 +48,7 @@ export default async function VerifyEmail1Page({
 }
 
 
-// export default function VerifyEmail1Page() {
-//   const searchParams = useSearchParams();
-//   useEffect(() => {
-//     fetch('https://vnshop.top/api/confirm', {
-//       method: 'POST',
-//       body: JSON.stringify({token: searchParams.get('token')})
-//     })
-//   }, [])
+
 
 
 //   return (

@@ -2,6 +2,7 @@
 
 import LoadingScreen from '@/app/(guest)/_components/loading-screen';
 import { toast } from '@/components/ui/use-toast';
+import envConfig from '@/config';
 import { addAccessToken, addInfo } from '@/redux/slices/profile.slice';
 import { useAppInfoDispatch } from '@/redux/stores/profile.store';
 import Image from 'next/image';
@@ -24,7 +25,7 @@ export default function LoginForm() {
     if (!loading) {
       try {
         setLoading(true);
-        const login = await fetch('https://vnshop.top/api/users/login', {
+        const login = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/users/login`, {
           method: 'POST',
           body: JSON.stringify(data),
           headers: {
@@ -35,7 +36,7 @@ export default function LoginForm() {
         if (login.ok) {
           const res: { message: string, status: boolean, data: { token: string } } = await login.json();
           const accessToken = res.data.token;
-          const a = await fetch('http://localhost:3000/api/auth', {
+          const a = await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
             body: JSON.stringify({ accessToken })
           });

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import VoucherComponent from './voucher';
 import { Button } from '@/components/ui/button';
+import envConfig from '@/config';
 
 const VoucherSection = () => {
   const [vouchers, setVouchers] = useState<any>([]);
@@ -9,7 +10,7 @@ const VoucherSection = () => {
   useEffect(() => {
     const getVoucherApi = async () => {
       try {
-        const apiVoucher = await fetch(`https://vnshop.top/api/voucher_main/client`).then(res => res.json());
+        const apiVoucher = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/voucher_main/client`).then(res => res.json());
         // console.log(apiVoucher.data);
         if (apiVoucher.data.length > 0) {
           setVouchers([...apiVoucher.data]);

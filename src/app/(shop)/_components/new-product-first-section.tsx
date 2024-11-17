@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { closestCenter, DndContext, DragEndEvent, MeasuringStrategy } from '@dnd-kit/core'
 import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import ProductImage from "@/app/(shop)/_components/product-image";
+import envConfig from "@/config";
 
 
 export default function NewProductFirstSection({ register, errors, getValues, watch, setValue, control, setError }:
@@ -56,7 +57,7 @@ export default function NewProductFirstSection({ register, errors, getValues, wa
         for (let i = 0; i < files.length; i++) {
           formData.append('images[]', files[i])
         }
-        const upload = await fetch(`https://vnshop.top/api/product/uploadImage`, {
+        const upload = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/product/uploadImage`, {
           method: "POST",
           body: formData,
           headers: {

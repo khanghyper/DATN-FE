@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from "@/components/ui/use-toast";
 import LoadingScreen from "@/app/(guest)/_components/loading-screen";
+import envConfig from "@/config";
 
 
 const schema = z.object({
@@ -49,7 +50,7 @@ export default function CreateShopFormTest({ info }: { info: any }) {
     const newData = { ...data, address: undefined, ...data.address };
     try {
       setLoading(true);
-      const resToServer = await fetch('https://vnshop.top/api/shops', {
+      const resToServer = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/shops`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -59,7 +60,7 @@ export default function CreateShopFormTest({ info }: { info: any }) {
       });
       const payload = await resToServer.json();
       if (resToServer.ok) {
-        const resToNextServer = await fetch('http://localhost:3000/api/auth', {
+        const resToNextServer = await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth`, {
           method: 'POST',
           body: JSON.stringify({ accessToken })
         })

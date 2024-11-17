@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import VoucherComponent from './voucher';
 import CategoriesIconGuest from './categoriesIcon';
 import CardProduct from './card-product';
+import envConfig from '@/config';
 
 
 
@@ -12,7 +13,7 @@ const SaleProductSection = () => {
   useEffect(() => {
     const getProductSale = async () => {
       try {
-        const apiProducts = await fetch('https://vnshop.top/api/products');
+        const apiProducts = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/products`);
         const payLoad = await apiProducts.json();
         if (apiProducts.ok) {
           setProducts([...payLoad.data.data])

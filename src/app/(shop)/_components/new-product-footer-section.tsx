@@ -13,39 +13,6 @@ export default function NewProductFooterSection() {
   const variant = { variantItems: variantItems.map(it => ({ name: it.name, values: it.values.map(i => i.value) })), variantProducts: variantProducts.map(it => ({ ...it, variants: undefined, attributes: it.variants })) };
 
 
-  // const handleSubmit = async () => {
-  //   const data = {
-  //     ...state,
-  //     description: "fdsafdasf",
-  //     category_id: state.category.selectedCategories[state.category.selectedCategories.length - 1].id,
-  //     currentRequestId: undefined,
-  //     category: undefined,
-  //     variant: null,
-  //     shop_id: 20,
-  //     thumbnail: state.images[0]
-  //   };
-  //   const dataWithVariant = {
-  //     ...data,
-  //     price: null,
-  //     stock: null,
-  //     variant,
-  //     varriant: undefined
-  //   }
-
-  //   try {
-  //     const createProduct = await fetch('https://vnshop.top/api/products', {
-  //       method: "POST",
-  //       body: JSON.stringify(dataWithVariant),
-  //       headers: {
-  //         "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Zuc2hvcC50b3AvYXBpL3VzZXJzL2xvZ2luIiwiaWF0IjoxNzI5MDU3MzM1LCJleHAiOjE3MjkxNDM3MzUsIm5iZiI6MTcyOTA1NzMzNSwianRpIjoielBQTVM0NzBpejNLM0ZDZyIsInN1YiI6IjQzIiwicHJ2IjoiYzc3ZWFiYzZkMjlkYmNlMGI1NWU5OGJkZWMzOTFiNTQ5YTVlZjFmMCJ9.xE0SpborxcqBFyE1nXi3LPgArejvVsr-9DqswhWoRT4",
-  //         "Content-Type": "application/json"
-  //       }
-  //     })
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-
-  // }
 
 
   return (

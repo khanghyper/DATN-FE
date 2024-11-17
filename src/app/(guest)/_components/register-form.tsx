@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useForm } from "react-hook-form";
 import { toast } from "@/components/ui/use-toast";
+import envConfig from "@/config";
 
 const registerSchema = z.object({
   fullname: z.string().min(6, { message: "Tên phải từ 6 ký tự" }),
@@ -41,7 +42,7 @@ export default function RegisterForm() {
     const data = { ...dt, role_id: 5 }
     try {
       setLoading(true);
-      const registerUser = await fetch('https://vnshop.top/api/users/register', {
+      const registerUser = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/users/register`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
