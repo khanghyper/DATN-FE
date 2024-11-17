@@ -25,7 +25,7 @@ export default function LoginForm() {
     if (!loading) {
       try {
         setLoading(true);
-        const login = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/users/login`, {
+        const loginRes = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT_1}/api/users/login`, {
           method: 'POST',
           body: JSON.stringify(data),
           headers: {
@@ -33,24 +33,15 @@ export default function LoginForm() {
           },
           cache: 'no-cache'
         });
-        if (login.ok) {
-          const res: { message: string, status: boolean, data: { token: string } } = await login.json();
+        if (loginRes.ok) {
+          const res: { message: string, status: boolean, data: { token: string } } = await loginRes.json();
           const accessToken = res.data.token;
           const a = await fetch(`${envConfig.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
             body: JSON.stringify({ accessToken })
           });
           if (a.ok) {
-            // window.location.href = '/'
             const info = await a.json();
-            // dispatch(addAccessToken(accessToken));
-            // dispatch(addInfo(info));
-            // toast({
-            //   description: 'Đăng nhập thành công!',
-            //   title: 'Thành công',
-            //   variant: 'success'
-            // })
-            // router.push('/');
             const e = await setTimeout(() => {
               window.location.href = '/'
             }, 500)
@@ -60,7 +51,7 @@ export default function LoginForm() {
           }
 
         } else {
-          const res = await login.json();
+          const res = await loginRes.json();
           throw res.error;
         }
       } catch (error) {
