@@ -155,7 +155,7 @@ export default function NewProductForm() {
         <NewProductFooterSection />
 
         <button onClick={() => {
-          console.log(JSON.stringify(getValues()));
+          console.log(getValues());
         }} type="button">log data</button>
         <button onClick={() => {
           console.log({ a: errors });

@@ -11,8 +11,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
-import ImageLoading from "@/app/(shop)/shop/product/new-test/image-loading"
-import { Product } from "@/app/(shop)/shop/product/new-test/new-product-test-form"
+import ImageLoading from "@/app/(shop)/shop/product/new/image-loading"
+import { Product } from "@/app/(shop)/shop/product/new/new-product-test-form"
 import { clientAccessToken } from "@/lib/http"
 import { PencilLine, Plus, Trash2 } from "lucide-react"
 import { ChangeEvent, memo, useRef, useState } from "react"
@@ -21,12 +21,20 @@ import envConfig from "@/config"
 
 function AttributeValue({ item, productFormHandle, attributeValuesFormHandle, index, subIndex }: {
   item: any
-  attributeFormHandle: UseFieldArrayReturn<Product>
-  attributeValuesFormHandle: UseFieldArrayReturn<Product>
-  productFormHandle: UseFormReturn<Product>
+  attributeFormHandle: any
+  attributeValuesFormHandle: any
+  productFormHandle: any
   index: number
   subIndex: number
 }) {
+  //   item: any
+  //   attributeFormHandle: UseFieldArrayReturn<Product>
+  //   attributeValuesFormHandle: UseFieldArrayReturn<Product>
+  //   productFormHandle: UseFormReturn<Product>
+  //   index: number
+  //   subIndex: number
+  // }) {
+
 
   const [imageLoading, setImageLoading] = useState<boolean>(false);
   const currentInputRef = useRef<HTMLInputElement | null>(null);
@@ -93,7 +101,7 @@ function AttributeValue({ item, productFormHandle, attributeValuesFormHandle, in
           <div >
             <input
               {...productFormHandle.register(`variant.variantAttributes.${index}.values.${subIndex}.value`, {
-                onChange(event) {
+                onChange(event: any) {
                   productFormHandle.setValue('isCreated', false);
                 },
               })}

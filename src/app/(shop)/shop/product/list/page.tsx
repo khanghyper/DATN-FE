@@ -32,7 +32,7 @@ import ProductListSection from "@/app/(shop)/_components/product-list-section";
 
 export default function ListProductPage() {
   return (
-    <div className="w-full overflow-auto">
+    <div className="w-full overflow-auto bg-white rounded">
       <div className="flex p-4 items-center justify-between">
         <span className="text-[20px] font-semibold">Sản phẩm</span>
         <div className="flex items-center gap-2">

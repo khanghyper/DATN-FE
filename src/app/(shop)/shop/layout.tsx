@@ -30,6 +30,9 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           <div className=" w-[calc(100vw-292px)] pl-2.5 pr-4">
             <div className="w-full h-auto rounded">
               {children}
+              <div className="w-full py-6 text-[12px] text-gray-400">
+                VNShop 2024. All rights reserved.
+              </div>
             </div>
           </div>
         </div>

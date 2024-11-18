@@ -1,8 +1,8 @@
 'use client'
 
-import AttributeValue from "@/app/(shop)/shop/product/new-test/attribute-value"
-import ImageLoading from "@/app/(shop)/shop/product/new-test/image-loading"
-import { Product } from "@/app/(shop)/shop/product/new-test/new-product-test-form"
+import AttributeValue from "@/app/(shop)/shop/product/new/attribute-value"
+import ImageLoading from "@/app/(shop)/shop/product/new/image-loading"
+import { Product } from "@/app/(shop)/shop/product/new/new-product-test-form"
 import { clientAccessToken } from "@/lib/http"
 import { Asterisk, Plus, Trash, Trash2, X } from "lucide-react"
 import { nanoid } from "nanoid"
@@ -14,10 +14,17 @@ import { useFieldArray, UseFieldArrayReturn, UseFormReturn, useWatch } from "rea
 
 function VariantAttribute({ attributeFormHandle, productFormHandle, index }:
   {
-    attributeFormHandle: UseFieldArrayReturn<Product>
-    productFormHandle: UseFormReturn<Product>
+    attributeFormHandle: any
+    productFormHandle: any
     index: number
   }) {
+
+  // {
+  //   attributeFormHandle: UseFieldArrayReturn<Product>
+  //   productFormHandle: UseFormReturn<Product>
+  //   index: number
+  // }) {
+
 
   const [imageLoading, setImageLoading] = useState<boolean>(false);
 
@@ -32,6 +39,15 @@ function VariantAttribute({ attributeFormHandle, productFormHandle, index }:
     // const variants = productFormHandle.getValues(`variant.variantAttributes`);
     // variants.splice(index, 1);
     // productFormHandle.setValue(`variant.variantAttributes`, variants);
+    const variantAttributes = productFormHandle.getValues('variant.variantAttributes');
+    if (!variantAttributes.length) {
+      productFormHandle.setValue('variant', null);
+      productFormHandle.setValue('variantMode', false);
+      productFormHandle.setValue('price', null);
+      productFormHandle.setValue('stock', null);
+      productFormHandle.setValue('sku', null);
+
+    }
     productFormHandle.setValue(`isCreated`, false);
   }
 
@@ -50,7 +66,7 @@ function VariantAttribute({ attributeFormHandle, productFormHandle, index }:
         </div>
         <input
           {...productFormHandle.register(`variant.variantAttributes.${index}.attribute`, {
-            onChange(event) {
+            onChange(event: any) {
               productFormHandle.setValue('isCreated', false);
             },
             // required: "Attribute value is required",
@@ -70,7 +86,7 @@ function VariantAttribute({ attributeFormHandle, productFormHandle, index }:
       <div className="mt-6 text-sm">
         <p className="mt-4 text-sm font-semibold">Các giá trị biến thể: </p>
         <div className="mt-4 flex flex-col gap-3">
-          {productFormHandle.getValues(`variant.variantAttributes.${index}.values`).map((v, subIndex) => (
+          {productFormHandle.getValues(`variant.variantAttributes.${index}.values`).map((v: any, subIndex: number) => (
             <AttributeValue
               key={v.id}
               attributeFormHandle={attributeFormHandle}

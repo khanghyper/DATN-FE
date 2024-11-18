@@ -123,9 +123,8 @@ export default function ProductListSection() {
   }
 
   return (
-    <>
-      <div>he</div>
-      <div className="flex p-2 px-3 gap-2">
+    <div className="w-full bg-white rounded">
+      <div className="flex p-3 py-4 gap-2">
         {statusList.map((item => (
           <div key={item.value}
             onClick={() => {
@@ -178,6 +177,6 @@ export default function ProductListSection() {
         </div>
       </div>
       {loading && <LoadingScreen />}
-    </>
+    </div>
   )
 }

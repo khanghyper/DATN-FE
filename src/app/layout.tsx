@@ -7,6 +7,7 @@ import AppProvider from "@/redux/providers/app.provider";
 import ProfileProvider from "@/redux/providers/profile.provider";
 import envConfig from "@/config";
 import { nanoid } from "nanoid";
+import { notFound } from "next/navigation";
 
 
 const nunito = Nunito({
@@ -36,7 +37,7 @@ export default async function RootLayout({
       }
     });
     if (!res.ok) {
-      return null;
+      return notFound();
     }
     const payload = await res.json();
     const newCart = payload.shop.map((shop: any) => {
