@@ -113,7 +113,7 @@ const SuccesOrderChild = ({ status }: { status: number }) => {
         ])
 
         if (!ordersRes.ok || !shopsRes.ok) {
-          throw 'Error';
+          throw 'Error nè';
         }
         const ordersPayload = await ordersRes.json();
         const shopsPayload = await shopsRes.json();
